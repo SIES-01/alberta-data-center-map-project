@@ -1,0 +1,1 @@
+ Alberta Data Centre Comparison Map — An interactive map comparing proposed Alberta AI data centre projects to nearby communities, built from public announcements, news coverage, and regulatory filings.
