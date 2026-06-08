@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Alberta AI Data Centres — Interactive Impact Map</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0f1923;color:#e8edf2;height:100vh;display:flex;flex-direction:row;overflow:hidden}
+
+/* Disclaimer */
+#disc{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;display:none;align-items:center;justify-content:center}
+#disc-box{background:#111d27;border:2px solid #f97316;border-radius:12px;padding:22px 26px;max-width:600px;width:93%;font-size:12.5px;line-height:1.65;max-height:88vh;overflow-y:auto}
+#disc-box h2{color:#f97316;font-size:15px;margin-bottom:10px}
+#disc-box h3{color:#93c5fd;font-size:12px;margin:12px 0 5px;text-transform:uppercase;letter-spacing:.7px}
+#disc-box p,#disc-box li{color:#9ab;margin-bottom:6px}
+#disc-box ul{padding-left:16px}
+#disc-box .src a{color:#60a5fa;font-size:11px}
+#disc-box .foot{margin-top:14px;padding-top:10px;border-top:1px solid #1e3348;font-size:11px;color:#567;font-style:italic}
+#disc-accept{display:block;width:100%;margin-top:14px;padding:10px;background:#f97316;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer}
+#disc-accept:hover{background:#ea580c}
+
+/* Contact officials modal */
+#contact{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;display:none;align-items:center;justify-content:center}
+#contact-box{background:#0d2230;border:2px solid #38bdf8;border-radius:12px;padding:22px 26px;max-width:640px;width:93%;font-size:12.5px;line-height:1.6;max-height:88vh;overflow-y:auto}
+#contact-box h2{color:#38bdf8;font-size:15px;margin-bottom:8px}
+#contact-box>p{color:#9ab;margin-bottom:12px}
+#contact-box h3{color:#7ccfff;font-size:11.5px;margin:14px 0 7px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #1e3348;padding-bottom:4px}
+.cct{background:#0a1924;border:1px solid #1e3348;border-radius:7px;padding:9px 11px;margin-bottom:7px}
+.cct b{color:#dde;font-size:12px}
+.cct .role{color:#789;font-size:11px;margin:2px 0 7px}
+.cct-btns{display:flex;gap:7px;flex-wrap:wrap}
+.cct-btns a,.cct-btns button{font-size:10.5px;padding:5px 10px;border-radius:5px;cursor:pointer;text-decoration:none;display:inline-block;border:1px solid;font-family:inherit}
+.cct-link{background:#111d27;color:#7ccfff;border-color:#2c6090!important}
+.cct-link:hover{background:#1e3348}
+.cct-mail{background:#0c2410;color:#86efac;border-color:#22c55e!important}
+.cct-mail:hover{background:#123018}
+#contact-box .foot{margin-top:14px;padding-top:10px;border-top:1px solid #1e3348;font-size:11px;color:#567;font-style:italic}
+#contact-close{display:block;width:100%;margin-top:14px;padding:10px;background:#38bdf8;color:#06222e;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer}
+#contact-close:hover{background:#0ea5e9}
+.contact-open{background:#0c2410;color:#86efac;border:1px solid #22c55e;border-radius:6px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.contact-open:hover{background:#123018;color:#bbf7d0}
+
+/* Utility bar (help / table / glossary / FAQ / share) */
+.utilbar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:6px 16px;background:#0a1620;border-bottom:1px solid #1e3348;font-size:11px}
+.ub{background:#111d27;color:#8aabb8;border:1px solid #1e3348;border-radius:5px;padding:5px 10px;font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.ub:hover{background:#1e3348;color:#cfe0ea}
+.ub-meta{color:#456;font-size:10.5px;margin-left:auto;white-space:nowrap}
+.ub-meta a{color:#60a5fa;text-decoration:underline;cursor:pointer}
+
+/* Search box */
+#locSearch{background:#1a2e42;color:#fff !important;border:1.5px solid #2c6090;border-radius:5px;padding:4px 9px;font-size:12px;min-width:230px}
+#locSearch:focus,#locSearch:active,#locSearch:hover{color:#fff !important}
+#locSearch::placeholder{color:#9fb3c2}
+#locSearch:-webkit-autofill,#locSearch:-webkit-autofill:hover,#locSearch:-webkit-autofill:focus{
+  -webkit-text-fill-color:#fff !important;
+  -webkit-box-shadow:0 0 0 1000px #1a2e42 inset !important;
+  caret-color:#fff;
+}
+
+/* Generic light-blue modal — reused for Walkthrough / Glossary / FAQ / Changelog */
+.gmodal{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:9500;display:none;align-items:center;justify-content:center;padding:18px}
+.gmodal-box{background:#111d27;border:2px solid #38bdf8;border-radius:12px;padding:20px 24px;max-width:620px;width:100%;font-size:12.5px;line-height:1.65;max-height:88vh;overflow-y:auto;color:#9ab}
+.gmodal-box h2{color:#38bdf8;font-size:15px;margin-bottom:10px}
+.gmodal-box h3{color:#93c5fd;font-size:12px;margin:14px 0 5px;text-transform:uppercase;letter-spacing:.6px}
+.gmodal-box .qa{margin-bottom:11px}
+.gmodal-box .qa b{color:#bef264;display:block;margin-bottom:2px;font-size:12px}
+.gmodal-box dt{color:#7dd3fc;font-weight:700;margin-top:9px;font-size:12px}
+.gmodal-box dd{margin:2px 0 0 0;color:#9ab}
+.gmodal-box ol,.gmodal-box ul{padding-left:18px;margin:6px 0}
+.gmodal-box ol li,.gmodal-box ul li{margin-bottom:7px}
+.gmodal-box .foot{margin-top:14px;padding-top:10px;border-top:1px solid #1e3348;font-size:11px;color:#567;font-style:italic}
+.gmodal-close{display:block;width:100%;margin-top:14px;padding:9px;background:#38bdf8;color:#06222e;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer}
+.gmodal-close:hover{background:#7dd3fc}
+
+/* Table view (overlay on top of map) */
+#tableView{display:none;position:absolute;inset:0;z-index:850;background:#0f1923;overflow:auto;padding:14px 16px}
+#tableView h3{color:#bcd;font-size:13px;margin-bottom:8px}
+#tableView .tv-back{background:#1e3348;color:#cfe0ea;border:1px solid #2c6090;border-radius:5px;padding:6px 12px;font-size:11.5px;cursor:pointer;margin-bottom:10px}
+#tableView .tv-back:hover{background:#2c4a68}
+#propTable{width:100%;border-collapse:collapse;font-size:11px}
+#propTable th{background:#16242f;color:#7dd3fc;text-align:left;padding:7px 8px;cursor:pointer;white-space:nowrap;border-bottom:2px solid #2c6090;position:sticky;top:0}
+#propTable th:hover{background:#1e3348}
+#propTable th .arrow{font-size:9px;color:#456;margin-left:3px}
+#propTable td{padding:6px 8px;border-bottom:1px solid #1a2733;color:#9ab;vertical-align:top}
+#propTable tr:hover td{background:#121f2b}
+#propTable td.nm{color:#cfe0ea;font-weight:600}
+
+/* Layout — left sidebar (find/filter/legend) + main map column */
+.appwrap{display:flex;flex-direction:row;flex:1;min-height:0;width:100%;overflow:hidden}
+.sidebar{width:300px;flex-shrink:0;display:flex;flex-direction:column;overflow-y:auto;background:#0d1720;border-right:1px solid #1e3348}
+.mainarea{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+header{background:#111d27;padding:9px 16px 7px;border-bottom:1px solid #1e3348;flex-shrink:0}
+header h1{font-size:15px;font-weight:700;color:#fff}
+header p{font-size:10.5px;color:#456;margin-top:2px}
+
+.ctrl{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:12px 14px;background:#0d1720;border-bottom:1px solid #1e3348;flex-shrink:0}
+.cg{display:flex;flex-direction:column;align-items:stretch;gap:4px}
+.cg label{font-size:11.5px;color:#8aabb8;font-weight:600;white-space:nowrap}
+select,#locSearch{width:100%}
+select{background:#1a2e42;color:#e8edf2;border:1.5px solid #2c6090;border-radius:5px;padding:4px 9px;font-size:12px;cursor:pointer;min-width:0}
+select option{background:#111d27}
+
+.ibtns{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.ibtns span{font-size:10.5px;color:#345;margin-right:1px;width:100%}
+.ib{padding:4px 9px;border-radius:4px;border:1px solid #1e3348;background:#111d27;color:#567;cursor:pointer;font-size:11px;transition:all .15s;white-space:nowrap}
+.ib:hover{background:#1e3348;color:#bcd}
+.ib.noise.on{background:#3b0d0d;color:#fca5a5;border-color:#ef4444}
+.ib.water.on{background:#0c1e38;color:#93c5fd;border-color:#3b82f6}
+.ib.elec.on{background:#2d1e03;color:#fde68a;border-color:#f59e0b}
+.ib.jobs.on{background:#0c2410;color:#86efac;border-color:#22c55e}
+.ib.econ.on{background:#1e2d0c;color:#bef264;border-color:#84cc16}
+.ib.air.on{background:#1e1530;color:#d8b4fe;border-color:#a855f7}
+
+.snd-btn{display:block;width:100%;margin-top:8px;padding:7px 10px;border-radius:5px;border:1px solid #ef4444;background:#3b0d0d;color:#fca5a5;cursor:pointer;font-size:11.5px;font-weight:600;transition:all .15s;pointer-events:auto}
+.snd-btn:hover{background:#591414;color:#fecaca}
+.snd-btn.playing{background:#fca5a5;color:#3b0d0d;border-color:#fca5a5}
+
+.mbtns{display:flex;gap:4px;flex-wrap:wrap}
+.mb{padding:4px 9px;border-radius:4px;border:1px solid #1e3348;background:#111d27;color:#567;cursor:pointer;font-size:11px;transition:all .15s}
+.mb:hover{background:#1e3348;color:#bcd}
+.mb.active{background:#1e4a6e;color:#7ccfff;border-color:#2c6090}
+
+#map{flex:1;min-height:0;position:relative}
+#prompt{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(8,15,24,.9);border:1.5px solid #2c6090;border-radius:10px;padding:16px 24px;text-align:center;z-index:800;pointer-events:none}
+#prompt strong{color:#7ccfff;font-size:14px;display:block;margin-bottom:4px}
+#prompt p{font-size:11px;color:#567}
+
+/* Impact card */
+#icard{position:absolute;top:10px;right:10px;bottom:10px;z-index:900;background:rgba(6,12,20,.95);border:1px solid #2c6090;border-radius:8px;padding:10px 12px;width:240px;font-size:11.5px;pointer-events:auto;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#icard::-webkit-scrollbar{width:6px}
+#icard::-webkit-scrollbar-thumb{background:#2c6090;border-radius:3px}
+#icard::-webkit-scrollbar-track{background:transparent}
+#icard h4{font-size:11px;font-weight:700;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid #1e3348}
+.ir{display:flex;justify-content:space-between;margin-bottom:4px}
+.il{color:#456}.iv{font-weight:600;text-align:right}
+.is{margin-top:7px;padding-top:6px;border-top:1px solid #131f2b}
+.is h5{font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;color:#345;margin-bottom:4px}
+.in{font-size:9.5px;color:#345;font-style:italic;margin-top:7px}
+
+/* Legend */
+.leg{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:5px 12px;background:#080f17;border-top:1px solid #1e3348;flex-shrink:0;font-size:10.5px}
+.li{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.sw{width:18px;height:8px;border-radius:2px;flex-shrink:0}
+.lsep{width:1px;height:12px;background:#1e3348;flex-shrink:0}
+
+/* Stats */
+.stats{display:flex;flex-wrap:wrap;background:#0a1520;border-top:1px solid #1e3348;flex-shrink:0}
+.sc{flex:1;min-width:95px;padding:6px 10px;border-right:1px solid #1e3348}
+.sc:last-child{border-right:none}
+.sl{font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:#345;margin-bottom:2px}
+.sv{font-size:14px;font-weight:700}
+.ss{font-size:9.5px;color:#345;margin-top:1px}
+
+.notebar{font-size:10px;color:#2a3a4a;padding:3px 12px;background:#040b11;flex-shrink:0;border-top:1px solid #1e3348}
+.notebar a{color:#2a4a6a}
+
+.lt{background:transparent;border:none;font-weight:700;font-size:11px;text-shadow:0 1px 4px #000,0 0 8px #000;white-space:nowrap;pointer-events:none;color:#fff}
+
+.leaflet-tooltip{background:rgba(6,12,20,.96)!important;border:1px solid #2c6090!important;color:#cde!important;font-size:11px!important;border-radius:5px!important;padding:4px 8px!important;white-space:pre-line!important;max-width:280px!important}
+.leaflet-tooltip::before{border-top-color:#2c6090!important}
+</style>
+</head>
+<body>
+
+<!-- DISCLAIMER MODAL -->
+<div id="disc" style="display:flex;">
+<div id="disc-box">
+  <h2>⚠ Impact Projection Disclaimer &amp; Sources</h2>
+  <p>The <strong>Noise</strong>, <strong>Water</strong>, and <strong>Electricity</strong> layers are <em>estimated projections</em> based on publicly available research and industry benchmarks. They are for <strong>informational and educational purposes only</strong> and do not constitute professional engineering, environmental, or regulatory assessments.</p>
+
+  <h3>These projections must not be used for:</h3>
+  <ul>
+    <li>Legal proceedings or regulatory submissions</li>
+    <li>Investment, business, or financial decisions</li>
+    <li>Land use planning or development approvals</li>
+    <li>Any purpose requiring professional assessment</li>
+  </ul>
+
+  <h3>Methodology</h3>
+  <ul>
+    <li><strong>Noise:</strong> Zones based on typical data centre noise of 70–96 dB at source, free-field decay of ~6 dB per doubling of distance. Infrasound (below 20 Hz) reported beyond audible range. WHO residential limit: 45 dB day / 40 dB night.</li>
+    <li><strong>🔊 "What it might sound like" demo:</strong> The audio you can play from each noise zone is a synthesized illustration — not a real recording, measurement, or prediction for any specific site. It's built to give a rough sense of how low-frequency hum and broadband mechanical/cooling noise can change with distance (quieter, more muffled, shifting toward infrasound as you move farther away), based on the general dB ranges and decay assumptions described above. Treat it as a feel-for-scale aid only, not as evidence of what any particular community would actually hear.</li>
+    <li><strong>Water:</strong> Uses Wonder Valley's publicly stated approved permit of 6 million m³/year (Smoky River). Preliminary AUC certificate: up to 24 million m³/year. City consumption calculated at 250 L/person/day (Statistics Canada average).</li>
+    <li><strong>Electricity:</strong> Based on published GW capacity × 8,760 hrs/year. City consumption estimated at 15,000 kWh/person/year (Stats Canada 2022). Alberta total: ~100 TWh/year (AESO 2024).</li>
+    <li><strong>Jobs (long-term):</strong> Permanent/operational job figures are company- and government-stated estimates from project filings, news coverage, and municipal releases (figures vary by source and project phase — treated here as rough order-of-magnitude only). Construction-phase jobs are temporary and shown for context. City workforce estimated at ~50% of population (Stats Canada labour force participation average). For the 5 sites added June 2026 (Wild Rose Power Hub, AHI Hub of Innovation, eStruxture CAL-3, Beacon Foothills AI Hub, Clive Power &amp; Data Centre), published job figures were not available for all — figures shown are rough estimates scaled from comparable proposals of similar MW/footprint, for illustrative comparison only.</li>
+    <li><strong>💰 Economic benefit:</strong> Capital-investment figures ($70B, $24B est., $12B, $4B, $10B) are company- and government-stated amounts from public project announcements and news coverage — see sources below. The "rough est. annual tax revenue" figure is NOT an official projection for any project; it applies a generic, commonly cited industry rule of thumb (roughly $3–6M in annual local/property tax revenue per $1B invested) to each proposal's stated investment, purely to illustrate order of magnitude. Actual revenue depends on assessment methods, incentive agreements, and revenue-sharing arrangements not modelled here.</li>
+    <li><strong>💨 Air quality / emissions:</strong> "Concern level" reflects how much has been independently reported or established through regulatory review for that SPECIFIC proposal — it is not a measured pollution reading and not a ranking of which project is "worse." Wonder Valley's figures come from Canada's National Observer's reporting of an estimated ~30 megatonnes CO₂e/yr at full build-out (depending on technology/mitigation) and CBC's confirmation that the project is exempt from a full provincial Environmental Impact Assessment. Synapse Olds' record draws on CBC's reporting that the AUC rejected its proposed 1.4 GW natural-gas power-plant application, citing significant deficiencies including an incomplete environmental evaluation. For Beacon AI Hub, no on-site generation method or emissions estimate has been publicly disclosed as of June 2026. The general health-effects context (NOₓ, PM2.5 from gas/diesel generation) draws on independent research from Inside Climate News and the Piedmont Environmental Council on data centres elsewhere — included for general industry context, not as a claim about any specific Alberta proposal.</li>
+  </ul>
+
+  <h3>Sources</h3>
+  <div class="src">
+    <ul>
+      <li><a href="https://www.cbc.ca/news/canada/edmonton/wonder-valley-newsletter-open-house-9.7217459" target="_blank">CBC: Wonder Valley water use update (June 2026)</a></li>
+      <li><a href="https://www.nationalobserver.com/2026/03/23/investigations/alberta-data-centres-water-supply" target="_blank">National Observer: AB data centres and water stress (March 2026)</a></li>
+      <li><a href="https://www.eesi.org/articles/view/communities-are-raising-noise-pollution-concernsabout-data-centers" target="_blank">EESI: Community noise concerns around data centres (2025)</a></li>
+      <li><a href="https://www.tomshardware.com/tech-industry/artificial-intelligence/data-centers-face-increasing-infrasound-complaints" target="_blank">Tom's Hardware: Data centre infrasound complaints (2025)</a></li>
+      <li><a href="https://majorprojects.alberta.ca/details/Wonder-Valley-AI-Data-Centre-Park/11477" target="_blank">Alberta Major Projects: Wonder Valley Phase 1</a></li>
+      <li><a href="https://majorprojects.alberta.ca/details/Synapse-Olds-Data-Centre/12013" target="_blank">Alberta Major Projects: Synapse Olds Data Centre</a></li>
+      <li><a href="https://www.rockyview.ca/build-plan-and-develop/planning/planning-projects-underway/beacon-ai-hub-area-structure-plan" target="_blank">Rocky View County: Beacon AI Hub ASP (approved June 2025)</a></li>
+      <li><a href="https://www.datacenterdynamics.com/en/news/details-emerge-around-beacon-ais-planned-400mw-alberta-data-center-campuses/" target="_blank">Data Centre Dynamics: Beacon AI Alberta campuses</a></li>
+      <li><a href="https://siteselection.com/data-centers-stars-align-in-wonder-valley/" target="_blank">Site Selection: Wonder Valley jobs &amp; phasing detail</a></li>
+      <li><a href="https://www.thealbertan.com/olds-news/synapse-shares-details-of-proposed-10-billion-olds-data-centre-11849508" target="_blank">The Albertan: Synapse Olds — 2,000 construction / 1,000+ long-term jobs</a></li>
+      <li><a href="https://pub-rockyview.escribemeetings.com/filestream.ashx?DocumentId=13605" target="_blank">Rocky View County: Beacon AI Hub jobs estimate (1,500 construction / ~300 permanent per site)</a></li>
+      <li><a href="https://theenergymix.com/exclusive-olearys-gas-powered-data-centre-megaproject-could-erase-albertas-coal-phaseout-gains/" target="_blank">Energy Mix: Wonder Valley emissions analysis</a></li>
+      <li><a href="https://www.airdriecityview.com/langdon-news/data-centre-wild-rose-power-hub-proposed-for-langdon-area-12311973" target="_blank">Airdrie City View: Wild Rose Power Hub proposed for Langdon ($10B · 1,300 MW · 480 ac)</a></li>
+      <li><a href="https://ca.news.yahoo.com/langdon-residents-arms-over-proposed-215559169.html" target="_blank">Yahoo News: Langdon residents opposed to Wild Rose Power Hub</a></li>
+      <li><a href="https://www.rockyview.ca/build-plan-and-develop/planning/planning-projects-underway/wild-rose-power-hub-area-structure-plan" target="_blank">Rocky View County: Wild Rose Power Hub Area Structure Plan</a></li>
+      <li><a href="https://reddeeradvocate.com/2025/10/07/red-deer-county-approves-data-centre/" target="_blank">Red Deer Advocate: Red Deer County approves AHI Hub of Innovation (120 ac, Blindman Industrial Park)</a></li>
+      <li><a href="https://www.havenz.ai/portfolio/ahi-red-deer-sustainable-innovation-campus/" target="_blank">Havenz: AHI Red Deer Sustainable Innovation Campus (up to 250 MW)</a></li>
+      <li><a href="https://www.thealbertan.com/beyond-local/750-million-data-centre-to-be-built-north-of-calgary-9749189" target="_blank">The Albertan: eStruxture CAL-3 — $750M, 90 MW, Balzac (opening fall 2026)</a></li>
+      <li><a href="https://www.westernwheel.ca/local-news/public-hearing-held-for-4-billion-data-centre-near-high-river-10158823" target="_blank">Okotoks &amp; Foothills News: Beacon Foothills AI Hub public hearing — $4B, 400 MW, 260+ ac</a></li>
+      <li><a href="https://reddeeradvocate.com/2026/03/12/power-facility-and-data-centre-proposed-near-clive/" target="_blank">Red Deer Advocate: Power facility &amp; data centre proposed near Clive (19.8 MW, 4.3 ac)</a></li>
+      <li><a href="https://www.nationalobserver.com/2026/03/23/investigations/alberta-data-centres-water-supply" target="_blank">Canada's National Observer: Wonder Valley emissions estimate (~30 megatonnes CO₂e/yr at full build-out)</a></li>
+      <li><a href="https://www.cbc.ca/news/canada/edmonton/wonder-valley-data-centre-environmental-impact-assessment-9.7158526" target="_blank">CBC News: Wonder Valley exempt from full provincial Environmental Impact Assessment</a></li>
+      <li><a href="https://www.cbc.ca/news/canada/calgary/olds-alberta-data-centre-complex-9.7117983" target="_blank">CBC News: AUC rejects Synapse Olds' 1.4 GW gas power-plant application ("significant deficiencies")</a></li>
+      <li><a href="https://insideclimatenews.org/news/12112025/data-center-diesel-generators-noise-pollution/" target="_blank">Inside Climate News: Data centres' use of diesel backup generators — air-quality &amp; health context</a></li>
+      <li><a href="https://www.pecva.org/work/energy-work/proposed-increase-to-data-center-diesel-generator-use/" target="_blank">Piedmont Environmental Council: NOₓ/PM2.5 health-impact research on data-centre backup generators</a></li>
+      <li><a href="https://www.mltaikins.com/insights/alberta-announces-ai-data-centres-strategy-a-100-billion-vision-for-the-future/" target="_blank">MLT Aikins: Alberta's $100B AI Data Centres Strategy — investment context &amp; rough tax-revenue rule of thumb</a></li>
+      <li><a href="https://www.assembly.ab.ca/members/members-of-the-legislative-assembly" target="_blank">Legislative Assembly of Alberta: official MLA directory (used for "email your representatives")</a></li>
+      <li><a href="https://www.alberta.ca/contact-a-cabinet-minister" target="_blank">Alberta.ca: Contact a cabinet minister (official form/address for ministers)</a></li>
+      <li><a href="https://www.auc.ab.ca/contact-us/" target="_blank">Alberta Utilities Commission: Contact us (info@auc.ab.ca)</a></li>
+      <li><a href="https://www.rockyview.ca/contact" target="_blank">Rocky View County: Contact (questions@rockyview.ca)</a> · <a href="https://www.rdcounty.ca/582/Contact-Us" target="_blank">Red Deer County: Contact (info@rdcounty.ca)</a> · <a href="https://www.olds.ca/council-administration/contact-us/" target="_blank">Town of Olds: Contact (admin@olds.ca)</a></li>
+      <li><a href="https://mdgreenview.ab.ca/contact/" target="_blank">MD of Greenview: Contact</a> · <a href="https://www.foothillscountyab.ca/contact" target="_blank">Foothills County: Contact</a> · <a href="https://www.parklandcounty.com/county-government/contact-us/" target="_blank">Parkland County: Contact (hello@parklandcounty.com)</a> · <a href="https://www.strathcona.ca/council-county/administration/county-service-contacts/" target="_blank">Strathcona County: Contact (councillors@strathcona.ca)</a> · <a href="https://www.leduc-county.com/county-government/contact-us" target="_blank">Leduc County: Contact</a></li>
+      <li>Statistics Canada 2021 Census — municipal areas &amp; populations</li>
+      <li>Alberta Electric System Operator (AESO) — provincial electricity data</li>
+      <li>WHO Environmental Noise Guidelines (2018)</li>
+    </ul>
+  </div>
+
+  <div class="foot">This visualization was created for public information and educational purposes as of June 2026. The creator accepts no liability for any decisions made based on information presented herein. All projections are estimates that may become outdated as projects evolve. By proceeding you acknowledge these limitations.</div>
+  <button id="disc-accept" onclick="acceptDisc()">I understand — these are educational estimates only</button>
+</div>
+</div>
+
+<!-- CONTACT OFFICIALS MODAL -->
+<div id="contact">
+<div id="contact-box">
+  <h2>📧 Make your voice heard — contact officials</h2>
+  <p>These proposals go through provincial regulators, cabinet ministries, and local councils — all of whom take public input seriously. Below are the offices most relevant to the projects shown on this map, grouped by who they are and which proposals they cover. <strong>We don't guess at personal email addresses.</strong> Where an office publishes a general email, it's included; otherwise click "Contact page" to find the current, correct address or web form. "Draft email" opens a ready-to-edit message in <em>your own</em> email app — you review, personalize, and send it yourself. Nothing is ever sent on your behalf.</p>
+  <div id="cct-list"></div>
+  <div style="background:#0f1d2b;border:1px solid #2c6090;border-radius:8px;padding:12px 14px;margin:14px 0;font-size:11.5px;line-height:1.6">
+    <h3 style="color:#7dd3fc;font-size:12px;margin:0 0 6px;text-transform:uppercase;letter-spacing:.5px">⚖️ Formally registering a concern with the Alberta Utilities Commission (AUC)</h3>
+    <p style="margin:0 0 8px">For projects that involve AUC review (e.g., proposed power-generation facilities tied to a data-centre project), the AUC accepts a <strong>Statement of Intent to Participate (SIP)</strong> from members of the public who want their concerns formally on the record for a specific proceeding. In general, the process works like this:</p>
+    <ol style="padding-left:18px;margin:0 0 8px">
+      <li>Go to <a href="https://www.auc.ab.ca" target="_blank" rel="noopener">auc.ab.ca</a> (a desktop/laptop browser is easier to use than a phone for this).</li>
+      <li>Find "Access to the eFiling System" and create a new personal account, then confirm it via the email link the AUC sends you.</li>
+      <li>Log in and continue to eFiling.</li>
+      <li>Use the "Go To" search to find the <strong>proceeding number</strong> for the specific project you want to comment on (proceeding numbers are unique to each application — there is no single number that covers every project on this map; search the AUC's proceeding list or e‑Filing system for the project nearest you, or ask the AUC directly which proceeding applies).</li>
+      <li>Click "Register" to participate, acknowledge the AUC's privacy policy, and select <strong>"Intervener"</strong> as your registration type.</li>
+      <li>Fill in the Statement of Intent to Participate explaining your interest/concerns, and save to submit.</li>
+    </ol>
+    <p style="margin:0">A Statement of Intent to Participate is generally used to explain <em>why</em> a proposed facility (e.g., a data centre and/or an associated power plant) raises concerns for you — for example, proximity to a community, agricultural land, water sources, or local infrastructure. Per the AUC's own guidance, you typically do <strong>not</strong> need to live within any specific buffer distance of a project to file a SIP.</p>
+    <p style="margin:8px 0 0;color:#789;font-style:italic">This is a general summary of a public regulatory process — it is not legal advice, and the steps, screens, and proceeding numbers can change. Always confirm the current process and the correct proceeding number for your project of interest directly on <a href="https://www.auc.ab.ca" target="_blank" rel="noopener" style="color:#60a5fa">auc.ab.ca</a> before relying on it.</p>
+  </div>
+  <div class="foot">Names and contact details verified June 2026 from each organization's official website. Offices, staff, and emails change over time — always confirm via the linked contact page before relying on an address shown here.</div>
+  <button id="contact-close" onclick="closeContact()">Close</button>
+</div>
+</div>
+
+<div class="gmodal" id="walk">
+<div class="gmodal-box">
+  <h2>❓ How this map works — 3 steps</h2>
+  <div class="qa"><b>1. Pick your town or city</b>The "Centre on" dropdown moves the map to your community (or to a data‑centre proposal's own real site) and shows local stats — population, area, current water &amp; electricity use.</div>
+  <div class="qa"><b>2. Pick a proposal to compare</b>The "Compare against" dropdown overlays one project's footprint and key figures on top of your community, so you can see the size and scale side by side. Each proposal is shown on its own — figures from different proposals are never combined or summed.</div>
+  <div class="qa"><b>3. Toggle the layers</b>Use the buttons (Footprint, Jobs, Water, Electricity, Air quality, Sound) to explore different angles. Every figure is sourced from public company/government announcements or, where nothing has been disclosed, marked "not publicly disclosed."</div>
+  <div class="foot">Tip: use 🔍 Find in the toolbar to jump straight to a community or proposal by name, or 📋 View as table to see all 13 proposals at a glance.</div>
+  <button class="gmodal-close" onclick="closeModal('walk')">Got it</button>
+</div>
+</div>
+
+<div class="gmodal" id="gloss">
+<div class="gmodal-box">
+  <h2>📖 Glossary</h2>
+  <dl>
+    <dt>MW (Megawatt)</dt><dd>A unit of power. 1 MW ≈ enough electricity to power roughly 750–1,000 average Alberta homes at once. Data centres are often described by their planned power draw in MW.</dd>
+    <dt>GWh (Gigawatt‑hour)</dt><dd>A unit of energy used over time (1 GWh = 1,000 MWh). Used here to compare a proposal's estimated annual electricity use to a community's.</dd>
+    <dt>dB (Decibel)</dt><dd>A measure of sound level. Roughly: 40 dB ≈ a quiet library, 55–65 dB ≈ a normal conversation/busy office, 65+ dB ≈ a vacuum cleaner up close. The sound demo on this map is a synthesized illustration, not a real recording.</dd>
+    <dt>m³/yr (Cubic metres per year)</dt><dd>A measure of water volume used over a year — used to compare a proposal's estimated water use to a community's residential use.</dd>
+    <dt>AUC (Alberta Utilities Commission)</dt><dd>The provincial regulator that reviews and approves major power-generation and transmission projects in Alberta, including on‑site generation proposed by some data centres.</dd>
+    <dt>EPEA</dt><dd>The Environmental Protection and Enhancement Act — Alberta's main environmental-approvals law; projects with significant emissions or water use may require an EPEA approval.</dd>
+    <dt>ASP (Area Structure Plan)</dt><dd>A municipal land-use planning document that guides how a parcel of land may be developed — often the stage where local councils and residents weigh in on a proposal.</dd>
+    <dt>Footprint</dt><dd>The physical land area (in km²) a proposal expects to occupy — shown on the map as a shaded shape so you can compare its size to your community.</dd>
+    <dt>"Not publicly disclosed"</dt><dd>Used throughout this map when a company or government body has not released a figure (e.g., investment amount, air-quality plan) as of the date shown — it does not imply one doesn't exist, only that it hasn't been published.</dd>
+  </dl>
+  <button class="gmodal-close" onclick="closeModal('gloss')">Close</button>
+</div>
+</div>
+
+<div class="gmodal" id="faq">
+<div class="gmodal-box">
+  <h2>❔ Frequently asked questions</h2>
+  <div class="qa"><b>Is this an official government or company map?</b>No. This is an independent, informational comparison built from public announcements, news coverage, and government/regulatory filings. It is not affiliated with any of the companies, municipalities, or regulators shown.</div>
+  <div class="qa"><b>Where do the numbers come from?</b>Each figure is attributed to its source where possible (company announcements, municipal planning documents, regulatory filings, news reporting). Where no figure has been publicly released, it's marked "not publicly disclosed" rather than estimated or guessed.</div>
+  <div class="qa"><b>Why do some proposals show "not publicly disclosed" for investment or air quality?</b>Because, as of the date shown, no figure or plan for that item had been made public for that specific proposal. This map does not fill gaps with assumptions.</div>
+  <div class="qa"><b>Is the "what it might sound like" demo a real recording?</b>No — it's a synthesized illustration built to approximate the kind of low-frequency hum and broadband noise that large mechanical/cooling equipment can produce at different distances. It's offered as a rough sense of scale, not a measurement or prediction for any specific site.</div>
+  <div class="qa"><b>Can I compare more than one proposal at a time?</b>By design, no — figures from different proposals are shown one at a time and never combined or summed, since stacking unrelated projects' numbers together would be misleading. You can switch between proposals using the "Compare against" dropdown to see each on its own.</div>
+  <div class="qa"><b>I think something here is inaccurate or out of date — how do I flag it?</b>Use the "📧 Contact" feature in the toolbar, or reach out via the contact details for the relevant regulator/municipality shown there. This map will be updated as new public information becomes available.</div>
+  <div class="qa"><b>Is anyone tracking data centres outside Alberta too?</b>Yes — in the U.S., reporter/activist Erin Brockovich launched a public "AI Data Center Reporting Map" (<a href="https://www.brockovichdatacenter.com/" target="_blank" rel="noopener" style="color:#60a5fa">brockovichdatacenter.com</a>, April 2026) where communities can report concerns; reporting on it has highlighted that many U.S. projects cluster in already drought-prone regions. The 💧 Water layer on this map now includes a note on which Alberta river basin each proposal sits in, including whether it's in the part of southern Alberta that's been closed to new water licences since 2006.</div>
+  <div class="qa"><b>Why isn't every Alberta AI data-centre proposal shown here?</b>Because AESO's connection queue alone reportedly holds 30+ large-load applications — but most are listed only by project code and megawatt figure, with no developer name, site, or footprint attached. Putting a project on this map means drawing it at a real location and a real size, so the bar for inclusion is: a named developer, a locatable site, and enough public reporting to compare it responsibly — the same "don't fill gaps with assumptions" rule the figures follow. Two named, increasingly-documented projects that don't yet clear that bar are <b>GLDC Load</b> ("Greenlight," a Pembina Pipeline–Kineticor joint venture northeast of Edmonton in Alberta's Industrial Heartland, AESO-allocated 970 MW) and <b>TransAlta's Keephills Data Centre</b> (Parkland County, west of Edmonton, ~230 MW initial agreement with CPP Investments and Brookfield, announced Feb. 2026) — both are real and well-sourced, but neither has published a site plan or footprint size yet, so there's nothing to draw to scale. They're strong candidates to be added once that information becomes public. (Also worth noting: a roughly 1,100-acre Kineticor/eStruxture data-centre campus proposed for northeast Rocky View County was rejected 6–1 by county council in early 2026 after a lengthy public hearing — a different, since-abandoned proposal from the ones tracked here.)</div>
+  <div class="qa"><b>🎈 Fun fact — why does this map even exist?</b>It started as a one-person curiosity project: someone wanted to see how the proposed Wonder Valley data centre would actually compare to the size of their own town — and was genuinely taken aback by how much bigger it looked once it was drawn to scale on a real map, rather than just read as a number on a page. That "wait, it's THAT big?" moment is the whole reason this tool exists — so anyone else can drop their own community onto the map and see the comparison for themselves, instead of just taking someone's word for it.</div>
+  <button class="gmodal-close" onclick="closeModal('faq')">Close</button>
+</div>
+</div>
+
+<div class="gmodal" id="changelog">
+<div class="gmodal-box">
+  <h2>📅 What's changed</h2>
+  <dl>
+    <dt>June 2026</dt><dd>Expanded from 5 to 13 tracked proposals; added a zone-based "what it might sound like" demo (near / moderate / infrasound distance ranges); added the ability to centre the map on a proposal's own real site (not just nearby towns); added air-quality and economic-benefit (jobs/water/electricity) comparison layers; added a contact-officials feature with draft-email templates; added this toolbar (search, glossary, FAQ, table view, shareable links, walkthrough).</dd>
+    <dt>Earlier</dt><dd>Initial release comparing the first 5 announced proposals (including Wonder Valley) against nearby Alberta communities, with footprint-overlay and basic stats.</dd>
+  </dl>
+  <div class="foot">This map is updated as new public information becomes available. Figures reflect company/government disclosures as of the dates shown — always check primary sources (linked via the Contact feature) for the latest.</div>
+  <button class="gmodal-close" onclick="closeModal('changelog')">Close</button>
+</div>
+</div>
+
+<div class="appwrap">
+<aside class="sidebar">
+
+<header>
+  <h1>Alberta AI Data Centres — Interactive Size &amp; Impact Map</h1>
+  <p>Actual DC locations pinned at real coordinates · Select a city to overlay footprints at scale · Toggle impact layers · See disclaimer for methodology &amp; sources</p>
+</header>
+
+<div style="padding:7px 16px;background:#0a1620;border-bottom:1px solid #1e3348;text-align:center">
+  <button class="contact-open" onclick="showContact()">📧 Make your voice heard — email officials about these proposals</button>
+</div>
+
+<div class="utilbar">
+  <button class="ub" onclick="openModal('walk')">❓ How this map works</button>
+  <button class="ub" onclick="toggleTableView()" id="tv-toggle">📋 View as table</button>
+  <button class="ub" onclick="openModal('gloss')">📖 Glossary</button>
+  <button class="ub" onclick="openModal('faq')">❔ FAQ</button>
+  <button class="ub" onclick="copyShareLink(this)">🔗 Copy link to this view</button>
+  <span class="ub-meta">📅 Last updated: June 7, 2026 · <a onclick="openModal('changelog')">what's changed?</a></span>
+</div>
+
+<div class="ctrl">
+  <div class="cg">
+    <label for="locSearch">🔍 Find:</label>
+    <input list="locList" id="locSearch" placeholder="Type your town or a proposal's name…" autocomplete="off" oninput="searchLocation(this.value)"/>
+    <datalist id="locList"></datalist>
+  </div>
+  <div class="cg">
+    <label for="sel">📍 Overlay on:</label>
+    <select id="sel" onchange="loadCity()">
+      <option value="">— choose a city, town, or a data centre's real site —</option>
+      <optgroup label="Large cities (50,000+)">
+        <option value="0">Calgary — 825 km² · pop. 1,305,550</option>
+        <option value="1">Edmonton — 684 km² · pop. 1,151,635</option>
+        <option value="2">Red Deer — 104 km² · pop. 99,846</option>
+        <option value="3">Lethbridge — 123 km² · pop. 92,563</option>
+        <option value="4">Airdrie — 44 km² · pop. 73,578</option>
+        <option value="5">Fort McMurray — 65 km² · pop. 68,002</option>
+        <option value="6">Medicine Hat — 112 km² · pop. 63,382</option>
+        <option value="7">Grande Prairie — 133 km² · pop. 63,172</option>
+      </optgroup>
+      <optgroup label="Medium cities (15,000–50,000)">
+        <option value="8">Spruce Grove — 27 km²</option>
+        <option value="9">Leduc — 37 km²</option>
+        <option value="10">Cochrane — 24 km²</option>
+        <option value="11">Lloydminster — 25 km²</option>
+        <option value="12">Okotoks — 18 km²</option>
+        <option value="13">Fort Saskatchewan — 50 km²</option>
+        <option value="14">Chestermere — 19 km²</option>
+        <option value="15">Beaumont — 15 km²</option>
+        <option value="16">Camrose — 25 km²</option>
+        <option value="17">Stony Plain — 19 km²</option>
+        <option value="18">Sylvan Lake — 12 km²</option>
+      </optgroup>
+      <optgroup label="Towns (under 15,000)">
+        <option value="19">Brooks — 15 km²</option>
+        <option value="20">High River — 11 km²</option>
+        <option value="21">Strathmore — 10 km²</option>
+        <option value="22">Canmore — 68 km²</option>
+        <option value="23">Lacombe — 15 km²</option>
+        <option value="24">Wetaskiwin — 16 km²</option>
+        <option value="25">Morinville — 10 km²</option>
+        <option value="26">Blackfalds — 9 km²</option>
+        <option value="27">Olds — 15 km²</option>
+      </optgroup>
+      <optgroup label="📍 Data centre proposals — at their own real pinned site">
+        <option value="dc0">Wonder Valley — Greenview Industrial Gateway (64 km² · 7,500 MW)</option>
+        <option value="dc1">Synapse Olds DC — Town of Olds (1.2 km² · 1,000 MW)</option>
+        <option value="dc2">Beacon AI Hub (Indus) — Rocky View County (3.8 km² · 400 MW)</option>
+        <option value="dc3">Beacon (Harry Smith Hub) — Parkland County (3.8 km² · 400 MW)</option>
+        <option value="dc4">Beacon (Strathcona Co.) — Strathcona County (3.8 km² · 400 MW)</option>
+        <option value="dc5">Beacon (Leduc Co.) — Leduc County (3.8 km² · 400 MW)</option>
+        <option value="dc6">Wild Rose Power Hub — Rocky View County (1.9 km² · 1,300 MW)</option>
+        <option value="dc7">AHI Hub of Innovation — Red Deer County (0.5 km² · 250 MW)</option>
+        <option value="dc8">eStruxture CAL-3 — Rocky View County (0.03 km² · 90 MW)</option>
+        <option value="dc9">Beacon Foothills AI Hub — Foothills County (1.1 km² · 400 MW)</option>
+        <option value="dc10">Clive Power &amp; Data Centre — Lacombe County (0.02 km² · 20 MW)</option>
+      </optgroup>
+    </select>
+  </div>
+
+  <div class="cg">
+    <label for="sel-dc">🏭 Compare against:</label>
+    <select id="sel-dc" onchange="loadCity()">
+      <option value="none">N/A — just show this site's own info (no overlay drawn)</option>
+      <option value="all">All 13 proposals (size comparison)</option>
+      <option value="0">Wonder Valley — Full build-out (64 km² · 7,500 MW)</option>
+      <option value="1">Wonder Valley — Phase 1+2 (~20 km² · 2,000 MW)</option>
+      <option value="2">Wonder Valley — Phase 1 (~10 km² · 1,400 MW)</option>
+      <option value="3">Beacon AI Hub (3.8 km² · 400 MW)</option>
+      <option value="4">Synapse Olds DC (1.2 km² · 1,000 MW)</option>
+      <option value="5">Wild Rose Power Hub (1.9 km² · 1,300 MW)</option>
+      <option value="6">AHI Hub of Innovation (0.5 km² · 250 MW)</option>
+      <option value="7">eStruxture CAL-3 (0.03 km² · 90 MW)</option>
+      <option value="8">Beacon Foothills AI Hub (1.1 km² · 400 MW)</option>
+      <option value="9">Clive Power &amp; Data Centre (0.02 km² · 20 MW)</option>
+      <option value="10">Beacon (Harry Smith Hub) (3.8 km² · 400 MW)</option>
+      <option value="11">Beacon (Strathcona Co.) (3.8 km² · 400 MW)</option>
+      <option value="12">Beacon (Leduc Co.) (3.8 km² · 400 MW)</option>
+    </select>
+  </div>
+
+  <div class="ibtns">
+    <span>Impact layers:</span>
+    <button class="ib noise" id="btn-noise" onclick="toggleImpact('noise')">🔊 Noise</button>
+    <button class="ib water" id="btn-water" onclick="toggleImpact('water')">💧 Water</button>
+    <button class="ib elec"  id="btn-elec"  onclick="toggleImpact('elec')">⚡ Electricity</button>
+    <button class="ib jobs"  id="btn-jobs"  onclick="toggleImpact('jobs')">👷 Jobs (long-term)</button>
+    <button class="ib econ"  id="btn-econ"  onclick="toggleImpact('econ')">💰 Economic benefit</button>
+    <button class="ib air"   id="btn-air"   onclick="toggleImpact('air')">💨 Air quality</button>
+  </div>
+
+  <div class="mbtns">
+    <button class="mb" id="bSat"  onclick="setTile('sat')">Satellite</button>
+    <button class="mb active" id="bStr" onclick="setTile('str')">Street</button>
+    <button class="mb" id="bDark" onclick="setTile('dark')">Dark</button>
+  </div>
+</div>
+
+<div class="leg">
+  <div class="li"><div class="sw" style="background:#f9731640;border:2px dashed #f97316;"></div>WV Full (64 km²) — Grande Prairie region</div>
+  <div class="li"><div class="sw" style="background:#fb923c38;border:1.5px dashed #fb923c;"></div>WV Phase 1+2 (~20 km²)</div>
+  <div class="li"><div class="sw" style="background:#60a5fa42;border:1.5px solid #60a5fa;"></div>WV Phase 1 (~10 km²)</div>
+  <div class="li"><div class="sw" style="background:#2dd4bf50;border:1.5px dashed #0d9488;"></div>Beacon Indus (3.8 km²) — Rocky View</div>
+  <div class="li"><div class="sw" style="background:#fbbf24cc;border:1.5px solid #d97706;"></div>Synapse Olds (1.2 km²) — Olds</div>
+  <div class="lsep"></div>
+  <div class="li" style="color:#f87171;">🔊 Noise est.</div>
+  <div class="li" style="color:#60a5fa;">💧 Water est.</div>
+  <div class="li" style="color:#fde68a;">⚡ Electricity est.</div>
+  <div class="li" style="color:#86efac;">👷 Long-term jobs est.</div>
+  <div class="li" style="color:#bef264;">💰 Economic benefit est.</div>
+  <div class="li" style="color:#d8b4fe;">💨 Air quality / emissions overlay</div>
+  <div class="lsep"></div>
+  <div class="li"><div class="sw" style="border-radius:50%;background:#f97316;width:9px;height:9px;"></div>DC actual location (pinned)</div>
+</div>
+
+</aside>
+<main class="mainarea">
+
+<div id="map">
+  <div id="prompt"><strong>Select a city to overlay data centre footprints</strong><p>Actual DC locations are already pinned on the map</p></div>
+  <div id="icard"></div>
+  <div id="tableView">
+    <button class="tv-back" onclick="toggleTableView()">✕ Back to map</button>
+    <h3>📋 All 13 proposals — click a column heading to sort (click again to reverse)</h3>
+    <table id="propTable"><thead></thead><tbody></tbody></table>
+    <div style="font-size:9.5px;color:#456;margin-top:10px">Figures are company/government estimates from public announcements &amp; filings — see the disclaimer for sources and methodology. "Investment" and "Air quality" are marked "not publicly disclosed" where no figure has been independently reported as of June 2026.</div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="sc"><div class="sl">📍 Selected city</div><div class="sv" style="color:#7ccfff" id="s-city">—</div><div class="ss" id="s-sub">Select a city above</div></div>
+  <div class="sc"><div class="sl">WV Full vs city</div><div class="sv" style="color:#fb923c" id="s-ratio">—</div><div class="ss">64 km² full build-out</div></div>
+  <div class="sc"><div class="sl">Wonder Valley Full</div><div class="sv" style="color:#f97316">64 km²</div><div class="ss">$70B · 7.5 GW · Grande Prairie region</div></div>
+  <div class="sc"><div class="sl">Beacon Indus ✅</div><div class="sv" style="color:#2dd4bf">3.8 km²</div><div class="ss">400 MW · $4B · Rocky View Co.</div></div>
+  <div class="sc"><div class="sl">Synapse Olds ⚠</div><div class="sv" style="color:#fde68a">1.21 km²</div><div class="ss">1 GW · $10B · Olds · reapplied</div></div>
+  <div class="sc"><div class="sl">⚠ WV status</div><div class="sv" style="color:#f87171;font-size:11px">Delayed to 2028+</div><div class="ss">No enviro. review · water controversy</div></div>
+</div>
+
+<div class="notebar">⚠ Impact layers are estimates for educational purposes only — not professional assessments. Sources &amp; methodology in disclaimer above. Created June 2026. | Map: © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors</div>
+
+</main>
+</div><!-- /.appwrap -->
+
+<script>
+// ── Disclaimer ───────────────────────────────────────────────────────────────
+var discOK = false, pendingType = null;
+function showDisc(t){ pendingType=t; document.getElementById('disc').style.display='flex'; }
+function acceptDisc(){
+  discOK=true;
+  document.getElementById('disc').style.display='none';
+  if(pendingType){ doToggle(pendingType); pendingType=null; }
+}
+
+// ── Contact officials ────────────────────────────────────────────────────────
+// We deliberately do NOT publish personal MLA email addresses here — MLAs change
+// between elections/by-elections and a wrong address just bounces. Instead we link
+// to the Legislature's own member directory (always current) and to each
+// organization's official "contact us" page, and only list a general office email
+// where the organization itself publishes one. "Draft email" always opens the
+// message in the VISITOR's own mail client — nothing is sent from this page.
+var CONTACTS=[
+  {grp:'🏛️ Your MLA (Member of the Legislative Assembly)', items:[
+    {n:'Find & email your MLA', role:'Look up your constituency to get your current MLA\'s name and official @assembly.ab.ca email — this directory is kept current by the Legislature itself, which is the most reliable source since MLAs and ridings can change.', link:'https://www.assembly.ab.ca/members/members-of-the-legislative-assembly', email:null}
+  ]},
+  {grp:'🏛️ Provincial cabinet ministers', items:[
+    {n:'RJ Sigurdson — Minister of Affordability and Utilities', role:'Oversees utility/grid policy and the Alberta Utilities Commission, which approves data-centre power projects.', link:'https://www.alberta.ca/contact-a-cabinet-minister', email:null},
+    {n:'Grant Hunter — Minister of Environment and Protected Areas', role:'Oversees environmental approvals and water licences for these projects.', link:'https://www.alberta.ca/contact-a-cabinet-minister', email:null},
+    {n:'Dan Williams — Minister of Municipal Affairs', role:'Oversees the municipal planning framework these projects move through (Area Structure Plans, etc.).', link:'https://www.alberta.ca/contact-a-cabinet-minister', email:null}
+  ]},
+  {grp:'⚖️ Regulator', items:[
+    {n:'Alberta Utilities Commission (AUC)', role:'The independent body that reviews and approves or rejects power-plant and grid-connection applications — the right place to formally comment on or intervene in a specific proposal.', link:'https://www.auc.ab.ca/contact-us/', email:'info@auc.ab.ca'}
+  ]},
+  {grp:'🏘️ Local councils — by impacted area', items:[
+    {n:'Municipal District of Greenview No. 16', role:'Covers Wonder Valley (Greenview Industrial Gateway, near Grande Prairie).', link:'https://mdgreenview.ab.ca/contact/', email:null},
+    {n:'Town of Olds', role:'Covers Synapse Olds DC.', link:'https://www.olds.ca/council-administration/contact-us/', email:'admin@olds.ca'},
+    {n:'Rocky View County', role:'Covers Wild Rose Power Hub (Langdon), Beacon AI Hub (Indus), and eStruxture CAL-3 (Balzac).', link:'https://www.rockyview.ca/contact', email:'questions@rockyview.ca'},
+    {n:'Red Deer County', role:'Covers AHI Hub of Innovation (Blindman Industrial Park).', link:'https://www.rdcounty.ca/582/Contact-Us', email:'info@rdcounty.ca'},
+    {n:'Lacombe County', role:'Covers the Clive Power & Data Centre proposal (4.3-acre site off Haynes Road, west of Clive).', link:'https://lacombecounty.com/contact-us/', email:'info@lacombecounty.com'},
+    {n:'Foothills County', role:'Covers Beacon Foothills AI Hub (near High River).', link:'https://www.foothillscountyab.ca/contact', email:null},
+    {n:'Parkland County', role:'Covers Beacon (Harry Smith Hub, between Keephills & Duffield).', link:'https://www.parklandcounty.com/county-government/contact-us/', email:'hello@parklandcounty.com'},
+    {n:'Strathcona County', role:'Covers Beacon (Strathcona Co.), east of Edmonton.', link:'https://www.strathcona.ca/council-county/administration/county-service-contacts/', email:'councillors@strathcona.ca'},
+    {n:'Leduc County', role:'Covers Beacon (Leduc Co.), near Edmonton International Airport.', link:'https://www.leduc-county.com/county-government/contact-us', email:null}
+  ]}
+];
+function escA(s){ return s.replace(/'/g,"&#39;").replace(/"/g,'&quot;'); }
+function buildContactList(){
+  var h='';
+  CONTACTS.forEach(function(g){
+    h+='<h3>'+g.grp+'</h3>';
+    g.items.forEach(function(c){
+      h+='<div class="cct"><b>'+c.n+'</b><div class="role">'+c.role+'</div><div class="cct-btns">';
+      h+='<a class="cct-link" href="'+c.link+'" target="_blank" rel="noopener">🔗 Official contact page</a>';
+      h+='<button class="cct-mail" onclick="draftEmail(\''+escA(c.n)+'\',\''+(c.email||'')+'\')">✉ Draft email'+(c.email?' to '+c.email:' (paste address from contact page)')+'</button>';
+      h+='</div></div>';
+    });
+  });
+  document.getElementById('cct-list').innerHTML=h;
+}
+function draftEmail(name,email){
+  var subj='Feedback on AI data centre proposals in Alberta';
+  var body=
+"Dear "+name+",\n\n"+
+"I'm writing as an Alberta resident regarding the AI data centre / power-plant proposals shown on this map (e.g., Wonder Valley, Wild Rose Power Hub, Beacon AI Hub, Synapse Olds, AHI Hub of Innovation, and others).\n\n"+
+"I'd like to see these projects receive thorough public consultation and independent review of their effects on:\n"+
+"  • Local noise levels for nearby residents\n"+
+"  • Water supply and use in the surrounding area\n"+
+"  • The provincial electricity grid and electricity rates\n"+
+"  • Agricultural land, rural communities, and local infrastructure\n\n"+
+"[Add your own specific concerns, questions, or support here — it helps to name the proposal nearest you.]\n\n"+
+"Thank you for taking the time to read and consider this feedback.\n\n"+
+"Sincerely,\n"+
+"[Your name]\n"+
+"[Your community / constituency]";
+  window.location.href='mailto:'+(email||'')+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body);
+}
+function showContact(){
+  if(!document.getElementById('cct-list').innerHTML) buildContactList();
+  document.getElementById('contact').style.display='flex';
+}
+function closeContact(){ document.getElementById('contact').style.display='none'; }
+
+// ── Generic modal (Walkthrough / Glossary / FAQ / Changelog) ─────────────────
+function openModal(id){ var m=document.getElementById(id); if(m) m.style.display='flex'; }
+function closeModal(id){ var m=document.getElementById(id); if(m) m.style.display='none'; }
+
+// ── Search box (find a community or proposal by name) ────────────────────────
+function buildLocList(){
+  var dl=document.getElementById('locList');
+  if(!dl || dl.childElementCount) return;
+  var h='';
+  for(var i=0;i<C.length;i++) h+='<option value="'+escA(C[i].n)+'">';
+  for(var j=0;j<DC.length;j++) h+='<option value="'+escA(DC[j].n)+'">';
+  dl.innerHTML=h;
+}
+// Maps each "Compare against" DC-array proposal name to its real-world pinned
+// site in the PINS array (the two arrays are differently ordered/sized — the
+// three Wonder Valley phases all share PINS[0]). Used so the search box can
+// actually navigate the map TO a data centre's real location, not just change
+// which size-comparison overlay is shown.
+var DC_TO_PIN={
+  'Wonder Valley — Full build-out':0, 'Wonder Valley — Phase 1+2':0, 'Wonder Valley — Phase 1':0,
+  'Beacon AI Hub':2, 'Synapse Olds DC':1, 'Wild Rose Power Hub':6, 'AHI Hub of Innovation':7,
+  'eStruxture CAL-3':8, 'Beacon Foothills AI Hub':9, 'Clive Power & Data Centre':10,
+  'Beacon (Harry Smith Hub)':3, 'Beacon (Strathcona Co.)':4, 'Beacon (Leduc Co.)':5
+};
+// Jumps the map to a matched data-centre proposal's real pinned site (sets
+// #sel to its PINS index) and also sets #sel-dc so its size-comparison
+// overlay is shown at that location.
+function goToDC(dcIdx){
+  var pinIdx=DC_TO_PIN[DC[dcIdx].n];
+  document.getElementById('sel-dc').value=String(dcIdx);
+  if(pinIdx!==undefined){ document.getElementById('sel').value='dc'+pinIdx; }
+  loadCity();
+}
+function searchLocation(txt){
+  if(!txt) return;
+  var t=txt.trim().toLowerCase();
+  if(!t) return;
+  for(var i=0;i<C.length;i++){
+    if(C[i].n.toLowerCase()===t){ document.getElementById('sel').value=String(i); loadCity(); return; }
+  }
+  for(var j=0;j<DC.length;j++){
+    if(DC[j].n.toLowerCase()===t){ goToDC(j); return; }
+  }
+  // partial match fallback — first town/proposal whose name contains the typed text
+  for(var k=0;k<C.length;k++){
+    if(C[k].n.toLowerCase().indexOf(t)===0){ document.getElementById('sel').value=String(k); loadCity(); return; }
+  }
+  for(var m=0;m<DC.length;m++){
+    if(DC[m].n.toLowerCase().indexOf(t)!==-1){ goToDC(m); return; }
+  }
+}
+
+// ── Shareable permalink ───────────────────────────────────────────────────────
+function copyShareLink(btn){
+  try{
+    var sel=document.getElementById('sel').value||'';
+    var seldc=document.getElementById('sel-dc').value||'';
+    var layers=[];
+    for(var k in IS){ if(IS[k]) layers.push(k); }
+    var hash='c='+encodeURIComponent(sel)+'&d='+encodeURIComponent(seldc)+'&l='+encodeURIComponent(layers.join(','));
+    var url=location.href.split('#')[0]+'#'+hash;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(function(){
+        if(btn){ var orig=btn.textContent; btn.textContent='✅ Link copied!'; setTimeout(function(){ btn.textContent=orig; },1800); }
+      }, function(){ prompt('Copy this link:',url); });
+    } else { prompt('Copy this link:',url); }
+  }catch(e){}
+}
+function restoreFromHash(){
+  try{
+    var h=location.hash.replace(/^#/,'');
+    if(!h) return;
+    var parts={}; h.split('&').forEach(function(p){ var kv=p.split('='); parts[kv[0]]=decodeURIComponent(kv[1]||''); });
+    if(parts.c!==undefined && parts.c!==''){ document.getElementById('sel').value=parts.c; }
+    if(parts.d!==undefined && parts.d!==''){ document.getElementById('sel-dc').value=parts.d; }
+    if(parts.c!==undefined && parts.c!==''){ loadCity(); }
+    if(parts.l){
+      parts.l.split(',').forEach(function(layer){
+        if(layer && IS.hasOwnProperty(layer) && !IS[layer]) toggleImpact(layer);
+      });
+    }
+  }catch(e){}
+}
+
+// ── Table / list view of all proposals ────────────────────────────────────────
+var TV_SORT={col:null,asc:true};
+function toggleTableView(){
+  var tv=document.getElementById('tableView');
+  var showing = tv.style.display==='block';
+  if(showing){ tv.style.display='none'; document.getElementById('tv-toggle').textContent='📋 View as table'; }
+  else{ buildPropTable(); tv.style.display='block'; document.getElementById('tv-toggle').textContent='🗺️ Back to map view'; }
+}
+function propTableRows(){
+  return DC.map(function(d,i){
+    return {
+      i:i, name:DC_SHORT[i], full:d.n, loc:d.reg.split(/[,(]/)[0].trim(),
+      area:d.a, mw:d.mw,
+      jobsC:(d.jb&&d.jb.c!=null)?d.jb.c:null, jobsP:(d.jb&&d.jb.p!=null)?d.jb.p:null,
+      inv:(d.inv!=null)?d.inv:null,
+      air:(d.air&&d.air.lvl)?d.air.lvl:'Not publicly disclosed'
+    };
+  });
+}
+function buildPropTable(){
+  var rows=propTableRows();
+  var cols=[
+    {k:'name', label:'Proposal', type:'str'},
+    {k:'loc',  label:'Location', type:'str'},
+    {k:'area', label:'Footprint (km²)', type:'num'},
+    {k:'mw',   label:'Power (MW)', type:'num'},
+    {k:'jobsC',label:'Construction jobs (est.)', type:'num'},
+    {k:'jobsP',label:'Permanent jobs (est.)', type:'num'},
+    {k:'inv',  label:'Investment (CAD)', type:'str'},
+    {k:'air',  label:'Air quality / emissions plan', type:'str'}
+  ];
+  if(TV_SORT.col){
+    var c=TV_SORT.col, asc=TV_SORT.asc;
+    rows.sort(function(a,b){
+      var av=a[c], bv=b[c];
+      var an=(av===null||av===undefined), bn=(bv===null||bv===undefined);
+      if(an&&bn) return 0; if(an) return 1; if(bn) return -1;
+      if(typeof av==='number' && typeof bv==='number') return asc?(av-bv):(bv-av);
+      av=String(av).toLowerCase(); bv=String(bv).toLowerCase();
+      if(av<bv) return asc?-1:1; if(av>bv) return asc?1:-1; return 0;
+    });
+  }
+  var thead='<tr>'+cols.map(function(c){
+    var arrow = (TV_SORT.col===c.k) ? ('<span class="arrow">'+(TV_SORT.asc?'▲':'▼')+'</span>') : '';
+    return '<th onclick="sortPropTable(\''+c.k+'\')">'+escA(c.label)+arrow+'</th>';
+  }).join('')+'</tr>';
+  var tbody=rows.map(function(r){
+    return '<tr>'+
+      '<td class="nm">'+escA(r.full)+'</td>'+
+      '<td>'+escA(r.loc)+'</td>'+
+      '<td>'+r.area+'</td>'+
+      '<td>'+r.mw.toLocaleString()+'</td>'+
+      '<td>'+(r.jobsC!=null?r.jobsC.toLocaleString():'—')+'</td>'+
+      '<td>'+(r.jobsP!=null?r.jobsP.toLocaleString():'—')+'</td>'+
+      '<td>'+(r.inv!=null?escA(r.inv):'Not publicly disclosed')+'</td>'+
+      '<td>'+escA(r.air)+'</td>'+
+    '</tr>';
+  }).join('');
+  document.querySelector('#propTable thead').innerHTML=thead;
+  document.querySelector('#propTable tbody').innerHTML=tbody;
+}
+function sortPropTable(col){
+  if(TV_SORT.col===col){ TV_SORT.asc=!TV_SORT.asc; } else { TV_SORT.col=col; TV_SORT.asc=true; }
+  buildPropTable();
+}
+
+// ── First-visit walkthrough ───────────────────────────────────────────────────
+function maybeShowWalkthrough(){
+  try{
+    if(!localStorage.getItem('wv_seen_walkthrough')){
+      openModal('walk');
+      localStorage.setItem('wv_seen_walkthrough','1');
+    }
+  }catch(e){}
+}
+
+// ── City data ────────────────────────────────────────────────────────────────
+var C=[
+  {n:'Calgary',           la:51.0447,lo:-114.0719,a:825.3,p:1305550},
+  {n:'Edmonton',          la:53.5461,lo:-113.4938,a:684.4,p:1151635},
+  {n:'Red Deer',          la:52.2681,lo:-113.8112,a:104.3,p:99846},
+  {n:'Lethbridge',        la:49.6956,lo:-112.8451,a:122.8,p:92563},
+  {n:'Airdrie',           la:51.2917,lo:-114.0144,a:43.7, p:73578},
+  {n:'Fort McMurray',     la:56.7261,lo:-111.3797,a:65.0, p:68002},
+  {n:'Medicine Hat',      la:50.0416,lo:-110.6756,a:112.0,p:63382},
+  {n:'Grande Prairie',    la:55.1706,lo:-118.7988,a:132.7,p:63172},
+  {n:'Spruce Grove',      la:53.5451,lo:-113.9002,a:26.6, p:39348},
+  {n:'Leduc',             la:53.2594,lo:-113.5491,a:37.4, p:33505},
+  {n:'Cochrane',          la:51.1897,lo:-114.4676,a:23.7, p:31638},
+  {n:'Lloydminster',      la:53.2839,lo:-110.0030,a:24.6, p:31582},
+  {n:'Okotoks',           la:50.7256,lo:-113.9754,a:18.1, p:30214},
+  {n:'Fort Saskatchewan', la:53.7127,lo:-113.2131,a:49.9, p:26831},
+  {n:'Chestermere',       la:51.0450,lo:-113.8294,a:18.8, p:21425},
+  {n:'Beaumont',          la:53.3527,lo:-113.4147,a:15.2, p:20779},
+  {n:'Camrose',           la:53.0175,lo:-112.8315,a:25.0, p:18454},
+  {n:'Stony Plain',       la:53.5262,lo:-114.0000,a:19.1, p:17253},
+  {n:'Sylvan Lake',       la:52.3119,lo:-114.0949,a:12.4, p:16142},
+  {n:'Brooks',            la:50.5639,lo:-111.8987,a:14.6, p:14904},
+  {n:'High River',        la:50.5806,lo:-113.8744,a:10.5, p:14119},
+  {n:'Strathmore',        la:51.0362,lo:-113.4028,a:10.0, p:13851},
+  {n:'Canmore',           la:51.0897,lo:-115.3476,a:68.5, p:13268},
+  {n:'Lacombe',           la:52.4691,lo:-113.7361,a:14.5, p:12835},
+  {n:'Wetaskiwin',        la:52.9694,lo:-113.3767,a:16.2, p:12438},
+  {n:'Morinville',        la:53.8009,lo:-113.6500,a:10.2, p:10385},
+  {n:'Blackfalds',        la:52.3803,lo:-113.7969,a:8.9,  p:10315},
+  {n:'Olds',              la:51.7922,lo:-114.1056,a:14.9, p:9998},
+];
+
+// ── DC overlay layers ────────────────────────────────────────────────────────
+var DC=[
+  {n:'Wonder Valley — Full build-out',  reg:'Grande Prairie region · Greenview Industrial Gateway', a:64,   mw:7500, col:'#f97316',fi:'#f97316',fo:.22,da:'10 5',w:3, jb:{c:4000,p:1200},
+   inv:{amt:'$70B',  b:70}, air:{lvl:'High (reported)', note:'Plans call for large-scale on-site natural-gas power generation to meet its multi-GW demand. Independent reporting estimates potential emissions of up to ~30 megatonnes CO₂e/yr at full build-out, depending on the technology and mitigation chosen (Canada\'s National Observer, Mar. 2026). The project was confirmed exempt from a full provincial Environmental Impact Assessment, though it still needs individual permits (CBC News, 2026).'}},
+  {n:'Wonder Valley — Phase 1+2',       reg:'Grande Prairie region',                                a:20,   mw:2000, col:'#c2410c',fi:'#fb923c',fo:.30,da:'7 4', w:2.5, jb:{c:1600,p:300},
+   inv:{amt:'~$24B (est.)', b:24}, air:{lvl:'Medium–High (scaled est.)', note:'Same project as Wonder Valley Full, at an earlier phase — uses the same on-site natural-gas generation model at roughly 1/4 to 1/3 of the full-build-out scale. No phase-specific emissions figure has been separately published; the ~30-megatonne/yr full-build-out estimate above is the only documented figure (National Observer, Mar. 2026).'}},
+  {n:'Wonder Valley — Phase 1',         reg:'Grande Prairie region',                                a:10.1, mw:1400, col:'#1d4ed8',fi:'#60a5fa',fo:.40,da:null,  w:2.5, jb:{c:800,p:130},
+   inv:{amt:'$12B', b:12}, air:{lvl:'Medium (scaled est.)', note:'Same project as Wonder Valley Full, at its initial ~1.4 GW phase — uses the same on-site natural-gas generation model at roughly 1/5 of the full-build-out scale. No phase-specific emissions figure has been separately published.'}},
+  {n:'Beacon AI Hub',                   reg:'Hamlet of Indus, Rocky View Co. (east of Calgary)',   a:3.82, mw:400,  col:'#0d9488',fi:'#2dd4bf',fo:.48,da:'5 3', w:2, jb:{c:1500,p:300},
+   inv:{amt:'$4B', b:4}, air:{lvl:'Not publicly disclosed', note:'Public reporting reviewed (news coverage, Rocky View County\'s ASP documents) did not specify an on-site power-generation method or publish emissions estimates for this proposal as of June 2026 — it may rely more on grid-supplied power than on-site gas generation, but this has not been confirmed either way.'}},
+  {n:'Synapse Olds DC',                 reg:'Town of Olds, central Alberta',                        a:1.21, mw:1000, col:'#d97706',fi:'#fbbf24',fo:.78,da:null,   w:2, jb:{c:2000,p:1000},
+   inv:{amt:'$10B', b:10}, air:{lvl:'High (regulatory record)', note:'Proposed alongside its own 1.4 GW natural-gas power plant. The AUC rejected that power-plant application, citing "significant deficiencies" — including an environmental evaluation that was an incomplete draft with missing figures and conclusions drawn from incomplete winter wildlife/wetland field studies (CBC News, 2026). The project has since reapplied; no revised emissions plan has been made public as of June 2026.'}},
+  {n:'Wild Rose Power Hub',             reg:'~2 km SW of Langdon, Rocky View Co. (~10 km east of Calgary)', a:1.94, mw:1300, col:'#f43f5e',fi:'#fb7185',fo:.50,da:'6 3', w:2, jb:{c:3000,p:600},
+   inv:null, air:{lvl:'Not publicly disclosed', note:'Public reporting reviewed (news coverage, Rocky View County\'s Area Structure Plan process, which residents have actively opposed) did not specify a capital-investment figure or an on-site power-generation method for this proposal as of June 2026.'}},
+  {n:'AHI Hub of Innovation',           reg:'Blindman Industrial Park, Red Deer County (north of Red Deer)', a:0.49, mw:250, col:'#84cc16',fi:'#bef264',fo:.55,da:'4 3', w:1.8, jb:{c:600,p:150},
+   inv:null, air:{lvl:'Not publicly disclosed', note:'Public reporting reviewed did not specify a capital-investment figure or an on-site power-generation method for this approved proposal (1st power module targeted Q3 2026) as of June 2026.'}},
+  {n:'eStruxture CAL-3',                reg:'Balzac, Rocky View County (~5 km north of Calgary)',   a:0.028, mw:90,  col:'#38bdf8',fi:'#7dd3fc',fo:.60,da:null,  w:1.5, jb:{c:300,p:80},
+   inv:null, air:{lvl:'Not publicly disclosed', note:'Public reporting reviewed did not specify a capital-investment figure or an on-site power-generation method for this proposal (under construction, opening fall 2026) as of June 2026.'}},
+  {n:'Beacon Foothills AI Hub',         reg:'Outside High River, Foothills County (~50 km south of Calgary)', a:1.05, mw:400, col:'#a78bfa',fi:'#c4b5fd',fo:.50,da:'5 3', w:2, jb:{c:1500,p:300},
+   inv:null, air:{lvl:'Not publicly disclosed', note:'Public reporting reviewed did not specify a capital-investment figure or an on-site power-generation method for this proposal (public hearing held, approvals in progress) as of June 2026.'}},
+  {n:'Clive Power & Data Centre',       reg:'West of Clive, Lacombe County (4.3-acre site off Haynes Rd)', a:0.017, mw:20,  col:'#f472b6',fi:'#f9a8d4',fo:.65,da:null,  w:1.5, jb:{c:80,p:20},
+   inv:null, air:{lvl:'Under regulatory review (AUC/EPEA)', note:'This proposal is paired with its own power-generation component and is currently under joint AUC/EPEA review (approval expected ~Aug 2026). No emissions estimate or capital-investment figure has been made public as of June 2026.'}},
+  {n:'Beacon (Harry Smith Hub)',        reg:'Between Keephills & Duffield, Parkland County (west of Edmonton)', a:3.82, mw:400, col:'#5eead4',fi:'#99f6e4',fo:.45,da:'5 3', w:2, jb:{c:1500,p:300},
+   inv:null, air:{lvl:'Not publicly disclosed', note:'Public reporting reviewed (news coverage, Parkland County\'s Area Structure Plan framework documents) did not specify a capital-investment figure or an on-site power-generation method for this proposal as of June 2026.'}},
+  {n:'Beacon (Strathcona Co.)',         reg:'Strathcona County (east of Edmonton)',                 a:3.82, mw:400, col:'#2dd4bf',fi:'#5eead4',fo:.45,da:'5 3', w:2, jb:{c:1500,p:300},
+   inv:null, air:{lvl:'Not publicly disclosed', note:'This proposal has not yet received approvals. Public reporting reviewed did not specify a capital-investment figure or an on-site power-generation method as of June 2026.'}},
+  {n:'Beacon (Leduc Co.)',              reg:'Leduc County, near Edmonton Intl Airport',             a:3.82, mw:400, col:'#14b8a6',fi:'#5eead4',fo:.45,da:'5 3', w:2, jb:{c:1500,p:300},
+   inv:null, air:{lvl:'Not publicly disclosed', note:'This proposal has not yet received approvals. Public reporting reviewed did not specify a capital-investment figure or an on-site power-generation method as of June 2026.'}},
+];
+// Reverse lookup (PINS index → DC index) — used so that when you click a pin and
+// pick "N/A" for Compare against, the info card can show THAT proposal's own
+// figures (investment, jobs, air quality, etc.) rather than a default/comparison one.
+// NOTE: this must run AFTER the DC array above is defined (it reads DC.length),
+// otherwise DC is still undefined and the whole script throws here, which is what
+// was silently breaking map rendering.
+var PIN_TO_DC=[];
+for(var _dcI=0; _dcI<DC.length; _dcI++){
+  var _pinI=DC_TO_PIN[DC[_dcI].n];
+  if(_pinI!==undefined && PIN_TO_DC[_pinI]===undefined) PIN_TO_DC[_pinI]=_dcI;
+}
+// Shared short-label / colour lookups for DC entries — used both for map overlay
+// labels (loadCity) and the per-proposal jobs table (updateCard). Derived from DC
+// itself so the lists always stay the same length & order as the DC array.
+var DC_COL=['#fdba74','#fdba74','#93c5fd','#5eead4','#fde68a','#fda4af','#bef264','#7dd3fc','#c4b5fd','#f9a8d4','#99f6e4','#5eead4','#5eead4'];
+var DC_SHORT=DC.map(function(d){ return d.n.replace('Wonder Valley — ','WV ').replace('Beacon AI Hub','Beacon Indus').replace('Synapse Olds DC','Synapse Olds'); });
+// Major Alberta river basin each proposal sits in/near, per Alberta Environment &
+// Protected Areas' published basin boundaries — for water-context only, NOT a
+// site-specific risk rating (no Alberta-specific per-project risk figures are
+// published, so none are invented here).
+var DC_BASIN={
+  'Wonder Valley — Full build-out': 'Peace / Wapiti basin (Smoky River — a Peace River tributary), near Grande Prairie. Generally less heavily allocated than southern Alberta\'s basins, though still subject to its own permitting and First Nations/ecological considerations.',
+  'Wonder Valley — Phase 1+2':      'Peace / Wapiti basin (Smoky River — a Peace River tributary), near Grande Prairie. Generally less heavily allocated than southern Alberta\'s basins, though still subject to its own permitting and First Nations/ecological considerations.',
+  'Wonder Valley — Phase 1':        'Peace / Wapiti basin (Smoky River — a Peace River tributary), near Grande Prairie. Generally less heavily allocated than southern Alberta\'s basins, though still subject to its own permitting and First Nations/ecological considerations.',
+  'Beacon AI Hub':                  'South Saskatchewan basin (Bow River sub-basin), near Calgary — part of the area closed to new water-licence applications since 2006 because it was already considered fully allocated.',
+  'Synapse Olds DC':                'Red Deer River basin, central Alberta — not under the 2006 southern-basin licence closure, but identified provincially as a basin facing periodic drought cycles and competing agricultural/municipal/industrial demand.',
+  'Wild Rose Power Hub':            'South Saskatchewan basin (Bow River sub-basin), near Calgary — part of the area closed to new water-licence applications since 2006 because it was already considered fully allocated.',
+  'AHI Hub of Innovation':          'Red Deer River basin, central Alberta — not under the 2006 southern-basin licence closure, but identified provincially as a basin facing periodic drought cycles and competing agricultural/municipal/industrial demand.',
+  'eStruxture CAL-3':               'South Saskatchewan basin (Bow River sub-basin), near Calgary — part of the area closed to new water-licence applications since 2006 because it was already considered fully allocated.',
+  'Beacon Foothills AI Hub':        'South Saskatchewan basin (Bow / Highwood River sub-basin), south of Calgary — part of the area closed to new water-licence applications since 2006 because it was already considered fully allocated.',
+  'Clive Power & Data Centre':      'Red Deer River basin (Lacombe County sits within it, like neighbouring Red Deer County) — not under the 2006 southern-basin licence closure, but identified provincially as a basin facing periodic drought cycles and competing agricultural/municipal/industrial demand.',
+  'Beacon (Harry Smith Hub)':       'North Saskatchewan basin, west of Edmonton — generally considered to face moderate water-allocation pressure from cumulative municipal/industrial demand, though not under the 2006 southern-basin closure.',
+  'Beacon (Strathcona Co.)':        'North Saskatchewan basin, east of Edmonton — generally considered to face moderate water-allocation pressure from cumulative municipal/industrial demand, though not under the 2006 southern-basin closure.',
+  'Beacon (Leduc Co.)':             'North Saskatchewan basin, near Edmonton Intl. Airport — generally considered to face moderate water-allocation pressure from cumulative municipal/industrial demand, though not under the 2006 southern-basin closure.'
+};
+var DTIPS=[
+  'Wonder Valley — Full build-out\nRegion: Grande Prairie · Greenview Industrial Gateway\n64 km² · ~15,800 ac · $70B · 7.5 GW · 55 buildings\n⚠ Delayed 2028+ · No enviro review · Water permit controversy\n👷 Jobs (est.): ~4,000 construction · ~1,200 long-term (100–150/phase × ~8–10 phases)',
+  'Wonder Valley — Phase 1+2\nRegion: Grande Prairie region\n~20 km² · 2 GW · est. $24B · 2029 target\n👷 Jobs (est.): ~1,600 construction · ~300 long-term',
+  'Wonder Valley — Phase 1\nRegion: Grande Prairie region\n~10.1 km² · 2,500 ac · 1.4 GW · $12B\nPermit stage as of June 2026\n👷 Jobs (est.): ~800 construction · ~130 long-term',
+  'Beacon AI Hub — Indus, Rocky View County\nRegion: East of Calgary (~3.2 km)\n3.82 km² · 946 ac · 400 MW · $4B CAD\n✅ Rocky View ASP approved June 2025 · Target: Dec 2026\n👷 Jobs (company est.): ~1,500 construction · ~300 long-term',
+  'Synapse Olds Data Centre\nRegion: Town of Olds, AB (Hwy 2A & 27)\n1.21 km² · 121 ha · $10B · 1 GW\n⚠ Initial AUC application rejected · Reapplied April 2026\n👷 Jobs (company est.): ~2,000 construction · 1,000+ long-term high-skilled tech/ops',
+  'Wild Rose Power Hub\nRegion: ~2 km SW of Langdon, Rocky View Co. (~10 km east of Calgary)\n1.94 km² · 1,300 MW\n⚠ Contentious · Residents opposed · Area Structure Plan underway\n👷 Jobs (est.): ~3,000 construction · ~600 long-term',
+  'AHI Hub of Innovation\nRegion: Blindman Industrial Park, Red Deer County (north of Red Deer)\n0.49 km² · 250 MW\n✅ Approved Oct 2025 · 1st power module Q3 2026\n👷 Jobs (est.): ~600 construction · ~150 long-term',
+  'eStruxture CAL-3\nRegion: Balzac, Rocky View County (~5 km north of Calgary)\n0.028 km² · 90 MW\n🔄 Under construction · Opening fall 2026\n👷 Jobs (est.): ~300 construction · ~80 long-term',
+  'Beacon Foothills AI Hub\nRegion: Outside High River, Foothills County (~50 km south of Calgary)\n1.05 km² · 400 MW\n🔄 Public hearing held · Approvals in progress\n👷 Jobs (est.): ~1,500 construction · ~300 long-term',
+  'Clive Power & Data Centre\nRegion: West of Clive, Lacombe County (4.3-acre site off Haynes Rd)\n0.017 km² · 20 MW (19.8 MW gas-fired + biofuel-capable)\n🔄 AUC/EPEA review underway · Approval expected ~Aug 2026\n👷 Jobs (est.): ~80 construction · ~20 long-term',
+  'Beacon (Harry Smith Hub)\nRegion: Between Keephills & Duffield, Parkland County (west of Edmonton)\n3.82 km² · 400 MW\n🔄 Parkland County ASP framework approved Sept 2025\n👷 Jobs (company est.): ~1,500 construction · ~300 long-term',
+  'Beacon (Strathcona Co.)\nRegion: Strathcona County, east of Edmonton\n3.82 km² · 400 MW\n🔄 Proposed · No approvals yet\n👷 Jobs (company est.): ~1,500 construction · ~300 long-term',
+  'Beacon (Leduc Co.)\nRegion: Leduc County, near Edmonton Intl Airport\n3.82 km² · 400 MW\n🔄 Proposed · No approvals yet\n👷 Jobs (company est.): ~1,500 construction · ~300 long-term',
+];
+
+// ── DC actual locations (permanent) ──────────────────────────────────────────
+var PINS=[
+  {n:'Wonder Valley',              reg:'Greenview Industrial Gateway\n~40 km south of Grande Prairie',               la:54.81,lo:-118.90,a:64,   mw:7500, col:'#f97316',st:'⚠ Delayed · 2028+ start · No enviro review', jb:{c:4000,p:1200}},
+  {n:'Synapse Olds DC',            reg:'Town of Olds, AB (NE corner of Hwy 2A & Hwy 27, within town limits)',         la:51.807,lo:-114.083,a:1.21, mw:1000, col:'#fbbf24',st:'⚠ Reapplied after AUC rejection (April 2026)', jb:{c:2000,p:1000}},
+  {n:'Beacon AI Hub (Indus)',      reg:'Hamlet of Indus, Rocky View County\n~3.2 km east of Calgary',                la:50.95,lo:-113.77,a:3.82, mw:400,  col:'#2dd4bf',st:'✅ Rocky View ASP approved June 2025', jb:{c:1500,p:300}},
+  {n:'Beacon (Harry Smith Hub)',   reg:'Between Keephills & Duffield\nParkland County, west of Edmonton',            la:53.49,lo:-114.55,a:3.82, mw:400,  col:'#5eead4',st:'🔄 Parkland County ASP framework approved Sept 2025', jb:{c:1500,p:300}},
+  {n:'Beacon (Strathcona Co.)',    reg:'Strathcona County, east of Edmonton',                                         la:53.55,lo:-112.92,a:3.82, mw:400,  col:'#5eead4',st:'🔄 Proposed · No approvals yet', jb:{c:1500,p:300}},
+  {n:'Beacon (Leduc Co.)',         reg:'Leduc County, near Edmonton Intl Airport',                                    la:53.28,lo:-113.59,a:3.82, mw:400,  col:'#5eead4',st:'🔄 Proposed · No approvals yet', jb:{c:1500,p:300}},
+  {n:'Wild Rose Power Hub',        reg:'~2 km SW of Hamlet of Langdon, Rocky View Co.\n~10 km east of Calgary',     la:50.985,lo:-113.775,a:1.94,  mw:1300, col:'#f43f5e',st:'⚠ Contentious · Residents opposed · Area Structure Plan underway', jb:{c:3000,p:600}},
+  {n:'AHI Hub of Innovation',      reg:'Blindman Industrial Park, Red Deer County\n(north of Red Deer)',             la:52.36,lo:-113.76, a:0.49,  mw:250,  col:'#84cc16',st:'✅ Approved Oct 2025 · 1st power module Q3 2026', jb:{c:600,p:150}},
+  {n:'eStruxture CAL-3',           reg:'Balzac, Rocky View County\n~5 km north of Calgary',                          la:51.217,lo:-113.967,a:0.028, mw:90,   col:'#38bdf8',st:'🔄 Under construction · Opening fall 2026', jb:{c:300,p:80}},
+  {n:'Beacon Foothills AI Hub',    reg:'Outside High River, Foothills County\n~50 km south of Calgary',              la:50.60,lo:-113.82, a:1.05,  mw:400,  col:'#a78bfa',st:'🔄 Public hearing held · Approvals in progress', jb:{c:1500,p:300}},
+  {n:'Clive Power & Data Centre',  reg:'West of Clive, Lacombe County (off Haynes Rd)',                              la:52.475,lo:-113.50, a:0.017, mw:20,   col:'#f472b6',st:'🔄 AUC/EPEA review underway · Approval expected ~Aug 2026', jb:{c:80,p:20}},
+];
+
+// ── Map ───────────────────────────────────────────────────────────────────────
+var map=L.map('map',{zoomControl:true}).setView([53.5,-115.0],6);
+// The impact info card sits ON TOP of the map and now scrolls internally when its
+// content runs long — without this, mouse-wheel/trackpad scrolling over the card
+// would be picked up by Leaflet and zoom/pan the MAP underneath instead of
+// scrolling the card's text. These two calls tell Leaflet to ignore wheel and
+// click events that originate inside the card, so it behaves like a normal
+// scrollable panel rather than fighting with the map for those gestures.
+(function(){
+  var _ic=document.getElementById('icard');
+  if(_ic && window.L && L.DomEvent){
+    L.DomEvent.disableScrollPropagation(_ic);
+    L.DomEvent.disableClickPropagation(_ic);
+  }
+})();
+var TL={
+  str: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© <a href="https://openstreetmap.org">OpenStreetMap</a>',maxZoom:19}),
+  sat: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri',maxZoom:19}),
+  dark:L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}),
+};
+TL.str.addTo(map); var BL='str';
+function setTile(k){map.removeLayer(TL[BL]);TL[k].addTo(map);BL=k;['Sat','Str','Dark'].forEach(function(n){document.getElementById('b'+n).classList.remove('active')});document.getElementById('b'+k[0].toUpperCase()+k.slice(1)).classList.add('active');}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function rect(a,la,lo){var s=Math.sqrt(a),dl=s/2/111,dlo=s/2/(111*Math.cos(la*Math.PI/180));return[[la-dl,lo-dlo],[la+dl,lo+dlo]];}
+function lbl(la,lo,h){return L.marker([la,lo],{icon:L.divIcon({html:'<div class="lt">'+h+'</div>',className:''}),zIndexOffset:500}).addTo(map);}
+function fmtM(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v.toFixed(0);}
+
+// ── Synthesized "what it might sound like" demo ──────────────────────────────
+// NOTE: This is a computer-generated approximation (layered low-frequency hum +
+// filtered fan/HVAC noise) built entirely in the browser with the Web Audio API.
+// It is NOT a recording of any real data centre — no third-party audio is used.
+// Each "zone" mixes the same hum+fan-drone ingredients at progressively lower volume
+// AND with a lower/narrower filter sweep — approximating how sound both quiets down
+// and loses its higher frequencies (becomes more "muffled") with distance.
+var SND_ZONES={
+  high:  {label:'Near · roughly >65 dB · within ~1–7 km',      gain:.50, hum1:.16, hum2:.090, noise:.22, bp:420, q:.7},
+  mod:   {label:'Moderate · roughly 55–65 dB · ~7–14 km',       gain:.20, hum1:.08, hum2:.040, noise:.09, bp:230, q:.9},
+  infra: {label:'Infrasound zone · roughly <40 dB · beyond ~14 km', gain:.06, hum1:.05, hum2:.012, noise:.02, bp:110, q:1.3}
+};
+var sndCtx=null, sndNodes=null, sndZone=null;
+function toggleNoiseDemo(btn,zone){
+  if(sndNodes && sndZone===zone){ stopNoiseDemo(); return; }
+  if(sndNodes){ stopNoiseDemo(); }
+  try{
+    var z=SND_ZONES[zone];
+    sndCtx = sndCtx || new (window.AudioContext||window.webkitAudioContext)();
+    if(sndCtx.state==='suspended') sndCtx.resume();
+    var ctx=sndCtx, now=ctx.currentTime;
+    var master=ctx.createGain(); master.gain.setValueAtTime(0,now);
+    master.gain.linearRampToValueAtTime(z.gain, now+.6);
+    master.connect(ctx.destination);
+
+    // Low-frequency electrical/transformer hum (60 Hz + harmonic)
+    var hum=ctx.createOscillator(); hum.type='sawtooth'; hum.frequency.value=60;
+    var humG=ctx.createGain(); humG.gain.value=z.hum1;
+    hum.connect(humG); humG.connect(master); hum.start(now);
+
+    var hum2=ctx.createOscillator(); hum2.type='sine'; hum2.frequency.value=120;
+    var hum2G=ctx.createGain(); hum2G.gain.value=z.hum2;
+    hum2.connect(hum2G); hum2G.connect(master); hum2.start(now);
+
+    // Broadband cooling-fan / HVAC drone (filtered noise) — filter centre frequency
+    // drops zone-by-zone so farther zones sound progressively more muffled/distant
+    var bufLen=ctx.sampleRate*2, buf=ctx.createBuffer(1,bufLen,ctx.sampleRate);
+    var data=buf.getChannelData(0);
+    for(var i=0;i<bufLen;i++) data[i]=Math.random()*2-1;
+    var noise=ctx.createBufferSource(); noise.buffer=buf; noise.loop=true;
+    var bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=z.bp; bp.Q.value=z.q;
+    var noiseG=ctx.createGain(); noiseG.gain.value=z.noise;
+    noise.connect(bp); bp.connect(noiseG); noiseG.connect(master); noise.start(now);
+
+    // Slow amplitude wobble so it doesn't sound like a flat tone
+    var lfo=ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value=.18;
+    var lfoG=ctx.createGain(); lfoG.gain.value=z.noise*.22;
+    lfo.connect(lfoG); lfoG.connect(noiseG.gain); lfo.start(now);
+
+    sndNodes={master:master,nodes:[hum,hum2,noise,lfo]};
+    sndZone=zone;
+    paintSndButtons();
+    filterNoiseRings(); // hide the rings for the other two levels — show only the one playing
+  }catch(e){
+    if(btn) btn.textContent='🔇 Sound not available in this browser';
+  }
+}
+function stopNoiseDemo(){
+  if(sndNodes){
+    var now=sndCtx.currentTime;
+    sndNodes.master.gain.linearRampToValueAtTime(0, now+.3);
+    sndNodes.nodes.forEach(function(n){ try{ n.stop(now+.35); }catch(e){} });
+    sndNodes=null; sndZone=null;
+  }
+  paintSndButtons();
+  filterNoiseRings(); // restore all three rings once playback stops
+}
+function paintSndButtons(){
+  var btns=document.querySelectorAll('.snd-zone-btn');
+  for(var k=0;k<btns.length;k++){
+    var b=btns[k], zk=b.getAttribute('data-zone'), z=SND_ZONES[zk];
+    if(sndNodes && sndZone===zk){ b.textContent='⏹ Stop — '+z.label; b.classList.add('playing'); }
+    else { b.textContent='🔊 '+z.label; b.classList.remove('playing'); }
+  }
+}
+
+// ── Permanent DC pins ─────────────────────────────────────────────────────────
+// Clicking a pin selects that proposal's REAL site as the active location — the
+// same as picking it from the "Overlay on" dropdown or the search box — so any
+// layers you've turned on (noise, water, electricity, jobs, etc.) apply to it.
+function selectPin(i){
+  document.getElementById('sel').value='dc'+i;
+  if(PIN_TO_DC[i]!==undefined){ document.getElementById('sel-dc').value=String(PIN_TO_DC[i]); }
+  loadCity();
+}
+PINS.forEach(function(p,i){
+  var s=Math.sqrt(p.a), dl=s/2/111, dlo=s/2/(111*Math.cos(p.la*Math.PI/180));
+  var clickTip='\n👆 Click to select this site and view its layers';
+  L.rectangle(rect(p.a,p.la,p.lo),{color:p.col,weight:2.5,fillColor:p.col,fillOpacity:.28}).addTo(map)
+   .bindTooltip(p.n+'\n'+p.reg+'\n'+p.a+' km² · '+p.mw+' MW\n'+p.st+'\n👷 Jobs (est.): ~'+p.jb.c.toLocaleString()+' construction · ~'+p.jb.p.toLocaleString()+' long-term'+clickTip,{sticky:true})
+   .on('click',function(){ selectPin(i); });
+  L.circleMarker([p.la,p.lo],{radius:4,color:p.col,weight:2,fillColor:p.col,fillOpacity:1}).addTo(map)
+   .bindTooltip(p.n+' — actual location\n'+p.reg+clickTip,{sticky:true})
+   .on('click',function(){ selectPin(i); });
+  // Permanent label above the rectangle
+  lbl(p.la+dl+.008, p.lo,
+    '<span style="color:'+p.col+';font-size:11px;font-weight:700">'+p.n+'</span><br>'+
+    '<span style="color:'+p.col+';font-size:9.5px;opacity:.85">'+p.a+' km² · '+p.mw+' MW</span>'
+  );
+});
+
+// ── Active / impact layer stores ──────────────────────────────────────────────
+var AL=[],IL=[];
+// Noise rings get their own tracked list — {layer, zone:'infra'|'mod'|'high'} — so that
+// clicking a "what it sounds like" button can hide the rings for the OTHER two levels
+// and leave only the ring matching the level you're listening to.
+var NOISE_RINGS=[];
+function clearAL(){AL.forEach(function(l){map.removeLayer(l)});AL=[];}
+function clearIL(){IL.forEach(function(l){map.removeLayer(l)});IL=[];NOISE_RINGS=[];}
+// Show only the ring(s) matching the zone currently playing; show all when nothing is playing.
+function filterNoiseRings(){
+  NOISE_RINGS.forEach(function(r){
+    var show = !sndZone || r.zone===sndZone;
+    if(show){ if(!map.hasLayer(r.layer)) map.addLayer(r.layer); }
+    else    { if(map.hasLayer(r.layer))  map.removeLayer(r.layer); }
+  });
+}
+
+// ── Impact state ──────────────────────────────────────────────────────────────
+var IS={noise:false,water:false,elec:false,jobs:false,econ:false,air:false};
+var cur=null;
+var compDC=DC[0];   // proposal currently used for "vs city" comparisons — set by the 🏭 selector
+
+function toggleImpact(t){if(!discOK){showDisc(t);return;}doToggle(t);}
+function doToggle(t){
+  IS[t]=!IS[t];
+  document.getElementById('btn-'+t).classList.toggle('on',IS[t]);
+  if(t==='noise'&&!IS[t]) stopNoiseDemo(null);   // stop the sound demo if Noise layer is turned off
+  renderImpact();
+}
+
+function renderImpact(){
+  clearIL();
+  var card=document.getElementById('icard');
+  var anyOn = IS.noise||IS.water||IS.elec||IS.jobs||IS.econ||IS.air;
+  if(!anyOn){card.style.display='none';return;}
+
+  // City-overlay comparison layers — these need a selected city as their reference point.
+  // (The PINS-based layers further below render at the DCs' real locations regardless of
+  // whether a city is selected, so toggling e.g. Jobs always shows something on the map.)
+  if(cur){
+  var la=cur.la,lo=cur.lo;
+
+  if(IS.noise){
+    // Zones scaled from the SELECTED proposal's footprint — drawn here ONLY to show
+    // "what would this look like sitting on top of the city," same as the size overlay.
+    var nHalfDiag = Math.sqrt(compDC.a/2); // km, half-diagonal of the footprint
+    [[(nHalfDiag+8)*1000,'#fecaca',.08,'~45–55 dB · Infrasound may extend further','infra'],
+     [(nHalfDiag+3)*1000,'#fca5a5',.12,'~55–65 dB · Moderate impact','mod'],
+     [(nHalfDiag+1)*1000,'#ef4444',.16,'>65 dB · High impact · >\xa0WHO residential limit','high']
+    ].forEach(function(z){
+      var cl=L.circle([la,lo],{radius:z[0],color:'#ef4444',weight:1,fillColor:z[1],fillOpacity:z[2],dashArray:'5 3'}).addTo(map);
+      cl.bindTooltip('🔊 Noise zone — '+compDC.n+' (overlay)\n'+z[3]+'\nRadius '+Math.round(z[0]/1000)+' km from footprint centre\n⚠ Illustrative overlay — shows scale "as if" sited here, not a claim this proposal is located at '+cur.n,{sticky:true});
+      IL.push(cl);
+      NOISE_RINGS.push({layer:cl, zone:z[4]});
+    });
+  }
+
+  if(IS.water){
+    var wMwRatio = compDC.mw/7500;
+    var wRad = Math.max(8000, wMwRatio*25000);
+    var wc=L.circle([la,lo],{radius:wRad,color:'#3b82f6',weight:1.5,fillColor:'#1d4ed8',fillOpacity:.07,dashArray:'6 3'}).addTo(map);
+    wc.bindTooltip('💧 Water draw zone (overlay, est. '+Math.round(wRad/1000)+' km radius)\n'+compDC.n+' — est. '+Math.round(wMwRatio*6).toLocaleString()+'M m³/yr (scaled from WV\'s approved 6M m³/yr permit)\n⚠ Illustrative overlay — shows scale "as if" sited here, not a claim this proposal draws water from '+cur.n+'\'s watershed',{sticky:true});
+    IL.push(wc);
+  }
+
+  if(IS.elec){
+    // Scaled SOLELY from the single selected proposal (compDC) — never summed/combined
+    // across proposals — so the ring shows "how big is THIS proposal's grid draw,
+    // sized as if it were sitting on top of the city I'm looking at." This is the
+    // single-proposal comparison the city dropdown is for; it is NOT a claim that
+    // this proposal is physically located at, or draws power locally from, this city.
+    var eMwRatio = compDC.mw/7500;
+    [[Math.max(8000,eMwRatio*55000),'#fbbf24',.05,'Outer grid-demand scale ring (illustrative)'],
+     [Math.max(5000,eMwRatio*35000),'#f59e0b',.08,'Mid grid-demand scale ring (illustrative)'],
+     [Math.max(3000,eMwRatio*18000),'#d97706',.13,'Inner grid-demand scale ring (illustrative)']
+    ].forEach(function(z){
+      var el=L.circle([la,lo],{radius:z[0],color:'#f59e0b',weight:1,fillColor:z[1],fillOpacity:z[2],dashArray:'8 4'}).addTo(map);
+      el.bindTooltip('⚡ Electricity demand — '+compDC.n+' (overlay on '+cur.n+')\n'+z[3]+'\n'+compDC.mw.toLocaleString()+' MW · '+Math.round(compDC.mw*8760/1000).toLocaleString()+' GWh/yr\n⚠ Illustrative SCALE overlay for this ONE proposal only — shows how large its grid demand is, sized "as if" centred here. Not a claim it is located at, or draws power locally from, '+cur.n+'; Alberta\'s grid is province-wide.',{sticky:true});
+      IL.push(el);
+    });
+  }
+
+  if(IS.air){
+    // Scaled from the SAME single-proposal MW ratio as the electricity overlay, since
+    // on-site natural-gas generation (the documented emissions source for these projects)
+    // scales with a project's power demand. Colour/shape is purely illustrative of RELATIVE
+    // scale — the documented concern level & sourced note (compDC.air) carry the real info.
+    var aMwRatio = compDC.mw/7500;
+    [[Math.max(8000,aMwRatio*45000),'#a855f7',.05,'Outer emissions-scale ring (illustrative)'],
+     [Math.max(5000,aMwRatio*28000),'#9333ea',.08,'Mid emissions-scale ring (illustrative)'],
+     [Math.max(3000,aMwRatio*14000),'#7e22ce',.13,'Inner emissions-scale ring (illustrative)']
+    ].forEach(function(z){
+      var ar=L.circle([la,lo],{radius:z[0],color:'#a855f7',weight:1,fillColor:z[1],fillOpacity:z[2],dashArray:'4 4'}).addTo(map);
+      ar.bindTooltip('💨 Air quality / emissions — '+compDC.n+' (overlay on '+cur.n+')\n'+z[3]+'\nDocumented concern level: '+compDC.air.lvl+'\n'+compDC.air.note+'\n⚠ Illustrative SCALE overlay — shows the relative scale of this proposal\'s potential emissions sources "as if" centred here; NOT a measured air-quality reading, and not a claim this proposal is located at, or pollutes, '+cur.n+'.',{sticky:true});
+      IL.push(ar);
+    });
+  }
+
+  // Note: the 👷 Jobs and 💰 Economic benefit layers intentionally have no map markers/bubbles — its figures live in
+  // (a) the hover tooltips on each footprint/pin (already shown there) and (b) the floating
+  // info card's per-proposal breakdown below, which keeps the map itself uncluttered.
+  } // end if(cur) — city-overlay layers
+
+  // ── Air-quality lookup for actual pinned locations ──────────────────────────
+  // Only Wonder Valley, Synapse Olds, and Beacon AI Hub (Indus) have independently
+  // documented air-quality/emissions reporting (see DC[].air, sourced in the disclaimer).
+  // Every other pinned proposal is marked "not publicly disclosed" rather than guessed —
+  // we never imply a pollution finding that hasn't actually been reported or reviewed.
+  var AIR_UNKNOWN={lvl:'Not publicly disclosed', note:'Public reporting reviewed (news coverage, municipal/regulatory filings) did not specify an on-site power-generation method or publish emissions estimates for this specific proposal as of June 2026.'};
+  var AIR_BY_NAME={'Wonder Valley':DC[0].air, 'Synapse Olds DC':DC[4].air, 'Beacon AI Hub (Indus)':DC[3].air};
+  function airFor(name){ return AIR_BY_NAME[name] || AIR_UNKNOWN; }
+
+  // ── Always draw impact layers at each actual (pinned) DC location, ──────────
+  // ── whether or not a city is currently selected ─────────────────────────────
+  PINS.forEach(function(p){
+    var halfDiag = Math.sqrt(p.a/2)*1000; // metres, half-diagonal of square footprint
+    var mwRatio  = p.mw/7500;
+
+    if(IS.noise){
+      [[halfDiag+8000,'#fecaca',.06,'~45–55 dB / infrasound zone','infra'],
+       [halfDiag+3000,'#fca5a5',.10,'~55–65 dB moderate impact','mod'],
+       [halfDiag+1000,'#ef4444',.15,'>65 dB high impact','high']
+      ].forEach(function(z){
+        var cl=L.circle([p.la,p.lo],{radius:z[0],color:'#ef4444',weight:1,fillColor:z[1],fillOpacity:z[2],dashArray:'5 3'}).addTo(map);
+        cl.bindTooltip('🔊 '+p.n+' — noise est.\n'+z[3]+'\nRadius '+Math.round(z[0]/1000)+' km · ⚠ estimate only',{sticky:true});
+        IL.push(cl);
+        NOISE_RINGS.push({layer:cl, zone:z[4]});
+      });
+    }
+
+    if(IS.water){
+      var wRad=Math.max(3000, mwRatio*25000);
+      var wc=L.circle([p.la,p.lo],{radius:wRad,color:'#3b82f6',weight:1.5,fillColor:'#1d4ed8',fillOpacity:.07,dashArray:'6 3'}).addTo(map);
+      wc.bindTooltip('💧 '+p.n+' — water draw zone\nEst. '+Math.round(mwRatio*6)+'M m³/yr (scaled from WV permit)\nRadius '+Math.round(wRad/1000)+' km · ⚠ estimate only',{sticky:true});
+      IL.push(wc);
+    }
+
+    if(IS.elec){
+      [[Math.max(8000,mwRatio*55000),'#fbbf24',.05,'Outer grid pressure zone'],
+       [Math.max(5000,mwRatio*35000),'#f59e0b',.08,'Regional grid saturation zone'],
+       [Math.max(3000,mwRatio*18000),'#d97706',.13,'Local grid demand zone']
+      ].forEach(function(z){
+        var el=L.circle([p.la,p.lo],{radius:z[0],color:'#f59e0b',weight:1,fillColor:z[1],fillOpacity:z[2],dashArray:'8 4'}).addTo(map);
+        el.bindTooltip('⚡ '+p.n+' — electricity impact\n'+z[3]+'\n'+p.mw+' MW · '+Math.round(p.mw*8760/1000)+' GWh/yr\n⚠ Zones are illustrative',{sticky:true});
+        IL.push(el);
+      });
+    }
+
+    if(IS.air){
+      var ai=airFor(p.n);
+      var aRad=Math.max(4000, mwRatio*30000);
+      var ao=L.circle([p.la,p.lo],{radius:aRad,color:'#a855f7',weight:1,fillColor:'#9333ea',fillOpacity:.10,dashArray:'4 4'}).addTo(map);
+      ao.bindTooltip('💨 '+p.n+' — air quality / emissions\nDocumented concern level: '+ai.lvl+'\n'+ai.note+'\nRadius '+Math.round(aRad/1000)+' km · ⚠ illustrative scale only — not a measured pollution reading',{sticky:true});
+      IL.push(ao);
+    }
+
+    // 👷 Jobs and 💰 Economic benefit: no map markers here by design — figures already
+    // live in this pin's hover tooltip (bound when the permanent pins were drawn) and
+    // in the floating info card, which keeps the map itself uncluttered.
+  });
+
+  updateCard();
+}
+
+function updateCard(){
+  var card=document.getElementById('icard');
+  if(!cur||(!IS.noise&&!IS.water&&!IS.elec&&!IS.jobs&&!IS.econ&&!IS.air)){card.style.display='none';return;}
+  var c=cur;
+
+  // City calcs — only meaningful when overlaying on an actual city/town (has population).
+  // When overlaying on a data-centre's own real site (c.p===null), these comparisons
+  // against "local residents" don't apply, so we skip them rather than show fake numbers.
+  var hasPop = (c.p!=null);
+  var cWat = hasPop ? c.p*250*365/1000 : null;   // m³/yr
+  var cElec = hasPop ? c.p*15000/1e6 : null;      // GWh/yr
+  var abElec=100000;                               // GWh/yr total AB
+
+  // Comparison-proposal calcs — driven by the 🏭 "Compare against" selector (compDC),
+  // never combined/summed across proposals (each is a separate, competing project).
+  var dWat = 6e6 * (compDC.mw/7500);          // m³/yr, scaled from WV's stated 6M permit
+  var dElec = compDC.mw*8760/1000;             // GWh/yr
+  var wPct = (hasPop && cWat>0) ? (dWat/cWat*100).toFixed(1) : '—';
+  var ePct = (hasPop && cElec>0) ? (dElec/cElec).toFixed(1) : '—';
+  var abPct=(dElec/abElec*100).toFixed(1);
+
+  var h='';
+
+  if(IS.noise){
+    h+='<h4 style="color:#fca5a5">🔊 Noise — '+compDC.n+' (est.)</h4>';
+    h+='<div class="ir"><span class="il">At source (DC fence)</span><span class="iv">70–96 dB</span></div>';
+    h+='<div class="ir"><span class="il">High impact (&lt;7 km)</span><span class="iv" style="color:#fca5a5">&gt;65 dB</span></div>';
+    h+='<div class="ir"><span class="il">Moderate (7–14 km)</span><span class="iv">55–65 dB</span></div>';
+    h+='<div class="ir"><span class="il">Infrasound zone</span><span class="iv">&gt;14 km</span></div>';
+    h+='<div class="ir"><span class="il">WHO night limit</span><span class="iv">40 dB residential</span></div>';
+    h+='<div style="font-size:9.5px;color:#9d8aad;margin-top:7px;margin-bottom:3px">🔊 <strong>Hear an approximation at each distance</strong> — pick a zone (each is mixed quieter &amp; more muffled than the last, mimicking how sound fades and loses high frequencies over distance):</div>';
+    h+='<button class="snd-btn snd-zone-btn" data-zone="high"  onclick="toggleNoiseDemo(this,\'high\')">🔊 Near · roughly &gt;65 dB · within ~1–7 km</button>';
+    h+='<button class="snd-btn snd-zone-btn" data-zone="mod"   onclick="toggleNoiseDemo(this,\'mod\')">🔊 Moderate · roughly 55–65 dB · ~7–14 km</button>';
+    h+='<button class="snd-btn snd-zone-btn" data-zone="infra" onclick="toggleNoiseDemo(this,\'infra\')">🔊 Infrasound zone · roughly &lt;40 dB · beyond ~14 km</button>';
+    h+='<div style="font-size:9px;color:#5a3a3a;margin-top:4px">⚠ All three are computer-generated approximations of a data centre\'s low-frequency hum &amp; cooling-fan drone — NOT real recordings from any project, and not calibrated to a measured dB level (your device volume ≠ actual loudness). The distance ranges are a rough order-of-magnitude guide only, derived from industry-reported source levels (~70–96 dB at the equipment) and the standard ~6 dB drop each time distance from the source doubles — real-world results vary with terrain, weather, walls/windows, and the specific equipment used.</div>';
+  }
+
+  if(IS.water){
+    h+='<div class="is"><h5 style="color:#93c5fd">💧 Water — '+compDC.n+(hasPop?' vs '+c.n:'')+'</h5>';
+    h+='<div class="ir"><span class="il">'+compDC.n+' (est., scaled from WV permit)</span><span class="iv" style="color:#93c5fd">'+fmtM(dWat)+' m³/yr</span></div>';
+    if(hasPop){
+      h+='<div class="ir"><span class="il">'+c.n+' residents (est.)</span><span class="iv">'+fmtM(cWat)+' m³/yr</span></div>';
+      h+='<div class="ir" style="border-top:1px solid #0a1f33;margin-top:4px;padding-top:4px"><span class="il">'+compDC.n+' vs '+c.n+"'s residents</span><span class=\"iv\" style=\"color:#93c5fd;font-weight:700\">"+wPct+'%</span></div>';
+    } else {
+      h+='<div style="font-size:9.5px;color:#1e3a5f;margin-top:3px">No "vs local residents" comparison is shown for a data-centre site (no city population here) — pick a city or town in "📍 Overlay on" above to see that comparison.</div>';
+    }
+    h+='<div style="font-size:9.5px;color:#1e3a5f;margin-top:3px">Only Wonder Valley has a stated water permit (6M m³/yr from the Smoky River); other proposals\' figures are scaled estimates by relative MW for illustrative comparison only.</div>';
+    h+='<div style="font-size:10.5px;color:#9aa;line-height:1.55;margin-top:8px;padding-top:7px;border-top:1px solid #0a1f33">';
+    h+='<p style="margin:0 0 5px"><strong style="color:#93c5fd">💧 Which river basin is '+compDC.n+' in?</strong> '+escA(DC_BASIN[compDC.n] || 'Not yet mapped to a basin.')+'</p>';
+    h+='<p style="margin:0;color:#789;font-style:italic">Why this matters: in the U.S., reporter/activist Erin Brockovich\'s public "AI Data Center Reporting Map" (launched Apr. 2026) has drawn attention to a pattern of new data centres clustering in already drought-prone regions, where their water use adds to existing strain. Alberta has its own version of this concern: since 2006, the province has stopped issuing <em>new</em> water licences in the Bow, Oldman, and South Saskatchewan sub-basins (closed under the South Saskatchewan River Basin Water Management Plan) because those basins were already considered fully allocated. Several proposals on this map sit in or near that closed basin — worth asking, for any specific project, where exactly its water would come from and whether that source is already under allocation pressure.</p>';
+    h+='</div></div>';
+  }
+
+  if(IS.elec){
+    h+='<div class="is"><h5 style="color:#fde68a">⚡ Electricity demand — '+compDC.n+'</h5>';
+    if(hasPop){
+      h+='<div style="text-align:center;padding:8px 0 4px">';
+      h+='<div style="font-size:26px;font-weight:700;color:#fde68a;line-height:1"><span style="color:#fb923c">'+ePct+'×</span></div>';
+      h+='<div style="font-size:10px;color:#9aa;margin-top:2px"><span style="color:#fb923c">⚡ '+compDC.n+'</span> demand ÷ <span style="color:#7ccfff">🏘 '+c.n+"</span>'s entire city demand</div>";
+      h+='</div>';
+    } else {
+      h+='<div style="font-size:9.5px;color:#78450a;margin:6px 0">No "vs local city demand" comparison is shown for a data-centre site (no city population here) — pick a city or town in "📍 Overlay on" above to see that comparison.</div>';
+    }
+    h+='<div class="ir"><span class="il">⚡ '+compDC.n+' demand ('+compDC.mw.toLocaleString()+' MW)</span><span class="iv" style="color:#fb923c">'+Math.round(dElec).toLocaleString()+' GWh/yr</span></div>';
+    if(hasPop){
+      h+='<div class="ir"><span class="il">🏘 '+c.n+' total (est.)</span><span class="iv" style="color:#7ccfff">'+Math.round(cElec).toLocaleString()+' GWh/yr</span></div>';
+    }
+    h+='<div class="ir" style="border-top:1px solid #2d1e03;margin-top:4px;padding-top:4px"><span class="il">'+compDC.n+' vs ALL Alberta</span><span class="iv" style="color:#a78bfa;font-weight:700">'+abPct+'%</span></div>';
+    h+='<div style="font-size:9.5px;color:#78450a;margin-top:3px">Alberta total grid: ~100,000 GWh/yr (AESO). ⚠ This is a province-wide grid-demand comparison, not a local effect — '+c.n+' would not feel this proposal\'s draw directly unless it sits on the same regional grid.</div></div>';
+  }
+
+  if(IS.jobs){
+    h+='<div class="is"><h5 style="color:#86efac">👷 Long-term jobs — by proposal (est.)</h5>';
+    h+='<div style="font-size:9px;color:#3a6b3a;margin-bottom:5px">Each row = that proposal\'s OWN long-term operations jobs once running. Not cumulative — these are separate, competing proposals.</div>';
+    DC.forEach(function(d,i){
+      h+='<div class="ir"><span class="il" style="color:'+DC_COL[i]+'">● '+DC_SHORT[i]+'</span><span class="iv" style="color:#86efac">~'+d.jb.p.toLocaleString()+' long-term <span style="color:#345;font-weight:400">(+~'+d.jb.c.toLocaleString()+' constr.)</span></span></div>';
+    });
+    if(c.p!=null){
+      var wf=Math.round(c.p*0.5);
+      h+='<div class="ir" style="border-top:1px solid #0c2410;margin-top:4px;padding-top:4px"><span class="il">🏘 '+c.n+' workforce (est. ~50% pop.)</span><span class="iv">~'+wf.toLocaleString()+'</span></div>';
+    } else {
+      h+='<div style="font-size:9.5px;color:#3a6b3a;margin-top:3px">Workforce comparison isn\'t shown for a data-centre site (no city population to compare against) — pick a city or town in "📍 Overlay on" above to see this row.</div>';
+    }
+    h+='<div style="font-size:9.5px;color:#3a6b3a;margin-top:3px">"Long-term" = ongoing permanent operations roles. "Constr." = temporary multi-year build jobs, not ongoing. Figures are company/government estimates that vary by source &amp; project phase — order-of-magnitude only.</div></div>';
+  }
+
+  if(IS.econ){
+    h+='<div class="is"><h5 style="color:#bef264">💰 Potential economic benefit — '+compDC.n+'</h5>';
+    if(compDC.inv){
+      var lo=(compDC.inv.b*3).toFixed(0), hi=(compDC.inv.b*6).toFixed(0);
+      h+='<div class="ir"><span class="il">Stated capital investment</span><span class="iv" style="color:#bef264">'+compDC.inv.amt+'</span></div>';
+      h+='<div class="ir"><span class="il">Rough est. annual tax revenue*</span><span class="iv" style="color:#bef264">~$'+lo+'M – $'+hi+'M</span></div>';
+      h+='<div style="font-size:9px;color:#4d6b1e;margin-top:3px">*Order-of-magnitude only — derived by applying a commonly cited rule of thumb (~$3–6M in annual property/local tax revenue per $1B invested) to this proposal\'s stated investment figure. This is a generic industry approximation, NOT an official projection for this specific project, and doesn\'t account for tax incentives, assessment rules, or revenue-sharing that may apply.</div>';
+    } else {
+      h+='<div style="font-size:10px;color:#789">No publicly stated capital-investment figure was found for this proposal as of June 2026.</div>';
+    }
+    h+='<div style="font-size:9px;color:#4d6b1e;margin-top:5px">Capital investment figures are company/government-stated amounts from project announcements and filings (see disclaimer sources). They represent dollars proposed to flow into Alberta\'s economy through construction and operations — actual realized investment, timing, and local share can differ from announced totals.</div></div>';
+  }
+
+  if(IS.air){
+    h+='<div class="is"><h5 style="color:#d8b4fe">💨 Air quality / emissions</h5>';
+    h+='<div style="font-size:10px;color:#9d8aad">Shown as purple rings on the map — around '+compDC.n+' overlaid on '+c.n+', and around each proposal\'s real pinned location. Hover any ring for that proposal\'s documented concern level &amp; sourced notes (most are marked "not publicly disclosed" — we don\'t guess at emissions data that hasn\'t been independently reported).</div></div>';
+
+    h+='<div class="is"><h5 style="color:#fca5a5">🌡️ Heat &amp; wildlife — what research elsewhere has found</h5>';
+    h+='<div style="font-size:10.5px;color:#9aa;line-height:1.55">';
+    h+='<p style="margin:0 0 6px"><strong style="color:#fca5a5">"Data heat island" effect:</strong> A 2026 University of Cambridge analysis of land-surface temperatures around 6,000+ data centres worldwide (2004–2024, not yet peer-reviewed) found an average ~2°C local temperature increase after a large AI data centre begins operating — measurable up to roughly 4–10 km away in some cases, with the largest sites showing localized increases as high as ~9°C close-up. Other researchers have countered that much of this signal may reflect ordinary construction (clearing vegetation, adding pavement/buildings) rather than heat exhaust specifically — so the cause is still actively debated.</p>';
+    h+='<p style="margin:0 0 6px"><strong style="color:#fca5a5">Wildlife &amp; habitat:</strong> Conservation groups (e.g., the National Wildlife Federation, Theodore Roosevelt Conservation Partnership, Sierra Club) have raised several recurring concerns about large data-centre developments generally: continuous cooling-fan and generator noise that can disrupt animal communication, breeding, and migration patterns (including low-frequency noise that standard sound barriers don\'t block well); habitat and green-space loss from large-footprint construction; new transmission-line corridors needed to serve their power demand; and — where facilities draw from or discharge into local waterways — reduced streamflows, warmer discharge water, and lower oxygen levels that can stress fish and other aquatic species.</p>';
+    h+='<p style="margin:0;color:#789;font-style:italic">These are findings from research and reporting on data centres generally (mostly U.S.-based) — not site-specific assessments of any Alberta proposal shown here. Whether, and to what degree, they\'d apply to a specific Alberta site depends on its design, cooling method, water source, and surroundings — exactly the kind of question raised in "What this map can\'t tell you" and worth asking through the regulatory/contact channels above.</p>';
+    h+='</div></div>';
+  }
+
+  h+='<p class="in">⚠ Estimates only — see disclaimer</p>';
+  card.innerHTML=h;
+  card.style.display='block';
+}
+
+// ── Load city ─────────────────────────────────────────────────────────────────
+function loadCity(){
+  stopNoiseDemo(null);
+  clearAL();
+  var idx=document.getElementById('sel').value;
+  if(idx===''){
+    cur=null;document.getElementById('prompt').style.display='block';
+    document.getElementById('s-city').textContent='—';
+    document.getElementById('s-sub').textContent='Select a city above';
+    document.getElementById('s-ratio').textContent='—';
+    document.getElementById('icard').style.display='none';
+    clearIL();map.setView([53.5,-115.0],6);return;
+  }
+  document.getElementById('prompt').style.display='none';
+  // "dcN" = overlay centred on a data-centre proposal's OWN real pinned site
+  // (rather than a city/town) — so users can see how a proposal (the same one,
+  // or a different one picked in "Compare against") stacks up right where it
+  // actually is, alongside the permanent pin already drawn there.
+  if(idx.indexOf('dc')===0){
+    var pin=PINS[parseInt(idx.slice(2))];
+    cur={n:pin.n+' — actual site', la:pin.la, lo:pin.lo, a:pin.a, p:null, mw:pin.mw, isPin:true};
+  } else {
+    cur=C[parseInt(idx)];
+  }
+  var la=cur.la,lo=cur.lo;
+
+  // Which proposal(s) to overlay/compare — user-selectable, so we never imply
+  // a far-away DC's footprint or grid draw is physically happening at this city.
+  var dcSel=document.getElementById('sel-dc').value;
+  // "N/A" = draw no comparison overlay at all — useful when you've clicked a
+  // data-centre's own pin and just want to see THAT proposal's own figures
+  // (investment, jobs, air quality, etc.) without a second footprint laid over it.
+  var noOverlay = (dcSel==='none');
+  var idxList = noOverlay ? [] : (dcSel==='all') ? DC.map(function(d,i){return i;}) : [parseInt(dcSel)];
+  // The single proposal used for all numeric "vs city" / info-card figures.
+  // When "All" is shown, the largest (WV Full) anchors the comparison; the per-proposal
+  // jobs table still lists every proposal individually regardless. When "N/A" is picked
+  // while centred on a proposal's own real site, show THAT proposal's own figures —
+  // via the PIN_TO_DC reverse lookup — rather than defaulting to WV Full.
+  var ownPinIdx = (cur.isPin && idx.indexOf('dc')===0) ? parseInt(idx.slice(2)) : null;
+  compDC = noOverlay
+    ? (ownPinIdx!==null && PIN_TO_DC[ownPinIdx]!==undefined ? DC[PIN_TO_DC[ownPinIdx]] : DC[0])
+    : DC[idxList.length===1 ? idxList[0] : 0];
+
+  var lc=['#fdba74','#fdba74','#93c5fd','#5eead4','#fde68a','#fda4af','#bef264','#7dd3fc','#c4b5fd','#f9a8d4','#99f6e4','#5eead4','#5eead4'];
+  var lt=DC.map(function(d){ return d.n.replace('Wonder Valley — ','WV ').replace('Beacon AI Hub','Beacon Indus')+' · '+d.a+' km² · '+d.reg.split(/[,(]/)[0].trim(); });
+
+  // Draw DC overlay(s) — largest first (skipped entirely when "N/A" is selected)
+  idxList.forEach(function(i){
+    var d=DC[i];
+    var r=L.rectangle(rect(d.a,la,lo),{color:d.col,weight:d.w,fillColor:d.fi,fillOpacity:d.fo,dashArray:d.da}).addTo(map);
+    r.bindTooltip(DTIPS[i],{sticky:true});
+    AL.push(r);
+    var dl=(Math.sqrt(d.a)/2)/111;
+    AL.push(lbl(la+dl+.003,lo,'<span style="color:'+lc[i]+'">'+lt[i]+'</span>'));
+  });
+
+  // Stats — compares the SELECTED proposal's footprint to the city (skipped for
+  // "N/A": there's nothing to compare against, so just confirm what's shown)
+  var ratio = noOverlay
+    ? 'Showing '+compDC.n+'\'s own site info — no comparison overlay selected'
+    : (cur.a>=compDC.a?compDC.n+' = '+((compDC.a/cur.a)*100).toFixed(1)+'% of '+cur.n:compDC.n+' is '+(compDC.a/cur.a).toFixed(1)+'× bigger than '+cur.n);
+  document.getElementById('s-city').textContent=cur.n;
+  document.getElementById('s-sub').textContent = (cur.p!=null)
+    ? (cur.a+' km² · pop. '+cur.p.toLocaleString())
+    : (cur.a+' km² own footprint · '+cur.mw.toLocaleString()+' MW — centred on this proposal\'s real pinned location');
+  document.getElementById('s-ratio').textContent=ratio;
+
+  // Re-draw any active impact layers
+  renderImpact();
+
+  // Fit to largest visible footprint or city
+  map.fitBounds(rect(Math.max(cur.a,compDC.a)*1.35,la,lo));
+}
+
+// ── Page-load init: search list, permalink restore, first-visit walkthrough ──
+buildLocList();
+restoreFromHash();
+maybeShowWalkthrough();
+</script>
+</body>
+</html>
