@@ -27,11 +27,11 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0f1923;color:#e8edf2;he
 #contact-box h2{color:#38bdf8;font-size:15px;margin-bottom:8px}
 #contact-box>p{color:#9ab;margin-bottom:12px}
 #contact-box h3{color:#7ccfff;font-size:11.5px;margin:14px 0 7px;text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid #1e3348;padding-bottom:4px}
-.cct{background:#0a1924;border:1px solid #1e3348;border-radius:7px;padding:9px 11px;margin-bottom:7px}
+.cct{background:#0a1924;border:1px solid #1e3348;border-radius:6px;padding:9px 11px;margin-bottom:7px}
 .cct b{color:#dde;font-size:12px}
 .cct .role{color:#789;font-size:11px;margin:2px 0 7px}
 .cct-btns{display:flex;gap:7px;flex-wrap:wrap}
-.cct-btns a,.cct-btns button{font-size:10.5px;padding:5px 10px;border-radius:5px;cursor:pointer;text-decoration:none;display:inline-block;border:1px solid;font-family:inherit}
+.cct-btns a,.cct-btns button{font-size:10.5px;padding:5px 10px;border-radius:12px;cursor:pointer;text-decoration:none;display:inline-block;border:1px solid;font-family:inherit}
 .cct-link{background:#111d27;color:#7ccfff;border-color:#2c6090!important}
 .cct-link:hover{background:#1e3348}
 .cct-mail{background:#0c2410;color:#86efac;border-color:#22c55e!important}
@@ -44,20 +44,10 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0f1923;color:#e8edf2;he
 
 /* Utility bar (help / table / glossary / FAQ / share) */
 .utilbar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:6px 16px;background:#0a1620;border-bottom:1px solid #1e3348;font-size:11px}
-.ub{background:#111d27;color:#8aabb8;border:1px solid #1e3348;border-radius:5px;padding:5px 10px;font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.ub{background:#111d27;color:#8aabb8;border:1px solid #1e3348;border-radius:12px;padding:5px 10px;font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap}
 .ub:hover{background:#1e3348;color:#cfe0ea}
 .ub-meta{color:#456;font-size:10.5px;margin-left:auto;white-space:nowrap}
 .ub-meta a{color:#60a5fa;text-decoration:underline;cursor:pointer}
-
-/* Search box */
-#locSearch{background:#1a2e42;color:#fff !important;border:1.5px solid #2c6090;border-radius:5px;padding:4px 9px;font-size:12px;min-width:230px}
-#locSearch:focus,#locSearch:active,#locSearch:hover{color:#fff !important}
-#locSearch::placeholder{color:#9fb3c2}
-#locSearch:-webkit-autofill,#locSearch:-webkit-autofill:hover,#locSearch:-webkit-autofill:focus{
-  -webkit-text-fill-color:#fff !important;
-  -webkit-box-shadow:0 0 0 1000px #1a2e42 inset !important;
-  caret-color:#fff;
-}
 
 /* Generic light-blue modal — reused for Walkthrough / Glossary / FAQ / Changelog */
 .gmodal{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:9500;display:none;align-items:center;justify-content:center;padding:18px}
@@ -77,7 +67,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0f1923;color:#e8edf2;he
 /* Table view (overlay on top of map) */
 #tableView{display:none;position:absolute;inset:0;z-index:850;background:#0f1923;overflow:auto;padding:14px 16px}
 #tableView h3{color:#bcd;font-size:13px;margin-bottom:8px}
-#tableView .tv-back{background:#1e3348;color:#cfe0ea;border:1px solid #2c6090;border-radius:5px;padding:6px 12px;font-size:11.5px;cursor:pointer;margin-bottom:10px}
+#tableView .tv-back{background:#1e3348;color:#cfe0ea;border:1px solid #2c6090;border-radius:12px;padding:6px 12px;font-size:11.5px;cursor:pointer;margin-bottom:10px}
 #tableView .tv-back:hover{background:#2c4a68}
 #propTable{width:100%;border-collapse:collapse;font-size:11px}
 #propTable th{background:#16242f;color:#7dd3fc;text-align:left;padding:7px 8px;cursor:pointer;white-space:nowrap;border-bottom:2px solid #2c6090;position:sticky;top:0}
@@ -98,13 +88,13 @@ header p{font-size:10.5px;color:#456;margin-top:2px}
 .ctrl{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:12px 14px;background:#0d1720;border-bottom:1px solid #1e3348;flex-shrink:0}
 .cg{display:flex;flex-direction:column;align-items:stretch;gap:4px}
 .cg label{font-size:11.5px;color:#8aabb8;font-weight:600;white-space:nowrap}
-select,#locSearch{width:100%}
-select{background:#1a2e42;color:#e8edf2;border:1.5px solid #2c6090;border-radius:5px;padding:4px 9px;font-size:12px;cursor:pointer;min-width:0}
+select{width:100%}
+select{background:#1a2e42;color:#e8edf2;border:1.5px solid #2c6090;border-radius:12px;padding:4px 9px;font-size:12px;cursor:pointer;min-width:0}
 select option{background:#111d27}
 
 .ibtns{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
 .ibtns span{font-size:10.5px;color:#345;margin-right:1px;width:100%}
-.ib{padding:4px 9px;border-radius:4px;border:1px solid #1e3348;background:#111d27;color:#567;cursor:pointer;font-size:11px;transition:all .15s;white-space:nowrap}
+.ib{padding:4px 9px;border-radius:6px;border:1px solid #1e3348;background:#111d27;color:#567;cursor:pointer;font-size:11px;transition:all .15s;white-space:nowrap}
 .ib:hover{background:#1e3348;color:#bcd}
 .ib.noise.on{background:#3b0d0d;color:#fca5a5;border-color:#ef4444}
 .ib.water.on{background:#0c1e38;color:#93c5fd;border-color:#3b82f6}
@@ -113,22 +103,22 @@ select option{background:#111d27}
 .ib.econ.on{background:#1e2d0c;color:#bef264;border-color:#84cc16}
 .ib.air.on{background:#1e1530;color:#d8b4fe;border-color:#a855f7}
 
-.snd-btn{display:block;width:100%;margin-top:8px;padding:7px 10px;border-radius:5px;border:1px solid #ef4444;background:#3b0d0d;color:#fca5a5;cursor:pointer;font-size:11.5px;font-weight:600;transition:all .15s;pointer-events:auto}
+.snd-btn{display:block;width:100%;margin-top:8px;padding:7px 10px;border-radius:12px;border:1px solid #ef4444;background:#3b0d0d;color:#fca5a5;cursor:pointer;font-size:11.5px;font-weight:600;transition:all .15s;pointer-events:auto}
 .snd-btn:hover{background:#591414;color:#fecaca}
 .snd-btn.playing{background:#fca5a5;color:#3b0d0d;border-color:#fca5a5}
 
 .mbtns{display:flex;gap:4px;flex-wrap:wrap}
-.mb{padding:4px 9px;border-radius:4px;border:1px solid #1e3348;background:#111d27;color:#567;cursor:pointer;font-size:11px;transition:all .15s}
+.mb{padding:4px 9px;border-radius:6px;border:1px solid #1e3348;background:#111d27;color:#567;cursor:pointer;font-size:11px;transition:all .15s}
 .mb:hover{background:#1e3348;color:#bcd}
 .mb.active{background:#1e4a6e;color:#7ccfff;border-color:#2c6090}
 
 #map{flex:1;min-height:0;position:relative}
-#prompt{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(8,15,24,.9);border:1.5px solid #2c6090;border-radius:10px;padding:16px 24px;text-align:center;z-index:800;pointer-events:none}
+#prompt{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(8,15,24,.9);border:1.5px solid #2c6090;border-radius:12px;padding:16px 24px;text-align:center;z-index:800;pointer-events:none}
 #prompt strong{color:#7ccfff;font-size:14px;display:block;margin-bottom:4px}
 #prompt p{font-size:11px;color:#567}
 
 /* Impact card */
-#icard{position:absolute;top:10px;right:10px;bottom:10px;z-index:900;background:rgba(6,12,20,.95);border:1px solid #2c6090;border-radius:8px;padding:10px 12px;width:240px;font-size:11.5px;pointer-events:auto;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#icard{position:absolute;top:10px;right:10px;bottom:10px;z-index:900;background:rgba(6,12,20,.95);border:1px solid #2c6090;border-radius:12px;padding:10px 12px;width:240px;font-size:11.5px;pointer-events:auto;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
 #icard::-webkit-scrollbar{width:6px}
 #icard::-webkit-scrollbar-thumb{background:#2c6090;border-radius:3px}
 #icard::-webkit-scrollbar-track{background:transparent}
@@ -137,29 +127,66 @@ select option{background:#111d27}
 .il{color:#456}.iv{font-weight:600;text-align:right}
 .is{margin-top:7px;padding-top:6px;border-top:1px solid #131f2b}
 .is h5{font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;color:#345;margin-bottom:4px}
-.in{font-size:9.5px;color:#345;font-style:italic;margin-top:7px}
+.in{font-size:9.5px;color:#fff;font-style:italic;margin-top:7px}
 
-/* Legend */
-.leg{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:5px 12px;background:#080f17;border-top:1px solid #1e3348;flex-shrink:0;font-size:10.5px}
-.li{display:flex;align-items:center;gap:4px;white-space:nowrap}
-.sw{width:18px;height:8px;border-radius:2px;flex-shrink:0}
-.lsep{width:1px;height:12px;background:#1e3348;flex-shrink:0}
 
-/* Stats */
-.stats{display:flex;flex-wrap:wrap;background:#0a1520;border-top:1px solid #1e3348;flex-shrink:0}
-.sc{flex:1;min-width:95px;padding:6px 10px;border-right:1px solid #1e3348}
-.sc:last-child{border-right:none}
-.sl{font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:#345;margin-bottom:2px}
-.sv{font-size:14px;font-weight:700}
-.ss{font-size:9.5px;color:#345;margin-top:1px}
 
 .notebar{font-size:10px;color:#2a3a4a;padding:3px 12px;background:#040b11;flex-shrink:0;border-top:1px solid #1e3348}
 .notebar a{color:#2a4a6a}
 
 .lt{background:transparent;border:none;font-weight:700;font-size:11px;text-shadow:0 1px 4px #000,0 0 8px #000;white-space:nowrap;pointer-events:none;color:#fff}
 
-.leaflet-tooltip{background:rgba(6,12,20,.96)!important;border:1px solid #2c6090!important;color:#cde!important;font-size:11px!important;border-radius:5px!important;padding:4px 8px!important;white-space:pre-line!important;max-width:280px!important}
+.leaflet-tooltip{background:rgba(6,12,20,.96)!important;border:1px solid #2c6090!important;color:#cde!important;font-size:11px!important;border-radius:12px!important;padding:4px 8px!important;white-space:pre-line!important;max-width:280px!important}
 .leaflet-tooltip::before{border-top-color:#2c6090!important}
+/* Mobile menu button — hidden on desktop */
+#mob-menu{display:none}
+
+/* ── Mobile layout (≤768px) ───────────────────────────────────────────────── */
+@media(max-width:768px){
+  body{overflow:auto}
+  .appwrap{flex-direction:column;overflow:visible;height:auto}
+
+  /* Sidebar slides in from left as an overlay */
+  .sidebar{
+    position:fixed;top:0;left:0;bottom:0;
+    width:88%;max-width:320px;
+    z-index:1001;
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    overflow-y:auto;
+    border-right:1px solid #2c6090;
+  }
+  .sidebar.mob-open{transform:translateX(0)}
+
+  /* Dim overlay behind sidebar */
+  #mob-overlay{
+    display:none;position:fixed;inset:0;
+    background:rgba(0,0,0,.55);z-index:1000;
+  }
+  #mob-overlay.visible{display:block}
+
+  /* Map fills the full viewport height */
+  .mainarea{width:100%;height:100vh;min-height:0;overflow:hidden}
+  #map{flex:1;min-height:0}
+
+  /* Floating Controls button */
+  #mob-menu{
+    display:block;
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+    z-index:999;
+    background:#111d27;color:#e8edf2;
+    border:1.5px solid #2c6090;border-radius:24px;
+    padding:10px 24px;font-size:14px;font-weight:600;
+    cursor:pointer;white-space:nowrap;
+    box-shadow:0 2px 12px rgba(0,0,0,.5);
+  }
+
+  /* Impact card — full width sheet at bottom */
+  #icard{
+    top:auto;bottom:0;left:0;right:0;width:100%;
+    border-radius:12px 12px 0 0;max-height:52vh;
+  }
+}
 </style>
 </head>
 <body>
@@ -237,10 +264,10 @@ select option{background:#111d27}
 <!-- CONTACT OFFICIALS MODAL -->
 <div id="contact">
 <div id="contact-box">
-  <h2>📧 Make your voice heard — contact officials</h2>
+  <h2>Make your voice heard — contact officials</h2>
   <p>These proposals go through provincial regulators, cabinet ministries, and local councils — all of whom take public input seriously. Below are the offices most relevant to the projects shown on this map, grouped by who they are and which proposals they cover. <strong>We don't guess at personal email addresses.</strong> Where an office publishes a general email, it's included; otherwise click "Contact page" to find the current, correct address or web form. "Draft email" opens a ready-to-edit message in <em>your own</em> email app — you review, personalize, and send it yourself. Nothing is ever sent on your behalf.</p>
   <div id="cct-list"></div>
-  <div style="background:#0f1d2b;border:1px solid #2c6090;border-radius:8px;padding:12px 14px;margin:14px 0;font-size:11.5px;line-height:1.6">
+  <div style="background:#0f1d2b;border:1px solid #2c6090;border-radius:12px;padding:12px 14px;margin:14px 0;font-size:11.5px;line-height:1.6">
     <h3 style="color:#7dd3fc;font-size:12px;margin:0 0 6px;text-transform:uppercase;letter-spacing:.5px">⚖️ Formally registering a concern with the Alberta Utilities Commission (AUC)</h3>
     <p style="margin:0 0 8px">For projects that involve AUC review (e.g., proposed power-generation facilities tied to a data-centre project), the AUC accepts a <strong>Statement of Intent to Participate (SIP)</strong> from members of the public who want their concerns formally on the record for a specific proceeding. In general, the process works like this:</p>
     <ol style="padding-left:18px;margin:0 0 8px">
@@ -261,18 +288,18 @@ select option{background:#111d27}
 
 <div class="gmodal" id="walk">
 <div class="gmodal-box">
-  <h2>❓ How this map works — 3 steps</h2>
+  <h2>How this map works — 3 steps</h2>
   <div class="qa"><b>1. Pick your town or city</b>The "Centre on" dropdown moves the map to your community (or to a data‑centre proposal's own real site) and shows local stats — population, area, current water &amp; electricity use.</div>
   <div class="qa"><b>2. Pick a proposal to compare</b>The "Compare against" dropdown overlays one project's footprint and key figures on top of your community, so you can see the size and scale side by side. Each proposal is shown on its own — figures from different proposals are never combined or summed.</div>
   <div class="qa"><b>3. Toggle the layers</b>Use the buttons (Footprint, Jobs, Water, Electricity, Air quality, Sound) to explore different angles. Every figure is sourced from public company/government announcements or, where nothing has been disclosed, marked "not publicly disclosed."</div>
-  <div class="foot">Tip: use 🔍 Find in the toolbar to jump straight to a community or proposal by name, or 📋 View as table to see all 13 proposals at a glance.</div>
+  <div class="foot">Tip: use View as table to see all 13 proposals at a glance.</div>
   <button class="gmodal-close" onclick="closeModal('walk')">Got it</button>
 </div>
 </div>
 
 <div class="gmodal" id="gloss">
 <div class="gmodal-box">
-  <h2>📖 Glossary</h2>
+  <h2>Glossary</h2>
   <dl>
     <dt>MW (Megawatt)</dt><dd>A unit of power. 1 MW ≈ enough electricity to power roughly 750–1,000 average Alberta homes at once. Data centres are often described by their planned power draw in MW.</dd>
     <dt>GWh (Gigawatt‑hour)</dt><dd>A unit of energy used over time (1 GWh = 1,000 MWh). Used here to compare a proposal's estimated annual electricity use to a community's.</dd>
@@ -296,7 +323,7 @@ select option{background:#111d27}
   <div class="qa"><b>Why do some proposals show "not publicly disclosed" for investment or air quality?</b>Because, as of the date shown, no figure or plan for that item had been made public for that specific proposal. This map does not fill gaps with assumptions.</div>
   <div class="qa"><b>Is the "what it might sound like" demo a real recording?</b>No — it's a synthesized illustration built to approximate the kind of low-frequency hum and broadband noise that large mechanical/cooling equipment can produce at different distances. It's offered as a rough sense of scale, not a measurement or prediction for any specific site.</div>
   <div class="qa"><b>Can I compare more than one proposal at a time?</b>By design, no — figures from different proposals are shown one at a time and never combined or summed, since stacking unrelated projects' numbers together would be misleading. You can switch between proposals using the "Compare against" dropdown to see each on its own.</div>
-  <div class="qa"><b>I think something here is inaccurate or out of date — how do I flag it?</b>Use the "📧 Contact" feature in the toolbar, or reach out via the contact details for the relevant regulator/municipality shown there. This map will be updated as new public information becomes available.</div>
+  <div class="qa"><b>I think something here is inaccurate or out of date — how do I flag it?</b>Use the "Contact" feature in the toolbar, or reach out via the contact details for the relevant regulator/municipality shown there. This map will be updated as new public information becomes available.</div>
   <div class="qa"><b>Is anyone tracking data centres outside Alberta too?</b>Yes — in the U.S., reporter/activist Erin Brockovich launched a public "AI Data Center Reporting Map" (<a href="https://www.brockovichdatacenter.com/" target="_blank" rel="noopener" style="color:#60a5fa">brockovichdatacenter.com</a>, April 2026) where communities can report concerns; reporting on it has highlighted that many U.S. projects cluster in already drought-prone regions. The 💧 Water layer on this map now includes a note on which Alberta river basin each proposal sits in, including whether it's in the part of southern Alberta that's been closed to new water licences since 2006.</div>
   <div class="qa"><b>Why isn't every Alberta AI data-centre proposal shown here?</b>Because AESO's connection queue alone reportedly holds 30+ large-load applications — but most are listed only by project code and megawatt figure, with no developer name, site, or footprint attached. Putting a project on this map means drawing it at a real location and a real size, so the bar for inclusion is: a named developer, a locatable site, and enough public reporting to compare it responsibly — the same "don't fill gaps with assumptions" rule the figures follow. Two named, increasingly-documented projects that don't yet clear that bar are <b>GLDC Load</b> ("Greenlight," a Pembina Pipeline–Kineticor joint venture northeast of Edmonton in Alberta's Industrial Heartland, AESO-allocated 970 MW) and <b>TransAlta's Keephills Data Centre</b> (Parkland County, west of Edmonton, ~230 MW initial agreement with CPP Investments and Brookfield, announced Feb. 2026) — both are real and well-sourced, but neither has published a site plan or footprint size yet, so there's nothing to draw to scale. They're strong candidates to be added once that information becomes public. (Also worth noting: a roughly 1,100-acre Kineticor/eStruxture data-centre campus proposed for northeast Rocky View County was rejected 6–1 by county council in early 2026 after a lengthy public hearing — a different, since-abandoned proposal from the ones tracked here.)</div>
   <div class="qa"><b>🎈 Fun fact — why does this map even exist?</b>It started as a one-person curiosity project: someone wanted to see how the proposed Wonder Valley data centre would actually compare to the size of their own town — and was genuinely taken aback by how much bigger it looked once it was drawn to scale on a real map, rather than just read as a number on a page. That "wait, it's THAT big?" moment is the whole reason this tool exists — so anyone else can drop their own community onto the map and see the comparison for themselves, instead of just taking someone's word for it.</div>
@@ -306,7 +333,7 @@ select option{background:#111d27}
 
 <div class="gmodal" id="changelog">
 <div class="gmodal-box">
-  <h2>📅 What's changed</h2>
+  <h2>What's changed</h2>
   <dl>
     <dt>June 2026</dt><dd>Expanded from 5 to 13 tracked proposals; added a zone-based "what it might sound like" demo (near / moderate / infrasound distance ranges); added the ability to centre the map on a proposal's own real site (not just nearby towns); added air-quality and economic-benefit (jobs/water/electricity) comparison layers; added a contact-officials feature with draft-email templates; added this toolbar (search, glossary, FAQ, table view, shareable links, walkthrough).</dd>
     <dt>Earlier</dt><dd>Initial release comparing the first 5 announced proposals (including Wonder Valley) against nearby Alberta communities, with footprint-overlay and basic stats.</dd>
@@ -316,6 +343,8 @@ select option{background:#111d27}
 </div>
 </div>
 
+<div id="mob-overlay" onclick="closeMobMenu()"></div>
+<button id="mob-menu" onclick="toggleMobMenu()">☰ Controls</button>
 <div class="appwrap">
 <aside class="sidebar">
 
@@ -325,26 +354,22 @@ select option{background:#111d27}
 </header>
 
 <div style="padding:7px 16px;background:#0a1620;border-bottom:1px solid #1e3348;text-align:center">
-  <button class="contact-open" onclick="showContact()">📧 Make your voice heard — email officials about these proposals</button>
+  <button class="contact-open" onclick="showContact()">Make your voice heard — email officials</button>
 </div>
 
 <div class="utilbar">
-  <button class="ub" onclick="openModal('walk')">❓ How this map works</button>
-  <button class="ub" onclick="toggleTableView()" id="tv-toggle">📋 View as table</button>
-  <button class="ub" onclick="openModal('gloss')">📖 Glossary</button>
+  <button class="ub" onclick="openModal('walk')">How this map works</button>
+  <button class="ub" onclick="toggleTableView()" id="tv-toggle">View as table</button>
+  <button class="ub" onclick="openModal('gloss')">Glossary</button>
   <button class="ub" onclick="openModal('faq')">❔ FAQ</button>
-  <button class="ub" onclick="copyShareLink(this)">🔗 Copy link to this view</button>
-  <span class="ub-meta">📅 Last updated: June 7, 2026 · <a onclick="openModal('changelog')">what's changed?</a></span>
+  <button class="ub" onclick="copyShareLink(this)">Copy link to this view</button>
+  <span class="ub-meta">Last updated: June 7, 2026 · <a onclick="openModal('changelog')">what's changed?</a></span>
 </div>
 
 <div class="ctrl">
+
   <div class="cg">
-    <label for="locSearch">🔍 Find:</label>
-    <input list="locList" id="locSearch" placeholder="Type your town or a proposal's name…" autocomplete="off" oninput="searchLocation(this.value)"/>
-    <datalist id="locList"></datalist>
-  </div>
-  <div class="cg">
-    <label for="sel">📍 Overlay on:</label>
+    <label for="sel">Overlay on:</label>
     <select id="sel" onchange="loadCity()">
       <option value="">— choose a city, town, or a data centre's real site —</option>
       <optgroup label="Large cities (50,000+)">
@@ -381,7 +406,7 @@ select option{background:#111d27}
         <option value="26">Blackfalds — 9 km²</option>
         <option value="27">Olds — 15 km²</option>
       </optgroup>
-      <optgroup label="📍 Data centre proposals — at their own real pinned site">
+      <optgroup label="Data centre proposals — at their own real pinned site">
         <option value="dc0">Wonder Valley — Greenview Industrial Gateway (64 km² · 7,500 MW)</option>
         <option value="dc1">Synapse Olds DC — Town of Olds (1.2 km² · 1,000 MW)</option>
         <option value="dc2">Beacon AI Hub (Indus) — Rocky View County (3.8 km² · 400 MW)</option>
@@ -398,7 +423,7 @@ select option{background:#111d27}
   </div>
 
   <div class="cg">
-    <label for="sel-dc">🏭 Compare against:</label>
+    <label for="sel-dc"> Compare against:</label>
     <select id="sel-dc" onchange="loadCity()">
       <option value="none">N/A — just show this site's own info (no overlay drawn)</option>
       <option value="all">All 13 proposals (size comparison)</option>
@@ -420,12 +445,12 @@ select option{background:#111d27}
 
   <div class="ibtns">
     <span>Impact layers:</span>
-    <button class="ib noise" id="btn-noise" onclick="toggleImpact('noise')">🔊 Noise</button>
-    <button class="ib water" id="btn-water" onclick="toggleImpact('water')">💧 Water</button>
-    <button class="ib elec"  id="btn-elec"  onclick="toggleImpact('elec')">⚡ Electricity</button>
-    <button class="ib jobs"  id="btn-jobs"  onclick="toggleImpact('jobs')">👷 Jobs (long-term)</button>
-    <button class="ib econ"  id="btn-econ"  onclick="toggleImpact('econ')">💰 Economic benefit</button>
-    <button class="ib air"   id="btn-air"   onclick="toggleImpact('air')">💨 Air quality</button>
+    <button class="ib noise" id="btn-noise" onclick="toggleImpact('noise')">Noise</button>
+    <button class="ib water" id="btn-water" onclick="toggleImpact('water')">Water</button>
+    <button class="ib elec"  id="btn-elec"  onclick="toggleImpact('elec')">Electricity</button>
+    <button class="ib jobs"  id="btn-jobs"  onclick="toggleImpact('jobs')">Jobs (long-term)</button>
+    <button class="ib econ"  id="btn-econ"  onclick="toggleImpact('econ')">Economic benefit</button>
+    <button class="ib air"   id="btn-air"   onclick="toggleImpact('air')">Air quality</button>
   </div>
 
   <div class="mbtns">
@@ -435,22 +460,6 @@ select option{background:#111d27}
   </div>
 </div>
 
-<div class="leg">
-  <div class="li"><div class="sw" style="background:#f9731640;border:2px dashed #f97316;"></div>WV Full (64 km²) — Grande Prairie region</div>
-  <div class="li"><div class="sw" style="background:#fb923c38;border:1.5px dashed #fb923c;"></div>WV Phase 1+2 (~20 km²)</div>
-  <div class="li"><div class="sw" style="background:#60a5fa42;border:1.5px solid #60a5fa;"></div>WV Phase 1 (~10 km²)</div>
-  <div class="li"><div class="sw" style="background:#2dd4bf50;border:1.5px dashed #0d9488;"></div>Beacon Indus (3.8 km²) — Rocky View</div>
-  <div class="li"><div class="sw" style="background:#fbbf24cc;border:1.5px solid #d97706;"></div>Synapse Olds (1.2 km²) — Olds</div>
-  <div class="lsep"></div>
-  <div class="li" style="color:#f87171;">🔊 Noise est.</div>
-  <div class="li" style="color:#60a5fa;">💧 Water est.</div>
-  <div class="li" style="color:#fde68a;">⚡ Electricity est.</div>
-  <div class="li" style="color:#86efac;">👷 Long-term jobs est.</div>
-  <div class="li" style="color:#bef264;">💰 Economic benefit est.</div>
-  <div class="li" style="color:#d8b4fe;">💨 Air quality / emissions overlay</div>
-  <div class="lsep"></div>
-  <div class="li"><div class="sw" style="border-radius:50%;background:#f97316;width:9px;height:9px;"></div>DC actual location (pinned)</div>
-</div>
 
 </aside>
 <main class="mainarea">
@@ -460,20 +469,12 @@ select option{background:#111d27}
   <div id="icard"></div>
   <div id="tableView">
     <button class="tv-back" onclick="toggleTableView()">✕ Back to map</button>
-    <h3>📋 All 13 proposals — click a column heading to sort (click again to reverse)</h3>
+    <h3>All 13 proposals — click a column heading to sort (click again to reverse)</h3>
     <table id="propTable"><thead></thead><tbody></tbody></table>
     <div style="font-size:9.5px;color:#456;margin-top:10px">Figures are company/government estimates from public announcements &amp; filings — see the disclaimer for sources and methodology. "Investment" and "Air quality" are marked "not publicly disclosed" where no figure has been independently reported as of June 2026.</div>
   </div>
 </div>
 
-<div class="stats">
-  <div class="sc"><div class="sl">📍 Selected city</div><div class="sv" style="color:#7ccfff" id="s-city">—</div><div class="ss" id="s-sub">Select a city above</div></div>
-  <div class="sc"><div class="sl">WV Full vs city</div><div class="sv" style="color:#fb923c" id="s-ratio">—</div><div class="ss">64 km² full build-out</div></div>
-  <div class="sc"><div class="sl">Wonder Valley Full</div><div class="sv" style="color:#f97316">64 km²</div><div class="ss">$70B · 7.5 GW · Grande Prairie region</div></div>
-  <div class="sc"><div class="sl">Beacon Indus ✅</div><div class="sv" style="color:#2dd4bf">3.8 km²</div><div class="ss">400 MW · $4B · Rocky View Co.</div></div>
-  <div class="sc"><div class="sl">Synapse Olds ⚠</div><div class="sv" style="color:#fde68a">1.21 km²</div><div class="ss">1 GW · $10B · Olds · reapplied</div></div>
-  <div class="sc"><div class="sl">⚠ WV status</div><div class="sv" style="color:#f87171;font-size:11px">Delayed to 2028+</div><div class="ss">No enviro. review · water controversy</div></div>
-</div>
 
 <div class="notebar">⚠ Impact layers are estimates for educational purposes only — not professional assessments. Sources &amp; methodology in disclaimer above. Created June 2026. | Map: © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors</div>
 
@@ -562,54 +563,6 @@ function closeContact(){ document.getElementById('contact').style.display='none'
 function openModal(id){ var m=document.getElementById(id); if(m) m.style.display='flex'; }
 function closeModal(id){ var m=document.getElementById(id); if(m) m.style.display='none'; }
 
-// ── Search box (find a community or proposal by name) ────────────────────────
-function buildLocList(){
-  var dl=document.getElementById('locList');
-  if(!dl || dl.childElementCount) return;
-  var h='';
-  for(var i=0;i<C.length;i++) h+='<option value="'+escA(C[i].n)+'">';
-  for(var j=0;j<DC.length;j++) h+='<option value="'+escA(DC[j].n)+'">';
-  dl.innerHTML=h;
-}
-// Maps each "Compare against" DC-array proposal name to its real-world pinned
-// site in the PINS array (the two arrays are differently ordered/sized — the
-// three Wonder Valley phases all share PINS[0]). Used so the search box can
-// actually navigate the map TO a data centre's real location, not just change
-// which size-comparison overlay is shown.
-var DC_TO_PIN={
-  'Wonder Valley — Full build-out':0, 'Wonder Valley — Phase 1+2':0, 'Wonder Valley — Phase 1':0,
-  'Beacon AI Hub':2, 'Synapse Olds DC':1, 'Wild Rose Power Hub':6, 'AHI Hub of Innovation':7,
-  'eStruxture CAL-3':8, 'Beacon Foothills AI Hub':9, 'Clive Power & Data Centre':10,
-  'Beacon (Harry Smith Hub)':3, 'Beacon (Strathcona Co.)':4, 'Beacon (Leduc Co.)':5
-};
-// Jumps the map to a matched data-centre proposal's real pinned site (sets
-// #sel to its PINS index) and also sets #sel-dc so its size-comparison
-// overlay is shown at that location.
-function goToDC(dcIdx){
-  var pinIdx=DC_TO_PIN[DC[dcIdx].n];
-  document.getElementById('sel-dc').value=String(dcIdx);
-  if(pinIdx!==undefined){ document.getElementById('sel').value='dc'+pinIdx; }
-  loadCity();
-}
-function searchLocation(txt){
-  if(!txt) return;
-  var t=txt.trim().toLowerCase();
-  if(!t) return;
-  for(var i=0;i<C.length;i++){
-    if(C[i].n.toLowerCase()===t){ document.getElementById('sel').value=String(i); loadCity(); return; }
-  }
-  for(var j=0;j<DC.length;j++){
-    if(DC[j].n.toLowerCase()===t){ goToDC(j); return; }
-  }
-  // partial match fallback — first town/proposal whose name contains the typed text
-  for(var k=0;k<C.length;k++){
-    if(C[k].n.toLowerCase().indexOf(t)===0){ document.getElementById('sel').value=String(k); loadCity(); return; }
-  }
-  for(var m=0;m<DC.length;m++){
-    if(DC[m].n.toLowerCase().indexOf(t)!==-1){ goToDC(m); return; }
-  }
-}
-
 // ── Shareable permalink ───────────────────────────────────────────────────────
 function copyShareLink(btn){
   try{
@@ -647,8 +600,8 @@ var TV_SORT={col:null,asc:true};
 function toggleTableView(){
   var tv=document.getElementById('tableView');
   var showing = tv.style.display==='block';
-  if(showing){ tv.style.display='none'; document.getElementById('tv-toggle').textContent='📋 View as table'; }
-  else{ buildPropTable(); tv.style.display='block'; document.getElementById('tv-toggle').textContent='🗺️ Back to map view'; }
+  if(showing){ tv.style.display='none'; document.getElementById('tv-toggle').textContent='View as table'; }
+  else{ buildPropTable(); tv.style.display='block'; document.getElementById('tv-toggle').textContent='← Back to map view'; }
 }
 function propTableRows(){
   return DC.map(function(d,i){
@@ -779,6 +732,13 @@ var DC=[
   {n:'Beacon (Leduc Co.)',              reg:'Leduc County, near Edmonton Intl Airport',             a:3.82, mw:400, col:'#14b8a6',fi:'#5eead4',fo:.45,da:'5 3', w:2, jb:{c:1500,p:300},
    inv:null, air:{lvl:'Not publicly disclosed', note:'This proposal has not yet received approvals. Public reporting reviewed did not specify a capital-investment figure or an on-site power-generation method as of June 2026.'}},
 ];
+// Maps each DC proposal name to its real-world PINS index — used by PIN_TO_DC below.
+var DC_TO_PIN={
+  'Wonder Valley — Full build-out':0, 'Wonder Valley — Phase 1+2':0, 'Wonder Valley — Phase 1':0,
+  'Beacon AI Hub':2, 'Synapse Olds DC':1, 'Wild Rose Power Hub':6, 'AHI Hub of Innovation':7,
+  'eStruxture CAL-3':8, 'Beacon Foothills AI Hub':9, 'Clive Power & Data Centre':10,
+  'Beacon (Harry Smith Hub)':3, 'Beacon (Strathcona Co.)':4, 'Beacon (Leduc Co.)':5
+};
 // Reverse lookup (PINS index → DC index) — used so that when you click a pin and
 // pick "N/A" for Compare against, the info card can show THAT proposal's own
 // figures (investment, jobs, air quality, etc.) rather than a default/comparison one.
@@ -1172,7 +1132,7 @@ function updateCard(){
     h+='<button class="snd-btn snd-zone-btn" data-zone="high"  onclick="toggleNoiseDemo(this,\'high\')">🔊 Near · roughly &gt;65 dB · within ~1–7 km</button>';
     h+='<button class="snd-btn snd-zone-btn" data-zone="mod"   onclick="toggleNoiseDemo(this,\'mod\')">🔊 Moderate · roughly 55–65 dB · ~7–14 km</button>';
     h+='<button class="snd-btn snd-zone-btn" data-zone="infra" onclick="toggleNoiseDemo(this,\'infra\')">🔊 Infrasound zone · roughly &lt;40 dB · beyond ~14 km</button>';
-    h+='<div style="font-size:9px;color:#5a3a3a;margin-top:4px">⚠ All three are computer-generated approximations of a data centre\'s low-frequency hum &amp; cooling-fan drone — NOT real recordings from any project, and not calibrated to a measured dB level (your device volume ≠ actual loudness). The distance ranges are a rough order-of-magnitude guide only, derived from industry-reported source levels (~70–96 dB at the equipment) and the standard ~6 dB drop each time distance from the source doubles — real-world results vary with terrain, weather, walls/windows, and the specific equipment used.</div>';
+    h+='<div style="font-size:9px;color:#fff;margin-top:4px">⚠ All three are computer-generated approximations of a data centre\'s low-frequency hum &amp; cooling-fan drone — NOT real recordings from any project, and not calibrated to a measured dB level (your device volume ≠ actual loudness). The distance ranges are a rough order-of-magnitude guide only, derived from industry-reported source levels (~70–96 dB at the equipment) and the standard ~6 dB drop each time distance from the source doubles — real-world results vary with terrain, weather, walls/windows, and the specific equipment used.</div>';
   }
 
   if(IS.water){
@@ -1261,9 +1221,6 @@ function loadCity(){
   var idx=document.getElementById('sel').value;
   if(idx===''){
     cur=null;document.getElementById('prompt').style.display='block';
-    document.getElementById('s-city').textContent='—';
-    document.getElementById('s-sub').textContent='Select a city above';
-    document.getElementById('s-ratio').textContent='—';
     document.getElementById('icard').style.display='none';
     clearIL();map.setView([53.5,-115.0],6);return;
   }
@@ -1316,11 +1273,6 @@ function loadCity(){
   var ratio = noOverlay
     ? 'Showing '+compDC.n+'\'s own site info — no comparison overlay selected'
     : (cur.a>=compDC.a?compDC.n+' = '+((compDC.a/cur.a)*100).toFixed(1)+'% of '+cur.n:compDC.n+' is '+(compDC.a/cur.a).toFixed(1)+'× bigger than '+cur.n);
-  document.getElementById('s-city').textContent=cur.n;
-  document.getElementById('s-sub').textContent = (cur.p!=null)
-    ? (cur.a+' km² · pop. '+cur.p.toLocaleString())
-    : (cur.a+' km² own footprint · '+cur.mw.toLocaleString()+' MW — centred on this proposal\'s real pinned location');
-  document.getElementById('s-ratio').textContent=ratio;
 
   // Re-draw any active impact layers
   renderImpact();
@@ -1329,8 +1281,25 @@ function loadCity(){
   map.fitBounds(rect(Math.max(cur.a,compDC.a)*1.35,la,lo));
 }
 
+// ── Mobile sidebar toggle ─────────────────────────────────────────────────────
+function toggleMobMenu(){
+  var s=document.querySelector('.sidebar');
+  var o=document.getElementById('mob-overlay');
+  var btn=document.getElementById('mob-menu');
+  var isOpen=s.classList.toggle('mob-open');
+  o.classList.toggle('visible',isOpen);
+  btn.textContent=isOpen?'✕ Close':'☰ Controls';
+}
+function closeMobMenu(){
+  var s=document.querySelector('.sidebar');
+  var o=document.getElementById('mob-overlay');
+  var btn=document.getElementById('mob-menu');
+  s.classList.remove('mob-open');
+  o.classList.remove('visible');
+  btn.textContent='☰ Controls';
+}
+
 // ── Page-load init: search list, permalink restore, first-visit walkthrough ──
-buildLocList();
 restoreFromHash();
 maybeShowWalkthrough();
 </script>
