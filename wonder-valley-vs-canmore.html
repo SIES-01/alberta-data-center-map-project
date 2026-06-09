@@ -852,40 +852,46 @@ function toggleNoiseDemo(btn,zone){
   try{
     var z=SND_ZONES[zone];
     sndCtx = sndCtx || new (window.AudioContext||window.webkitAudioContext)();
-    if(sndCtx.state==='suspended') sndCtx.resume();
-    var ctx=sndCtx, now=ctx.currentTime;
-    var master=ctx.createGain(); master.gain.setValueAtTime(0,now);
-    master.gain.linearRampToValueAtTime(z.gain, now+.6);
-    master.connect(ctx.destination);
+    // iOS Safari requires resume() to complete before any nodes start — use Promise
+    var resumePromise = (sndCtx.state==='suspended') ? sndCtx.resume() : Promise.resolve();
+    resumePromise.then(function(){
+      try{
+        var ctx=sndCtx, now=ctx.currentTime;
+        var master=ctx.createGain(); master.gain.setValueAtTime(0,now);
+        master.gain.linearRampToValueAtTime(z.gain, now+.6);
+        master.connect(ctx.destination);
 
-    // Low-frequency electrical/transformer hum (60 Hz + harmonic)
-    var hum=ctx.createOscillator(); hum.type='sawtooth'; hum.frequency.value=60;
-    var humG=ctx.createGain(); humG.gain.value=z.hum1;
-    hum.connect(humG); humG.connect(master); hum.start(now);
+        // Low-frequency electrical/transformer hum (60 Hz + harmonic)
+        var hum=ctx.createOscillator(); hum.type='sawtooth'; hum.frequency.value=60;
+        var humG=ctx.createGain(); humG.gain.value=z.hum1;
+        hum.connect(humG); humG.connect(master); hum.start(now);
 
-    var hum2=ctx.createOscillator(); hum2.type='sine'; hum2.frequency.value=120;
-    var hum2G=ctx.createGain(); hum2G.gain.value=z.hum2;
-    hum2.connect(hum2G); hum2G.connect(master); hum2.start(now);
+        var hum2=ctx.createOscillator(); hum2.type='sine'; hum2.frequency.value=120;
+        var hum2G=ctx.createGain(); hum2G.gain.value=z.hum2;
+        hum2.connect(hum2G); hum2G.connect(master); hum2.start(now);
 
-    // Broadband cooling-fan / HVAC drone (filtered noise) — filter centre frequency
-    // drops zone-by-zone so farther zones sound progressively more muffled/distant
-    var bufLen=ctx.sampleRate*2, buf=ctx.createBuffer(1,bufLen,ctx.sampleRate);
-    var data=buf.getChannelData(0);
-    for(var i=0;i<bufLen;i++) data[i]=Math.random()*2-1;
-    var noise=ctx.createBufferSource(); noise.buffer=buf; noise.loop=true;
-    var bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=z.bp; bp.Q.value=z.q;
-    var noiseG=ctx.createGain(); noiseG.gain.value=z.noise;
-    noise.connect(bp); bp.connect(noiseG); noiseG.connect(master); noise.start(now);
+        // Broadband cooling-fan / HVAC drone (filtered noise)
+        var bufLen=ctx.sampleRate*2, buf=ctx.createBuffer(1,bufLen,ctx.sampleRate);
+        var data=buf.getChannelData(0);
+        for(var i=0;i<bufLen;i++) data[i]=Math.random()*2-1;
+        var noise=ctx.createBufferSource(); noise.buffer=buf; noise.loop=true;
+        var bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=z.bp; bp.Q.value=z.q;
+        var noiseG=ctx.createGain(); noiseG.gain.value=z.noise;
+        noise.connect(bp); bp.connect(noiseG); noiseG.connect(master); noise.start(now);
 
-    // Slow amplitude wobble so it doesn't sound like a flat tone
-    var lfo=ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value=.18;
-    var lfoG=ctx.createGain(); lfoG.gain.value=z.noise*.22;
-    lfo.connect(lfoG); lfoG.connect(noiseG.gain); lfo.start(now);
+        // Slow amplitude wobble
+        var lfo=ctx.createOscillator(); lfo.type='sine'; lfo.frequency.value=.18;
+        var lfoG=ctx.createGain(); lfoG.gain.value=z.noise*.22;
+        lfo.connect(lfoG); lfoG.connect(noiseG.gain); lfo.start(now);
 
-    sndNodes={master:master,nodes:[hum,hum2,noise,lfo]};
-    sndZone=zone;
-    paintSndButtons();
-    filterNoiseRings(); // hide the rings for the other two levels — show only the one playing
+        sndNodes={master:master,nodes:[hum,hum2,noise,lfo]};
+        sndZone=zone;
+        paintSndButtons();
+        filterNoiseRings();
+      }catch(e2){
+        if(btn) btn.textContent='🔇 Sound not available in this browser';
+      }
+    });
   }catch(e){
     if(btn) btn.textContent='🔇 Sound not available in this browser';
   }
