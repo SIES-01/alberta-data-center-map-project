@@ -841,9 +841,9 @@ function fmtM(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+
 // AND with a lower/narrower filter sweep — approximating how sound both quiets down
 // and loses its higher frequencies (becomes more "muffled") with distance.
 var SND_ZONES={
-  high:  {label:'Near · roughly >65 dB · within ~1–7 km',      gain:.50, hum1:.16, hum2:.090, noise:.22, bp:420, q:.7},
-  mod:   {label:'Moderate · roughly 55–65 dB · ~7–14 km',       gain:.20, hum1:.08, hum2:.040, noise:.09, bp:230, q:.9},
-  infra: {label:'Infrasound zone · roughly <40 dB · beyond ~14 km', gain:.06, hum1:.05, hum2:.012, noise:.02, bp:110, q:1.3}
+  high:  {label:'Near · roughly >65 dB · within ~1–7 km',      gain:.80, hum1:.22, hum2:.14, noise:.30, bp:700, q:.7},
+  mod:   {label:'Moderate · roughly 55–65 dB · ~7–14 km',       gain:.45, hum1:.12, hum2:.07, noise:.14, bp:380, q:.9},
+  infra: {label:'Infrasound zone · roughly <40 dB · beyond ~14 km', gain:.18, hum1:.07, hum2:.03, noise:.06, bp:200, q:1.3}
 };
 var sndCtx=null, sndNodes=null, sndZone=null;
 function toggleNoiseDemo(btn,zone){
@@ -856,17 +856,19 @@ function toggleNoiseDemo(btn,zone){
     var resumePromise = (sndCtx.state==='suspended') ? sndCtx.resume() : Promise.resolve();
     resumePromise.then(function(){
       try{
-        var ctx=sndCtx, now=ctx.currentTime;
-        var master=ctx.createGain(); master.gain.setValueAtTime(0,now);
-        master.gain.linearRampToValueAtTime(z.gain, now+.6);
+        var ctx=sndCtx;
+        var master=ctx.createGain();
+        master.gain.value=z.gain;  // set directly — ramp scheduling unreliable on iOS Safari
         master.connect(ctx.destination);
+        var now=ctx.currentTime;
 
-        // Low-frequency electrical/transformer hum (60 Hz + harmonic)
-        var hum=ctx.createOscillator(); hum.type='sawtooth'; hum.frequency.value=60;
+        // Electrical/transformer hum — use 180Hz + 360Hz (3rd/6th harmonic of 60Hz)
+        // so the drone is audible on phone speakers (which roll off below ~150Hz)
+        var hum=ctx.createOscillator(); hum.type='sawtooth'; hum.frequency.value=180;
         var humG=ctx.createGain(); humG.gain.value=z.hum1;
         hum.connect(humG); humG.connect(master); hum.start(now);
 
-        var hum2=ctx.createOscillator(); hum2.type='sine'; hum2.frequency.value=120;
+        var hum2=ctx.createOscillator(); hum2.type='sine'; hum2.frequency.value=360;
         var hum2G=ctx.createGain(); hum2G.gain.value=z.hum2;
         hum2.connect(hum2G); hum2G.connect(master); hum2.start(now);
 
