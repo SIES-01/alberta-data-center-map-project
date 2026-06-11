@@ -425,7 +425,7 @@ select option{background:#111d27}
         <option value="dc2">Beacon AI Hub (Indus) — Rocky View County (3.8 km² · 400 MW)</option>
         <option value="dc3">Beacon (Harry Smith Hub) — Parkland County (3.8 km² · 400 MW)</option>
         <option value="dc4">Beacon Heartland AI Hub — Strathcona Co. Heartland (3.8 km² · 400 MW)</option>
-        <option value="dc5">Beacon (Leduc Co.) — Leduc County (3.8 km² · 400 MW)</option>
+        <option value="dc5">Saunders Lake AI DC Hub — Leduc County (1.6 km² · 425 MW · grid)</option>
         <option value="dc6">Wild Rose Power Hub — Rocky View County (1.9 km² · 1,300 MW)</option>
         <option value="dc7">AHI Hub of Innovation — Red Deer County (0.5 km² · 250 MW)</option>
         <option value="dc8">eStruxture CAL-3 — Rocky View County (0.03 km² · 90 MW)</option>
@@ -452,7 +452,7 @@ select option{background:#111d27}
       <option value="9">Clive Power &amp; Data Centre (0.02 km² · 20 MW)</option>
       <option value="10">Beacon (Harry Smith Hub) (3.8 km² · 400 MW)</option>
       <option value="11">Beacon Heartland AI Hub (3.8 km² · 400 MW)</option>
-      <option value="12">Beacon (Leduc Co.) (3.8 km² · 400 MW)</option>
+      <option value="12">Saunders Lake AI DC Hub (1.6 km² · 425 MW · grid)</option>
     </select>
   </div>
 
@@ -540,7 +540,7 @@ var CONTACTS=[
     {n:'Foothills County', role:'Covers Beacon Foothills AI Hub (near High River).', link:'https://www.foothillscountyab.ca/contact', email:null},
     {n:'Parkland County', role:'Covers Beacon (Harry Smith Hub, between Keephills & Duffield).', link:'https://www.parklandcounty.com/county-government/contact-us/', email:'hello@parklandcounty.com'},
     {n:'Strathcona County', role:'Covers Beacon Heartland AI Hub (Range Rd 223, Alberta Industrial Heartland).', link:'https://www.strathcona.ca/council-county/administration/county-service-contacts/', email:'councillors@strathcona.ca'},
-    {n:'Leduc County', role:'Covers Beacon (Leduc Co.), near Edmonton International Airport.', link:'https://www.leduc-county.com/county-government/contact-us', email:null}
+    {n:'Leduc County', role:'Covers Saunders Lake AI Data Center Hub (Beacon), near Edmonton International Airport.', link:'https://www.leduc-county.com/county-government/contact-us', email:null}
   ]}
 ];
 function escA(s){ return s.replace(/'/g,"&#39;").replace(/"/g,'&quot;'); }
@@ -750,15 +750,15 @@ var DC=[
    inv:null, air:{lvl:'Not publicly disclosed', note:'Public reporting reviewed (news coverage, Parkland County\'s Area Structure Plan framework documents) did not specify a capital-investment figure or an on-site power-generation method for this proposal as of June 2026.'}},
   {n:'Beacon Heartland AI Hub',         reg:'Alberta Industrial Heartland — power plant site: Sturgeon County (7 km E of Gibbons) · data centre: Strathcona County (Range Rd 223)', a:3.82, mw:400, col:'#2dd4bf',fi:'#5eead4',fo:.45,da:'5 3', w:2, jb:{c:1500,p:300}, pwr:'gas', waterless:false,
    inv:null, air:{lvl:'High concern — associated 920 MW gas power plant', note:'A co-located 920 MW natural gas power plant (200 reciprocating gas engines in Sturgeon County, 7 km east of Gibbons) is proposed to supply this data centre. Federal Impact Assessment Agency completed review March 2026 (no further federal assessment required), but AUC thermal power plant application is ongoing. The gas generation component represents a significant documented air quality concern. Sources: IAAC Project 90123 (Canada.ca); AUC Beacon AI Centers Heartland Thermal Power Plant Application.'}},
-  {n:'Beacon (Leduc Co.)',              reg:'Leduc County, near Edmonton Intl Airport',             a:3.82, mw:400, col:'#14b8a6',fi:'#5eead4',fo:.45,da:'5 3', w:2, jb:{c:1500,p:300}, pwr:'unknown', waterless:false,
-   inv:null, air:{lvl:'Not publicly disclosed', note:'This proposal has not yet received approvals. Public reporting reviewed did not specify a capital-investment figure or an on-site power-generation method as of June 2026.'}},
+  {n:'Saunders Lake AI Data Center Hub', reg:'Leduc County, near Edmonton Intl Airport\n400 acres · adjacent to Saunders Lake substation (138/240 kV)', a:1.62, mw:425, col:'#14b8a6',fi:'#5eead4',fo:.45,da:'5 3', w:2, jb:{c:1500,p:300}, pwr:'grid', waterless:false,
+   inv:null, air:{lvl:'Grid-connected — no on-site generation', note:'Grid supply: 425 MW via Saunders Lake substation (138/240 kV), available Q1 2030. Water: 300,000 gallons/day (1,136 m³/day) requested from Leduc County. Wastewater infrastructure extension ~0.8 km required. On-site stormwater management plan required. Fiber: diverse carrier routes via Access, ~800 km municipal dark-fiber network & Alberta SuperNet POPs (multi-terabit capacity). Sources: beacondatacenters.com/campuses (Saunders Lake campus page, June 2026).'}},
 ];
 // Maps each DC proposal name to its real-world PINS index — used by PIN_TO_DC below.
 var DC_TO_PIN={
   'Wonder Valley — Full build-out':0, 'Wonder Valley — Phase 1+2':0, 'Wonder Valley — Phase 1':0,
   'Beacon AI Hub':2, 'Synapse Olds DC':1, 'Wild Rose Power Hub':6, 'AHI Hub of Innovation':7,
   'eStruxture CAL-3':8, 'Beacon Foothills AI Hub':9, 'Clive Power & Data Centre':10,
-  'Beacon (Harry Smith Hub)':3, 'Beacon Heartland AI Hub':4, 'Beacon (Leduc Co.)':5
+  'Beacon (Harry Smith Hub)':3, 'Beacon Heartland AI Hub':4, 'Saunders Lake AI Data Center Hub':5
 };
 // Reverse lookup (PINS index → DC index) — used so that when you click a pin and
 // pick "N/A" for Compare against, the info card can show THAT proposal's own
@@ -793,7 +793,7 @@ var DC_BASIN={
   'Clive Power & Data Centre':      'Red Deer River basin (Lacombe County sits within it, like neighbouring Red Deer County) — not under the 2006 southern-basin licence closure, but identified provincially as a basin facing periodic drought cycles and competing agricultural/municipal/industrial demand.',
   'Beacon (Harry Smith Hub)':       'North Saskatchewan basin, west of Edmonton — generally considered to face moderate water-allocation pressure from cumulative municipal/industrial demand, though not under the 2006 southern-basin closure.',
   'Beacon Heartland AI Hub':        'North Saskatchewan basin — Alberta Industrial Heartland (Strathcona/Sturgeon Counties), northeast of Edmonton, near Gibbons and Fort Saskatchewan. The heartland industrial corridor draws heavily on the North Saskatchewan River; not under the 2006 southern-basin closure, but cumulative municipal and industrial water demand in this corridor is already significant.',
-  'Beacon (Leduc Co.)':             'North Saskatchewan basin, near Edmonton Intl. Airport — generally considered to face moderate water-allocation pressure from cumulative municipal/industrial demand, though not under the 2006 southern-basin closure.'
+  'Saunders Lake AI Data Center Hub': 'North Saskatchewan basin, near Edmonton Intl. Airport — Beacon has requested 300,000 gallons/day (1,136 m³/day) from Leduc County water services. Not under the 2006 southern-basin closure, but the North Saskatchewan corridor faces cumulative municipal and industrial demand pressure.'
 };
 var DTIPS=[
   'Wonder Valley — Full build-out\nRegion: Grande Prairie · Greenview Industrial Gateway\n64 km² · ~15,800 ac · $70B · 7.5 GW · 55 buildings\n⚠ Delayed 2028+ · No enviro review · Water permit controversy\n👷 Jobs (est.): ~4,000 construction · ~1,200 long-term (100–150/phase × ~8–10 phases)',
@@ -808,7 +808,7 @@ var DTIPS=[
   'Clive Power & Data Centre\nRegion: West of Clive, Lacombe County (4.3-acre site off Haynes Rd)\n0.017 km² · 20 MW (19.8 MW gas-fired + biofuel-capable)\n🔄 AUC/EPEA review underway · Approval expected ~Aug 2026\n👷 Jobs (est.): ~80 construction · ~20 long-term',
   'Beacon (Harry Smith Hub)\nRegion: Between Keephills & Duffield, Parkland County (west of Edmonton)\n3.82 km² · 400 MW\n🔄 Parkland County ASP framework approved Sept 2025\n👷 Jobs (company est.): ~1,500 construction · ~300 long-term',
   'Beacon Heartland AI Hub\nRegion: Alberta Industrial Heartland, Strathcona Co. (Range Rd 223)\n3.82 km² · 400 MW · Site permit granted\n⚠ Associated 920 MW gas plant in Sturgeon Co.\n👷 Jobs (company est.): ~1,500 construction · ~300 long-term',
-  'Beacon (Leduc Co.)\nRegion: Leduc County, near Edmonton Intl Airport\n3.82 km² · 400 MW\n🔄 Proposed · No approvals yet\n👷 Jobs (company est.): ~1,500 construction · ~300 long-term',
+  'Saunders Lake AI Data Center Hub\nRegion: Leduc County, near Edmonton Intl Airport · 400 acres\n1.62 km² · 425 MW · Grid (Saunders Lake substation 138/240 kV) · Q1 2030\n💧 300,000 gal/day from Leduc County\n🔄 Proposed · No approvals yet\n👷 Jobs (company est.): ~1,500 construction · ~300 long-term',
 ];
 
 // ── DC actual locations (permanent) ──────────────────────────────────────────
@@ -818,7 +818,7 @@ var PINS=[
   {n:'Beacon AI Hub (Indus)',      reg:'Hamlet of Indus, Rocky View County\n~3.2 km east of Calgary',                la:50.95,lo:-113.77,a:3.82, mw:400,  col:'#2dd4bf',st:'✅ Rocky View ASP approved June 2025', jb:{c:1500,p:300}, pwr:'unknown', waterless:false},
   {n:'Beacon (Harry Smith Hub)',   reg:'Between Keephills & Duffield\nParkland County, west of Edmonton',            la:53.49,lo:-114.55,a:3.82, mw:400,  col:'#5eead4',st:'🔄 Parkland County ASP framework approved Sept 2025', jb:{c:1500,p:300}, pwr:'unknown', waterless:false},
   {n:'Beacon Heartland AI Hub',   reg:'Alberta Industrial Heartland — Sturgeon County\n(Power plant site: 7 km E of Gibbons · Data centre: Strathcona Co., Range Rd 223)',  la:53.840,lo:-113.192,a:3.82, mw:400,  col:'#5eead4',st:'🔄 Site permit granted · AUC gas plant review ongoing', jb:{c:1500,p:300}, pwr:'gas', waterless:false},
-  {n:'Beacon (Leduc Co.)',         reg:'Leduc County, near Edmonton Intl Airport',                                    la:53.28,lo:-113.59,a:3.82, mw:400,  col:'#5eead4',st:'🔄 Proposed · No approvals yet', jb:{c:1500,p:300}, pwr:'unknown', waterless:false},
+  {n:'Saunders Lake AI Data Center Hub', reg:'Leduc County, near Edmonton Intl Airport\n400 acres · Saunders Lake substation (138/240 kV) · Q1 2030', la:53.28,lo:-113.59,a:1.62, mw:425, col:'#5eead4',st:'🔄 Proposed · Grid-connected · Q1 2030 RFS · 300,000 gal/day water', jb:{c:1500,p:300}, pwr:'grid', waterless:false},
   {n:'Wild Rose Power Hub',        reg:'~2 km SW of Hamlet of Langdon, Rocky View Co.\n~10 km east of Calgary',     la:50.985,lo:-113.775,a:1.94,  mw:1300, col:'#f43f5e',st:'⚠ Contentious · Residents opposed · Area Structure Plan underway', jb:{c:3000,p:600}, pwr:'unknown', waterless:false},
   {n:'AHI Hub of Innovation',      reg:'Blindman Industrial Park, Red Deer County\n(north of Red Deer)',             la:52.36,lo:-113.76, a:0.49,  mw:250,  col:'#84cc16',st:'✅ Approved Oct 2025 · 1st power module Q3 2026', jb:{c:600,p:150}, pwr:'cogen+solar+battery', waterless:true},
   {n:'eStruxture CAL-3',           reg:'Balzac, Rocky View County\n~5 km north of Calgary',                          la:51.217,lo:-113.967,a:0.028, mw:90,   col:'#38bdf8',st:'🔄 Under construction · Opening fall 2026', jb:{c:300,p:80}, pwr:'grid', waterless:false},
