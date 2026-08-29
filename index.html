@@ -63,7 +63,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
 /* Disclaimer */
 #disc{position:fixed;inset:0;background:rgba(10,7,20,.86);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}
-#disc-box{position:relative;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px 28px 24px;max-width:600px;width:93%;font-size:12.5px;line-height:1.65;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:var(--shadow-lg);overflow-x:hidden}
+#disc-box{position:relative;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px 28px 24px;max-width:600px;width:93%;font-size:12.5px;line-height:1.65;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;box-shadow:var(--shadow-lg);overflow-x:hidden}
 #disc-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;background:linear-gradient(90deg,var(--mint-500),var(--coral-400))}
 #disc-box h2{color:var(--text);font-size:15px;margin-bottom:10px;font-weight:800;letter-spacing:-.2px}
 #disc-box h3{color:var(--mint-300);font-size:12px;margin:12px 0 5px;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
@@ -77,7 +77,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
 /* Contact officials modal */
 #contact{position:fixed;inset:0;background:rgba(10,7,20,.86);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}
-#contact-box{position:relative;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px 28px 24px;max-width:640px;width:93%;font-size:12.5px;line-height:1.6;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:var(--shadow-lg);overflow-x:hidden}
+#contact-box{position:relative;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px 28px 24px;max-width:640px;width:93%;font-size:12.5px;line-height:1.6;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;box-shadow:var(--shadow-lg);overflow-x:hidden}
 #contact-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;background:linear-gradient(90deg,var(--mint-500),var(--coral-400))}
 #contact-box h2{color:var(--text);font-size:15px;margin-bottom:8px;font-weight:800;letter-spacing:-.2px}
 #contact-box>p{color:var(--text-dim);margin-bottom:12px}
@@ -106,7 +106,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
 /* Generic modal — reused for Walkthrough / Glossary / FAQ / Changelog */
 .gmodal{position:fixed;inset:0;background:rgba(10,7,20,.82);z-index:9500;display:none;align-items:center;justify-content:center;padding:18px}
-.gmodal-box{position:relative;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px 26px 24px;max-width:620px;width:100%;font-size:12.5px;line-height:1.65;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;color:var(--text-dim);box-shadow:var(--shadow-lg);overflow-x:hidden}
+.gmodal-box{position:relative;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px 26px 24px;max-width:620px;width:100%;font-size:12.5px;line-height:1.65;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;color:var(--text-dim);box-shadow:var(--shadow-lg);overflow-x:hidden}
 .gmodal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;background:linear-gradient(90deg,var(--mint-500),var(--coral-400))}
 .gmodal-box h2{color:var(--text);font-size:15px;margin-bottom:10px;font-weight:800;letter-spacing:-.2px}
 .gmodal-box h3{color:var(--mint-300);font-size:10.5px;margin:14px 0 5px;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
@@ -274,6 +274,8 @@ select option{background:#1c1836}
     transform:translateX(-100%);
     transition:transform .25s ease;
     overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
     border-right:1px solid rgba(111,208,186,0.3);
   }
   .sidebar.mob-open{transform:translateX(0)}
@@ -753,47 +755,28 @@ select option{background:#1c1836}
 
 <script>
 // ── Body scroll lock ─────────────────────────────────────────────────────────
-// The page used to be exactly one viewport tall (the map app filled 100vh with
-// nothing to scroll), so a fixed-position overlay never had to fight the body
-// for scroll. Now the hero section makes the whole document taller/scrollable,
-// so every full-screen overlay (disclaimer, contact, glossary/FAQ/etc., and the
-// mobile sidebar drawer) needs to lock body scroll while it's open.
+// Every full-screen overlay (disclaimer, contact, glossary/FAQ/etc., and the
+// mobile sidebar drawer) is itself `position:fixed;inset:0`, so it already
+// physically covers the whole viewport and intercepts all touch input over
+// it — the background page can't receive a scroll gesture through it.
 //
-// Plain `overflow:hidden` on body is NOT reliable for this on iOS Safari — it
-// does not consistently stop the page from scrolling behind a fixed overlay,
-// and (worse) it can tangle up touch-scrolling *inside* a nested
-// overflow-y:auto panel (like a modal's own scrollable box), which is exactly
-// the kind of bug that leaves a "Got it"/"Close" button unreachable and a
-// user stuck. The reliable fix is to pin body in place with position:fixed
-// (recording and restoring the scroll offset), which is the standard
-// technique for this on iOS.
-var _scrollLockY = 0, _scrollLockDepth = 0;
-function lockScroll(){
-  if(_scrollLockDepth === 0){
-    _scrollLockY = window.scrollY || document.documentElement.scrollTop || 0;
-    document.body.style.position='fixed';
-    document.body.style.top=(-_scrollLockY)+'px';
-    document.body.style.left='0';
-    document.body.style.right='0';
-    document.body.style.width='100%';
-  }
-  _scrollLockDepth++;
-}
-function unlockScrollIfNoneOpen(){
-  var discOpen = document.getElementById('disc').style.display==='flex';
-  var contactOpen = document.getElementById('contact').style.display==='flex';
-  var gmodalOpen = Array.prototype.some.call(document.querySelectorAll('.gmodal'), function(m){ return m.style.display==='flex'; });
-  var sb = document.querySelector('.sidebar');
-  var mobOpen = sb && sb.classList.contains('mob-open');
-  if(discOpen || contactOpen || gmodalOpen || mobOpen) return;
-  _scrollLockDepth = 0;
-  document.body.style.position='';
-  document.body.style.top='';
-  document.body.style.left='';
-  document.body.style.right='';
-  document.body.style.width='';
-  window.scrollTo(0, _scrollLockY);
-}
+// An earlier version of this also pinned <body> with position:fixed while an
+// overlay was open (the common iOS-Safari "scroll lock" recipe). That
+// resizes/repositions <body> itself, which sits directly above the map's
+// container in the document — and Leaflet caches the pixel size of its
+// container the first time it measures it. Any layout change to an ancestor
+// that Leaflet isn't told about via map.invalidateSize() leaves that cache
+// stale, so the map's on-screen pixels stop lining up with the coordinates
+// Leaflet uses for click/tap hit-testing — pins can look perfectly normal
+// and still not respond to taps. Rather than chase every place that needs an
+// invalidateSize() call, we avoid touching <body> layout at all: the only
+// remaining thing to prevent is *scroll chaining* — the browser handing a
+// scroll gesture off to <body> once an overlay's own inner box hits the end
+// of its scrollable content — which `overscroll-behavior: contain` (set on
+// each overlay's scrollable box, see CSS) handles with zero JS and zero
+// effect on page layout.
+function lockScroll(){ /* no-op — see comment above; kept so existing call sites stay valid */ }
+function unlockScrollIfNoneOpen(){ /* no-op — see comment above */ }
 // Safety net: no overlay on this page should ever be able to trap someone —
 // tapping the dark backdrop (anywhere outside the card/box itself) closes it,
 // on top of each one's own explicit close button.
@@ -808,6 +791,11 @@ function acceptDisc(){
   document.getElementById('disc').style.display='none';
   unlockScrollIfNoneOpen();
   if(pendingType){ doToggle(pendingType); pendingType=null; }
+  // The map was created while sitting under the disclaimer overlay and/or
+  // below the fold under the hero section — give Leaflet a chance to
+  // re-measure its container now that it's actually the thing on screen, so
+  // its cached pixel size can't drift out of sync with where taps land.
+  setTimeout(function(){ if(map && map.invalidateSize) map.invalidateSize(); }, 50);
 }
 
 // ── Contact officials ────────────────────────────────────────────────────────
@@ -1170,6 +1158,14 @@ var PINS=[
 
 // ── Map ───────────────────────────────────────────────────────────────────────
 var map=L.map('map',{zoomControl:true}).setView([53.5,-115.0],6);
+// Mobile browsers resize the viewport (and so #map's container) whenever the
+// address bar shows/hides on scroll or the device rotates, without firing
+// any event Leaflet itself listens for. Left unhandled, Leaflet's cached
+// container size drifts out of sync with its actual on-screen size, which
+// shows up as pins/rectangles you can see but can't tap. Re-measuring on
+// resize/orientationchange keeps hit-testing lined up with what's rendered.
+window.addEventListener('resize', function(){ map.invalidateSize(); });
+window.addEventListener('orientationchange', function(){ setTimeout(function(){ map.invalidateSize(); }, 100); });
 // The impact info card sits ON TOP of the map and now scrolls internally when its
 // content runs long — without this, mouse-wheel/trackpad scrolling over the card
 // would be picked up by Leaflet and zoom/pan the MAP underneath instead of
@@ -1714,6 +1710,10 @@ function scrollToApp(){
   if(!el) return;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   el.scrollIntoView({behavior: reduce ? 'auto' : 'smooth'});
+  // Scrolling the hero out of view is exactly when a mobile browser's address
+  // bar collapses and the viewport grows — re-measure the map once things
+  // settle so tap hit-testing doesn't drift out of sync with the pins.
+  setTimeout(function(){ if(map && map.invalidateSize) map.invalidateSize(); }, reduce ? 50 : 500);
 }
 
 // ── Mobile sidebar toggle ─────────────────────────────────────────────────────
