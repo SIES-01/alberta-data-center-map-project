@@ -63,7 +63,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
 /* Disclaimer */
 #disc{position:fixed;inset:0;background:rgba(10,7,20,.86);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}
-#disc-box{position:relative;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px 28px 24px;max-width:600px;width:93%;font-size:12.5px;line-height:1.65;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);overflow-x:hidden}
+#disc-box{position:relative;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px 28px 24px;max-width:600px;width:93%;font-size:12.5px;line-height:1.65;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:var(--shadow-lg);overflow-x:hidden}
 #disc-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;background:linear-gradient(90deg,var(--mint-500),var(--coral-400))}
 #disc-box h2{color:var(--text);font-size:15px;margin-bottom:10px;font-weight:800;letter-spacing:-.2px}
 #disc-box h3{color:var(--mint-300);font-size:12px;margin:12px 0 5px;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
@@ -77,7 +77,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
 /* Contact officials modal */
 #contact{position:fixed;inset:0;background:rgba(10,7,20,.86);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}
-#contact-box{position:relative;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px 28px 24px;max-width:640px;width:93%;font-size:12.5px;line-height:1.6;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);overflow-x:hidden}
+#contact-box{position:relative;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px 28px 24px;max-width:640px;width:93%;font-size:12.5px;line-height:1.6;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:var(--shadow-lg);overflow-x:hidden}
 #contact-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;background:linear-gradient(90deg,var(--mint-500),var(--coral-400))}
 #contact-box h2{color:var(--text);font-size:15px;margin-bottom:8px;font-weight:800;letter-spacing:-.2px}
 #contact-box>p{color:var(--text-dim);margin-bottom:12px}
@@ -106,7 +106,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
 /* Generic modal — reused for Walkthrough / Glossary / FAQ / Changelog */
 .gmodal{position:fixed;inset:0;background:rgba(10,7,20,.82);z-index:9500;display:none;align-items:center;justify-content:center;padding:18px}
-.gmodal-box{position:relative;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px 26px 24px;max-width:620px;width:100%;font-size:12.5px;line-height:1.65;max-height:88vh;overflow-y:auto;color:var(--text-dim);box-shadow:var(--shadow-lg);overflow-x:hidden}
+.gmodal-box{position:relative;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid var(--line);border-radius:var(--radius-lg);padding:26px 26px 24px;max-width:620px;width:100%;font-size:12.5px;line-height:1.65;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;color:var(--text-dim);box-shadow:var(--shadow-lg);overflow-x:hidden}
 .gmodal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--radius-lg) var(--radius-lg) 0 0;background:linear-gradient(90deg,var(--mint-500),var(--coral-400))}
 .gmodal-box h2{color:var(--text);font-size:15px;margin-bottom:10px;font-weight:800;letter-spacing:-.2px}
 .gmodal-box h3{color:var(--mint-300);font-size:10.5px;margin:14px 0 5px;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
@@ -187,7 +187,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 /* Layout — app shell (sidebar + map), fills a full viewport of its own below the hero */
 .app-shell{height:100vh;display:flex;flex-direction:row;overflow:hidden;position:relative;z-index:2}
 .appwrap{position:relative;flex:1;min-height:0;width:100%;overflow:hidden;z-index:1}
-.sidebar{position:absolute;left:12px;top:12px;bottom:12px;width:304px;z-index:500;display:flex;flex-direction:column;overflow-y:auto;border-radius:var(--radius-lg);background:linear-gradient(165deg,rgba(36,30,68,0.84),rgba(20,16,38,0.88));backdrop-filter:blur(48px) saturate(220%);-webkit-backdrop-filter:blur(48px) saturate(220%);border:1px solid var(--line);box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(255,255,255,0.07);transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.sidebar{position:absolute;left:12px;top:12px;bottom:12px;width:304px;z-index:500;display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:var(--radius-lg);background:linear-gradient(165deg,rgba(36,30,68,0.84),rgba(20,16,38,0.88));backdrop-filter:blur(48px) saturate(220%);-webkit-backdrop-filter:blur(48px) saturate(220%);border:1px solid var(--line);box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(255,255,255,0.07);transition:transform .32s cubic-bezier(.4,0,.2,1)}
 .sidebar.sb-hidden{transform:translateX(-332px);pointer-events:none}
 .mainarea{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;z-index:1}
 header{background:transparent;padding:16px 16px 10px;border-bottom:1px solid var(--line-soft);flex-shrink:0}
@@ -320,7 +320,7 @@ select option{background:#1c1836}
 <div id="topbrand"></div>
 
 <!-- DISCLAIMER MODAL -->
-<div id="disc" style="display:flex;">
+<div id="disc" style="display:flex;" onclick="closeOnBackdrop(event, acceptDisc)">
 <div id="disc-box">
   <h2>⚠ Impact Projection Disclaimer &amp; Sources</h2>
   <div style="background:linear-gradient(135deg,rgba(69,185,162,0.18),rgba(231,154,92,0.08));border:1px solid rgba(111,208,186,0.28);border-radius:12px;padding:12px 14px;margin-bottom:14px">
@@ -430,7 +430,7 @@ select option{background:#1c1836}
 </div>
 
 <!-- CONTACT OFFICIALS MODAL -->
-<div id="contact">
+<div id="contact" onclick="closeOnBackdrop(event, closeContact)">
 <div id="contact-box">
   <h2>Make your voice heard — contact officials</h2>
   <p>These proposals go through provincial regulators, cabinet ministries, and local councils — all of whom take public input seriously. Below are the offices most relevant to the projects shown on this map, grouped by who they are and which proposals they cover. <strong>We don't guess at personal email addresses.</strong> Where an office publishes a general email, it's included; otherwise click "Contact page" to find the current, correct address or web form. "Draft email" opens a ready-to-edit message in <em>your own</em> email app — you review, personalize, and send it yourself. Nothing is ever sent on your behalf.</p>
@@ -454,7 +454,7 @@ select option{background:#1c1836}
 </div>
 </div>
 
-<div class="gmodal" id="walk">
+<div class="gmodal" id="walk" onclick="closeOnBackdrop(event, function(){ closeModal('walk'); })">
 <div class="gmodal-box">
   <h2>How this map works — 3 steps</h2>
   <div class="qa"><b>1. Pick your town or city</b>The "Centre on" dropdown moves the map to your community (or to a data‑centre proposal's own real site) and shows local stats — population, area, current water &amp; electricity use.</div>
@@ -465,7 +465,7 @@ select option{background:#1c1836}
 </div>
 </div>
 
-<div class="gmodal" id="gloss">
+<div class="gmodal" id="gloss" onclick="closeOnBackdrop(event, function(){ closeModal('gloss'); })">
 <div class="gmodal-box">
   <h2>Glossary</h2>
   <dl>
@@ -483,7 +483,7 @@ select option{background:#1c1836}
 </div>
 </div>
 
-<div class="gmodal" id="faq">
+<div class="gmodal" id="faq" onclick="closeOnBackdrop(event, function(){ closeModal('faq'); })">
 <div class="gmodal-box">
   <h2>❔ Frequently asked questions</h2>
   <div class="qa"><b>How big is Alberta's data centre boom overall?</b>Alberta's total data centre capacity is projected to surge from <strong>1.6 GW</strong> today to <strong>13.2 GW</strong> — a more than 8× increase — if the proposals currently in planning and construction are all built out (Source: BUILDEX Alberta / Major Projects Alberta, June 2026). Separately, AESO's own grid-connection queue is larger still: as of February 2026 it held <strong>42 large-load applications</strong> (most of them AI data centres) requesting a combined <strong>21.1 GW</strong> — nearly twice Alberta's entire peak grid load today (CBC News, Feb. 2026). For context, Alberta's entire electricity grid currently supplies roughly 100,000 GWh/yr (about 12–15 GW peak). The 20 proposals tracked on this map are the subset of that queue with a named developer, a real site, and enough public reporting to compare responsibly.</div>
@@ -505,7 +505,7 @@ select option{background:#1c1836}
 </div>
 </div>
 
-<div class="gmodal" id="changelog">
+<div class="gmodal" id="changelog" onclick="closeOnBackdrop(event, function(){ closeModal('changelog'); })">
 <div class="gmodal-box">
   <h2>What's changed</h2>
   <dl>
@@ -757,19 +757,47 @@ select option{background:#1c1836}
 // nothing to scroll), so a fixed-position overlay never had to fight the body
 // for scroll. Now the hero section makes the whole document taller/scrollable,
 // so every full-screen overlay (disclaimer, contact, glossary/FAQ/etc., and the
-// mobile sidebar drawer) needs to lock body scroll while it's open — otherwise
-// a touch-scroll gesture that starts on the overlay can instead scroll the
-// (invisible, behind it) page underneath, which on the mobile sidebar looks
-// exactly like "scrolling doesn't work."
-function lockScroll(){ document.body.style.overflow='hidden'; }
+// mobile sidebar drawer) needs to lock body scroll while it's open.
+//
+// Plain `overflow:hidden` on body is NOT reliable for this on iOS Safari — it
+// does not consistently stop the page from scrolling behind a fixed overlay,
+// and (worse) it can tangle up touch-scrolling *inside* a nested
+// overflow-y:auto panel (like a modal's own scrollable box), which is exactly
+// the kind of bug that leaves a "Got it"/"Close" button unreachable and a
+// user stuck. The reliable fix is to pin body in place with position:fixed
+// (recording and restoring the scroll offset), which is the standard
+// technique for this on iOS.
+var _scrollLockY = 0, _scrollLockDepth = 0;
+function lockScroll(){
+  if(_scrollLockDepth === 0){
+    _scrollLockY = window.scrollY || document.documentElement.scrollTop || 0;
+    document.body.style.position='fixed';
+    document.body.style.top=(-_scrollLockY)+'px';
+    document.body.style.left='0';
+    document.body.style.right='0';
+    document.body.style.width='100%';
+  }
+  _scrollLockDepth++;
+}
 function unlockScrollIfNoneOpen(){
   var discOpen = document.getElementById('disc').style.display==='flex';
   var contactOpen = document.getElementById('contact').style.display==='flex';
   var gmodalOpen = Array.prototype.some.call(document.querySelectorAll('.gmodal'), function(m){ return m.style.display==='flex'; });
   var sb = document.querySelector('.sidebar');
   var mobOpen = sb && sb.classList.contains('mob-open');
-  if(!discOpen && !contactOpen && !gmodalOpen && !mobOpen) document.body.style.overflow='';
+  if(discOpen || contactOpen || gmodalOpen || mobOpen) return;
+  _scrollLockDepth = 0;
+  document.body.style.position='';
+  document.body.style.top='';
+  document.body.style.left='';
+  document.body.style.right='';
+  document.body.style.width='';
+  window.scrollTo(0, _scrollLockY);
 }
+// Safety net: no overlay on this page should ever be able to trap someone —
+// tapping the dark backdrop (anywhere outside the card/box itself) closes it,
+// on top of each one's own explicit close button.
+function closeOnBackdrop(ev, closeFn){ if(ev.target === ev.currentTarget) closeFn(); }
 
 // ── Disclaimer ───────────────────────────────────────────────────────────────
 var discOK = false, pendingType = null;
@@ -1249,7 +1277,7 @@ function paintSndButtons(){
 // Clicking a pin selects that proposal's REAL site as the active location — the
 // same as picking it from the "Overlay on" dropdown or the search box — so any
 // layers you've turned on (noise, water, electricity, jobs, etc.) apply to it.
-function selectPin(i){
+function selectPin(i, tappedLayer){
   document.getElementById('sel').value='dc'+i;
   if(PIN_TO_DC[i]!==undefined){ document.getElementById('sel-dc').value=String(PIN_TO_DC[i]); }
   loadCity();
@@ -1257,18 +1285,23 @@ function selectPin(i){
   // click handler — but there's no "mouseout" on touch to ever close that
   // tooltip again, so it's left sitting on screen as a narrow, unreadable
   // column on top of the (much better) impact card this just opened. Close
-  // it immediately so the impact card is what the user actually sees.
-  map.closeTooltip();
+  // it immediately (on the specific layer that was tapped — every layer
+  // that has bindTooltip() also gets its own closeTooltip()) so the impact
+  // card is what the user actually sees. Also try the map-level close as a
+  // belt-and-braces catch-all, wrapped defensively since it's not something
+  // we can verify against the real Leaflet build in this environment.
+  try{ if(tappedLayer && tappedLayer.closeTooltip) tappedLayer.closeTooltip(); }catch(e){}
+  try{ if(map.closeTooltip) map.closeTooltip(); }catch(e){}
 }
 PINS.forEach(function(p,i){
   var s=Math.sqrt(p.a), dl=s/2/111, dlo=s/2/(111*Math.cos(p.la*Math.PI/180));
   var clickTip='\n👆 Click to select this site and view its layers';
   L.rectangle(rect(p.a,p.la,p.lo),{color:p.col,weight:2.5,fillColor:p.col,fillOpacity:.28}).addTo(map)
    .bindTooltip(p.n+'\n'+p.reg+'\n'+p.a+' km² · '+p.mw+' MW\n'+p.st+'\n👷 Jobs (est.): ~'+p.jb.c.toLocaleString()+' construction · ~'+p.jb.p.toLocaleString()+' long-term'+clickTip,{sticky:true})
-   .on('click',function(){ selectPin(i); });
+   .on('click',function(){ selectPin(i, this); });
   L.circleMarker([p.la,p.lo],{radius:4,color:p.col,weight:2,fillColor:p.col,fillOpacity:1}).addTo(map)
    .bindTooltip(p.n+' — actual location\n'+p.reg+clickTip,{sticky:true})
-   .on('click',function(){ selectPin(i); });
+   .on('click',function(){ selectPin(i, this); });
   // Permanent label above the rectangle
   lbl(p.la+dl+.008, p.lo,
     '<span style="color:'+p.col+';font-size:11px;font-weight:700">'+p.n+'</span><br>'+
