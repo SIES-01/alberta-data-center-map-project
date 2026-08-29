@@ -289,11 +289,13 @@ select option{background:#1c1836}
   .mainarea{width:100%;height:100vh;min-height:0;overflow:hidden}
   #map{flex:1;min-height:0}
 
-  /* Floating Controls button */
+  /* Floating Controls button — z-index above the sidebar (1001) so it stays a
+     crisp, clickable button instead of ghosting through the sidebar's frosted
+     glass background when the drawer is open */
   #mob-menu{
     display:block;
     position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-    z-index:999;
+    z-index:1002;
     background:var(--mint-400);color:var(--ink);
     border:none;border-radius:24px;
     padding:10px 24px;font-size:14px;font-weight:700;
@@ -306,6 +308,11 @@ select option{background:#1c1836}
     top:auto;bottom:0;left:0;right:0;width:100%;
     border-radius:12px 12px 0 0;max-height:52vh;
   }
+
+  /* Wider tooltips on small screens — the desktop 290px cap turns a multi-line
+     tooltip into a tall, unreadable column on a phone if one does linger
+     (e.g. an impact-layer ring tapped without a click handler to close it) */
+  .leaflet-tooltip{max-width:80vw!important}
 }
 </style>
 </head>
@@ -745,12 +752,33 @@ select option{background:#1c1836}
 </div><!-- /.app-shell -->
 
 <script>
+// ── Body scroll lock ─────────────────────────────────────────────────────────
+// The page used to be exactly one viewport tall (the map app filled 100vh with
+// nothing to scroll), so a fixed-position overlay never had to fight the body
+// for scroll. Now the hero section makes the whole document taller/scrollable,
+// so every full-screen overlay (disclaimer, contact, glossary/FAQ/etc., and the
+// mobile sidebar drawer) needs to lock body scroll while it's open — otherwise
+// a touch-scroll gesture that starts on the overlay can instead scroll the
+// (invisible, behind it) page underneath, which on the mobile sidebar looks
+// exactly like "scrolling doesn't work."
+function lockScroll(){ document.body.style.overflow='hidden'; }
+function unlockScrollIfNoneOpen(){
+  var discOpen = document.getElementById('disc').style.display==='flex';
+  var contactOpen = document.getElementById('contact').style.display==='flex';
+  var gmodalOpen = Array.prototype.some.call(document.querySelectorAll('.gmodal'), function(m){ return m.style.display==='flex'; });
+  var sb = document.querySelector('.sidebar');
+  var mobOpen = sb && sb.classList.contains('mob-open');
+  if(!discOpen && !contactOpen && !gmodalOpen && !mobOpen) document.body.style.overflow='';
+}
+
 // ── Disclaimer ───────────────────────────────────────────────────────────────
 var discOK = false, pendingType = null;
-function showDisc(t){ pendingType=t; document.getElementById('disc').style.display='flex'; }
+lockScroll(); // #disc is shown by default on load (see its inline style below)
+function showDisc(t){ pendingType=t; document.getElementById('disc').style.display='flex'; lockScroll(); }
 function acceptDisc(){
   discOK=true;
   document.getElementById('disc').style.display='none';
+  unlockScrollIfNoneOpen();
   if(pendingType){ doToggle(pendingType); pendingType=null; }
 }
 
@@ -824,12 +852,13 @@ function draftEmail(name,email){
 function showContact(){
   if(!document.getElementById('cct-list').innerHTML) buildContactList();
   document.getElementById('contact').style.display='flex';
+  lockScroll();
 }
-function closeContact(){ document.getElementById('contact').style.display='none'; }
+function closeContact(){ document.getElementById('contact').style.display='none'; unlockScrollIfNoneOpen(); }
 
 // ── Generic modal (Walkthrough / Glossary / FAQ / Changelog) ─────────────────
-function openModal(id){ var m=document.getElementById(id); if(m) m.style.display='flex'; }
-function closeModal(id){ var m=document.getElementById(id); if(m) m.style.display='none'; }
+function openModal(id){ var m=document.getElementById(id); if(m){ m.style.display='flex'; lockScroll(); } }
+function closeModal(id){ var m=document.getElementById(id); if(m){ m.style.display='none'; unlockScrollIfNoneOpen(); } }
 
 // ── Shareable permalink ───────────────────────────────────────────────────────
 function copyShareLink(btn){
@@ -1224,6 +1253,12 @@ function selectPin(i){
   document.getElementById('sel').value='dc'+i;
   if(PIN_TO_DC[i]!==undefined){ document.getElementById('sel-dc').value=String(PIN_TO_DC[i]); }
   loadCity();
+  // On touch devices, tapping a pin opens its Leaflet tooltip AND fires this
+  // click handler — but there's no "mouseout" on touch to ever close that
+  // tooltip again, so it's left sitting on screen as a narrow, unreadable
+  // column on top of the (much better) impact card this just opened. Close
+  // it immediately so the impact card is what the user actually sees.
+  map.closeTooltip();
 }
 PINS.forEach(function(p,i){
   var s=Math.sqrt(p.a), dl=s/2/111, dlo=s/2/(111*Math.cos(p.la*Math.PI/180));
@@ -1667,6 +1702,7 @@ function toggleMobMenu(){
   var isOpen=s.classList.toggle('mob-open');
   o.classList.toggle('visible',isOpen);
   btn.textContent=isOpen?'✕ Close':'☰ Controls';
+  if(isOpen) lockScroll(); else unlockScrollIfNoneOpen();
 }
 function closeMobMenu(){
   var s=document.querySelector('.sidebar');
@@ -1674,6 +1710,7 @@ function closeMobMenu(){
   var btn=document.getElementById('mob-menu');
   s.classList.remove('mob-open');
   o.classList.remove('visible');
+  unlockScrollIfNoneOpen();
   btn.textContent='☰ Controls';
 }
 
