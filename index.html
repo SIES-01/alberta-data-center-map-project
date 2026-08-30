@@ -277,6 +277,10 @@ select option{background:#1c1836}
 #map-clear-btn{top:10px}
 #map-labels-btn{top:48px}
 #map-clear-btn:hover,#map-labels-btn:hover{border-color:rgba(111,208,186,0.7);background:rgba(38,32,66,0.94)}
+/* Watch-list button — bottom-left, clear of #sb-reopen (top-left, desktop-only
+   collapsed-sidebar state) and everything else stacked top-right/bottom-centre. */
+#map-watch-btn{position:absolute;bottom:10px;left:10px;z-index:950;background:rgba(30,25,58,0.88);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(231,154,92,0.4);border-radius:20px;color:var(--text);padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.35);font-family:inherit;transition:all .18s}
+#map-watch-btn:hover{border-color:rgba(231,154,92,0.75);background:rgba(38,32,66,0.94)}
 /* Close button on the impact card itself — on mobile this becomes a
    bottom sheet that can cover most of the screen, with the "Controls"
    button its only other way off-screen from being reachable, and even
@@ -360,7 +364,8 @@ select option{background:#1c1836}
      as the drawer's "✕" Close button in the strip beside it — hide it
      rather than fight over that space. */
   .sidebar.mob-open ~ .mainarea #map-clear-btn,
-  .sidebar.mob-open ~ .mainarea #map-labels-btn{display:none}
+  .sidebar.mob-open ~ .mainarea #map-labels-btn,
+  .sidebar.mob-open ~ .mainarea #map-watch-btn{display:none}
 
   /* The header's own "✕" (.sb-close) is a DESKTOP-only affordance — it
      collapses the sidebar to a thin reopen tab, a concept that doesn't
@@ -648,6 +653,16 @@ select option{background:#1c1836}
 </div>
 </div>
 
+<div class="gmodal" id="watchlist" onclick="closeOnBackdrop(event, function(){ closeModal('watchlist'); })">
+<div class="gmodal-box">
+  <h2>📋 Known, not yet drawn</h2>
+  <p>AESO's connection queue holds more requested data-centre load than the 20 proposals mapped here — but most of the rest are only a project code and a megawatt figure, with no public developer, site, or footprint to draw responsibly. This list is different: these are specific, named proposals we know a real amount about, but which still can't be plotted at a real location/size because that particular piece — a site plan, a footprint — hasn't been published yet. They're listed here instead of on the map itself for exactly that reason, and will move onto the map the moment that's no longer true.</p>
+  <div id="watchlist-list"></div>
+  <div class="foot">This list is intentionally short — the same "don't fill gaps with assumptions" rule the rest of this map follows. If you know of another named, sourced proposal that belongs here, use the Feedback form to flag it.</div>
+  <button class="gmodal-close" onclick="closeModal('watchlist')">Close</button>
+</div>
+</div>
+
 <section class="site-hero">
   <div class="hero-topbar">
     <span>📍 20 of 40+ Alberta AI data centre proposals mapped in detail</span>
@@ -870,6 +885,7 @@ select option{background:#1c1836}
 <div id="map">
   <button id="map-clear-btn" onclick="clearSelection()" title="Clear selection">↺ Clear</button>
   <button id="map-labels-btn" onclick="toggleAllLabels()" title="Hide/show all pin labels">🏷️ Clear labels</button>
+  <button id="map-watch-btn" onclick="openModal('watchlist')" title="Known proposals not yet drawn to scale">📋 Watch list</button>
   <div id="prompt"><strong>Select a city, or click any data centre pin to learn more</strong><p>Actual DC locations are already pinned on the map</p></div>
   <div id="icard"></div>
   <div id="tableView">
@@ -939,6 +955,29 @@ function acceptDisc(){
 // organization's official "contact us" page, and only list a general office email
 // where the organization itself publishes one. "Draft email" always opens the
 // message in the VISITOR's own mail client — nothing is sent from this page.
+// Named, sourced proposals that don't have enough public info (a site plan,
+// a footprint) to draw responsibly at a real location/size yet — see the
+// gmodal#watchlist note for why these live here instead of on the map.
+var WATCHLIST=[
+  {n:'TransAlta\'s Keephills Data Centre', reg:'Parkland County, west of Edmonton',
+   note:'One of only two projects that actually won firm grid connection in AESO\'s Phase 1 large-load allocation — 230 MW (AESO project P3083), alongside Meta/GLDC\'s 970 MW, filling the entire 1,200 MW Phase 1 envelope. A Memorandum of Understanding with CPP Investments and Brookfield covers an initial ~230 MW power-purchase agreement, potentially scaling to 1 GW.',
+   why:'No site plan or footprint has been published yet, so there\'s nothing to draw to real scale.',
+   src:'AESO Large Load Projects list; company MOU announcement, Feb. 2026'}
+];
+function buildWatchList(){
+  var el=document.getElementById('watchlist-list');
+  if(!el) return;
+  var h='';
+  WATCHLIST.forEach(function(w){
+    h+='<div class="cct"><b>'+w.n+'</b><div class="role">'+w.reg+'</div>';
+    h+='<div style="font-size:11px;color:var(--text-dim);line-height:1.55;margin-top:5px">'+w.note+'</div>';
+    h+='<div style="font-size:10.5px;color:#e79a5c;margin-top:6px"><strong>Why it\'s not on the map:</strong> '+w.why+'</div>';
+    h+='<div style="font-size:9.5px;color:var(--text-faint);margin-top:4px">Source: '+w.src+'</div></div>';
+  });
+  el.innerHTML=h;
+  var btn=document.getElementById('map-watch-btn');
+  if(btn) btn.textContent='📋 Watch list ('+WATCHLIST.length+')';
+}
 var CONTACTS=[
   {grp:'🏛️ Your MLA (Member of the Legislative Assembly)', items:[
     {n:'Find & email your MLA', role:'Look up your constituency to get your current MLA\'s name and official @assembly.ab.ca email — this directory is kept current by the Legislature itself, which is the most reliable source since MLAs and ridings can change.', link:'https://www.assembly.ab.ca/members/members-of-the-legislative-assembly', email:null}
@@ -2044,6 +2083,7 @@ function closeMobMenu(){
 }
 
 // ── Page-load init: search list, permalink restore, first-visit walkthrough ──
+buildWatchList();
 restoreFromHash();
 maybeShowWalkthrough();
 
