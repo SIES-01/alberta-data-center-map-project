@@ -239,6 +239,12 @@ select option{background:#1c1836}
 /* Impact card */
 #icard{position:absolute;top:10px;right:10px;bottom:10px;z-index:900;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid rgba(111,208,186,0.25);border-radius:var(--radius-md);padding:13px 14px;width:254px;font-size:11.5px;pointer-events:auto;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:var(--shadow-lg),0 0 0 1px rgba(231,154,92,0.06),inset 0 1px 0 rgba(255,255,255,0.06)}
 #icard::-webkit-scrollbar{width:4px}
+/* Close button on the impact card itself — on mobile this becomes a
+   bottom sheet that can cover most of the screen, with the "Controls"
+   button its only other way off-screen from being reachable, and even
+   then closing it meant reopening the drawer and re-finding the same
+   toggle button. A close button on the card itself is the direct fix. */
+.icard-close{position:sticky;top:0;float:right;margin:-13px -14px 6px 8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--panel-solid);color:var(--text-dim);font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
 #icard::-webkit-scrollbar-thumb{background:rgba(155,226,209,0.28);border-radius:4px}
 #icard::-webkit-scrollbar-track{background:transparent}
 #icard h4{font-size:11.5px;font-weight:700;color:var(--text);margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--line-soft);letter-spacing:-.1px}
@@ -1350,6 +1356,15 @@ var cur=null;
 var compDC=DC[0];   // proposal currently used for "vs city" comparisons — set by the 🏭 selector
 
 function toggleImpact(t){if(!discOK){showDisc(t);return;}doToggle(t);}
+function closeImpactCard(){
+  ['noise','water','elec','jobs','econ','air'].forEach(function(k){
+    IS[k]=false;
+    var b=document.getElementById('btn-'+k);
+    if(b) b.classList.remove('on');
+  });
+  stopNoiseDemo(null);
+  renderImpact();
+}
 function doToggle(t){
   IS[t]=!IS[t];
   document.getElementById('btn-'+t).classList.toggle('on',IS[t]);
@@ -1539,7 +1554,7 @@ function updateCard(){
   var ePct = (hasPop && cElec>0) ? (dElec/cElec).toFixed(1) : '—';
   var abPct=(dElec/abElec*100).toFixed(1);
 
-  var h='';
+  var h='<button class="icard-close" onclick="closeImpactCard()" title="Close">✕</button>';
 
   if(IS.noise){
     h+='<h4 style="color:#fca5a5">🔊 Noise — '+compDC.n+' (est.)</h4>';
