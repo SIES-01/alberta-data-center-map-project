@@ -594,7 +594,7 @@ select option{background:#1c1836}
 <div class="gmodal" id="faq" onclick="closeOnBackdrop(event, function(){ closeModal('faq'); })">
 <div class="gmodal-box">
   <h2>❔ Frequently asked questions</h2>
-  <div class="qa"><b>How big is Alberta's data centre boom overall?</b>Alberta's total data centre capacity is projected to surge from <strong>1.6 GW</strong> today to <strong>13.2 GW</strong> — a more than 8× increase — if the proposals currently in planning and construction are all built out (Source: BUILDEX Alberta / Major Projects Alberta, June 2026). Separately, AESO's own grid-connection queue is larger still: as of February 2026 it held <strong>42 large-load applications</strong> (most of them AI data centres) requesting a combined <strong>21.1 GW</strong> — nearly twice Alberta's entire peak grid load today (CBC News, Feb. 2026). For context, Alberta's entire electricity grid currently supplies roughly 100,000 GWh/yr (about 12–15 GW peak). The 20 proposals tracked on this map are the subset of that queue with a named developer, a real site, and enough public reporting to compare responsibly.</div>
+  <div class="qa"><b>How big is Alberta's data centre boom overall?</b>The often-cited "<strong>1.6 GW → 13.2 GW</strong>, a more than 8× increase" figure is <strong>Canada-wide</strong> data centre capacity (York University / BCG research, 2026) — not an Alberta-specific number, and it's easy to find it misattributed to this province alone (an earlier version of this page did exactly that). Alberta is genuinely the epicentre of that national pipeline, but 1.6 GW is not "Alberta's operating capacity today." For a live, Alberta-specific figure: AESO's own connection queue held <strong>~19,565 MW</strong> of requested data-centre load across <strong>41 applications</strong>, as of its <strong>July 30, 2026</strong> connection list — of which only <strong>1,200 MW</strong> (two Phase 1 projects: Meta/GLDC's 970 MW and TransAlta's Keephills at 230 MW) has actually been allocated firm grid connection so far; the rest is requested, not connected. That queue is also larger and more current than the "42 applications / 21.1 GW" figure (CBC News, Feb. 2026) still cited elsewhere on this page — queues move fast, and that number is now roughly six months stale. For grid-scale context: Alberta's Internal Load averaged 10,316 MW in 2025 (≈90.4 TWh/yr) with a record peak of 12,785 MW (Dec 11, 2025) — that's actual demand, not the province's total installed generating capacity, which is meaningfully higher. The 20 proposals tracked on this map are the subset of AESO's queue with a named developer, a real site, and enough public reporting to compare responsibly.</div>
   <div class="qa"><b>Is this an official government or company map?</b>No. This is an independent, informational comparison built from public announcements, news coverage, and government/regulatory filings. It is not affiliated with any of the companies, municipalities, or regulators shown.</div>
   <div class="qa"><b>Where do the numbers come from?</b>Each figure is attributed to its source where possible (company announcements, municipal planning documents, regulatory filings, news reporting). Where no figure has been publicly released, it's marked "not publicly disclosed" rather than estimated or guessed.</div>
   <div class="qa"><b>Why do some proposals show "not publicly disclosed" for investment or air quality?</b>Because, as of the date shown, no figure or plan for that item had been made public for that specific proposal. This map does not fill gaps with assumptions.</div>
@@ -1353,7 +1353,12 @@ window.addEventListener('orientationchange', function(){ setTimeout(function(){ 
 var TL={
   str: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© <a href="https://openstreetmap.org">OpenStreetMap</a>',maxZoom:19}),
   sat: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri',maxZoom:19}),
-  dark:L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}),
+  // CARTO deprecated free/anonymous access to basemaps.cartocdn.com — every
+  // tile now renders "API KEY REQUIRED" watermarks without one. Switched to
+  // Esri's Dark Gray Canvas basemap instead, which needs no key — same
+  // no-auth pattern already relied on for the "sat" (World_Imagery) layer
+  // above.
+  dark:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri',maxZoom:19,maxNativeZoom:16}),
 };
 TL.str.addTo(map); var BL='str';
 function setTile(k){map.removeLayer(TL[BL]);TL[k].addTo(map);BL=k;['Sat','Str','Dark'].forEach(function(n){document.getElementById('b'+n).classList.remove('active')});document.getElementById('b'+k[0].toUpperCase()+k.slice(1)).classList.add('active');}
@@ -1467,18 +1472,32 @@ var PIN_LABELS=[], labelsHidden=false;
 PINS.forEach(function(p,i){
   var s=Math.sqrt(p.a), dl=s/2/111, dlo=s/2/(111*Math.cos(p.la*Math.PI/180));
   var clickTip='\n👆 Click to select this site and view its layers';
-  L.rectangle(rect(p.a,p.la,p.lo),{color:p.col,weight:2.5,fillColor:p.col,fillOpacity:.28}).addTo(map)
-   .bindTooltip(p.n+'\n'+p.reg+'\n'+p.a+' km² · '+p.mw+' MW\n'+p.st+'\n👷 Jobs (est.): ~'+p.jb.c.toLocaleString()+' construction · ~'+p.jb.p.toLocaleString()+' long-term'+clickTip,{sticky:true})
-   .on('click',function(){ selectPin(i, this); });
-  L.circleMarker([p.la,p.lo],{radius:4,color:p.col,weight:2,fillColor:p.col,fillOpacity:1}).addTo(map)
-   .bindTooltip(p.n+' — actual location\n'+p.reg+clickTip,{sticky:true})
-   .on('click',function(){ selectPin(i, this); });
   // Permanent label above the rectangle — clickable, same as the pin itself
-  PIN_LABELS.push(lbl(p.la+dl+.008, p.lo,
+  var lblM=lbl(p.la+dl+.008, p.lo,
     '<span style="color:'+p.col+';font-size:11px;font-weight:700">'+p.n+'</span><br>'+
     '<span style="color:'+p.col+';font-size:9.5px;opacity:.85">'+p.a+' km² · '+p.mw+' MW</span>',
     'lt-pin'
-  ).on('click',function(){ selectPin(i, this); }));
+  ).on('click',function(){ selectPin(i, this); });
+  PIN_LABELS.push(lblM);
+  // The rectangle/circle's own hover/click tooltip renders right next to (and
+  // often visually on top of) this same permanent label — two separate boxes
+  // stacked awkwardly. Fade the label out for as long as either tooltip is
+  // open so the tooltip reads as that label simply expanding with more
+  // detail, not a second box competing with it. A per-pin open-count (not
+  // just true/false) avoids the rectangle's tooltip closing prematurely
+  // re-showing the label while the circle's tooltip — which covers the same
+  // spot — is still open, and vice versa.
+  var ttOpen=0;
+  function ttShow(){ ttOpen++; lblM.setOpacity(0); }
+  function ttHide(){ ttOpen=Math.max(0,ttOpen-1); if(ttOpen===0) lblM.setOpacity(1); }
+  L.rectangle(rect(p.a,p.la,p.lo),{color:p.col,weight:2.5,fillColor:p.col,fillOpacity:.28}).addTo(map)
+   .bindTooltip(p.n+'\n'+p.reg+'\n'+p.a+' km² · '+p.mw+' MW\n'+p.st+'\n👷 Jobs (est.): ~'+p.jb.c.toLocaleString()+' construction · ~'+p.jb.p.toLocaleString()+' long-term'+clickTip,{sticky:true})
+   .on('click',function(){ selectPin(i, this); })
+   .on('tooltipopen',ttShow).on('tooltipclose',ttHide);
+  L.circleMarker([p.la,p.lo],{radius:4,color:p.col,weight:2,fillColor:p.col,fillOpacity:1}).addTo(map)
+   .bindTooltip(p.n+' — actual location\n'+p.reg+clickTip,{sticky:true})
+   .on('click',function(){ selectPin(i, this); })
+   .on('tooltipopen',ttShow).on('tooltipclose',ttHide);
 });
 
 // ── Active / impact layer stores ──────────────────────────────────────────────
