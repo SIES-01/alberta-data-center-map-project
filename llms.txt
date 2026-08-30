@@ -1,0 +1,19 @@
+# Alberta AI Data Centres — Interactive Size & Impact Map
+
+> An interactive map tracking AI data centre proposals across Alberta, Canada. Alberta's electricity grid queue (AESO) holds 42+ large-load connection applications totaling 21.1 GW combined; this site names and locates the 20 proposals with a publicly known developer, site, and footprint, letting users compare each one's land footprint, electricity demand, water consumption, noise impact, and air-quality impact — drawn to real scale against Alberta cities and towns.
+
+## What this site covers
+
+- 20 named AI data centre / AI compute proposals in Alberta with real pinned locations, including Meta's Sturgeon County campus, Wonder Valley (Greenview Industrial Gateway), Tourmaline's Malachite One, three Crusoe Energy sites, and others.
+- Per-proposal figures: land footprint (km²), power capacity (MW), estimated construction and long-term jobs, water draw, and power source (grid vs on-site gas generation).
+- A noise-impact layer that distinguishes unmitigated equipment-noise estimates from the actual regulatory ceiling under Alberta Utilities Commission (AUC) Rule 012 (40 dBA Leq nighttime at 1.5 km, mandatory for new/remote facilities).
+- Tools to overlay any proposal's footprint on any Alberta city/town at true scale, and to compare proposals against each other.
+- Links to the relevant regulator (AUC), provincial cabinet ministers, MLA lookup, and the specific municipal council covering each proposal, for people who want to formally register a concern or support.
+
+## Sourcing
+
+Figures are drawn from company disclosures, AUC filings, Alberta Major Projects listings, and news coverage, cross-checked where possible. The site includes an in-app Methodology section and Disclaimer describing exactly how each figure (noise, water, electricity, jobs) is calculated, and states plainly that it is not a substitute for a professional environmental or regulatory assessment.
+
+## Primary page
+
+https://alberta-data-centers.com/ — the interactive map itself (single page, no login required, free to use).
