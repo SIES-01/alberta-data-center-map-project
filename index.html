@@ -1546,10 +1546,19 @@ function clearSelection(){
 // Hides/shows every permanent DC name label at once — the pins/rectangles
 // themselves stay on the map either way, this just clears the text so you
 // can zoom out and see the whole-Alberta picture without 18 overlapping
-// labels, or click any pin directly without a label in the way.
+// labels, or click any pin directly without a label in the way. The
+// "select a city..." prompt sits dead centre of that same whole-Alberta
+// view (nothing is selected yet) and is exactly the kind of clutter this
+// button is for, so it toggles along with the labels — but only reappears
+// on "show" if the user still hasn't selected anything in the meantime.
 function toggleAllLabels(){
   labelsHidden = !labelsHidden;
   PIN_LABELS.forEach(function(m){ if(labelsHidden) map.removeLayer(m); else m.addTo(map); });
+  var promptEl=document.getElementById('prompt');
+  if(promptEl){
+    if(labelsHidden) promptEl.style.display='none';
+    else if(!cur) promptEl.style.display='block';
+  }
   var sidebarBtn=document.getElementById('labels-toggle');
   if(sidebarBtn) sidebarBtn.textContent = labelsHidden ? '🏷️ Show all labels' : '🏷️ Clear all labels';
   var mapBtn=document.getElementById('map-labels-btn');
