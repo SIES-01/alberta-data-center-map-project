@@ -750,6 +750,8 @@ select option{background:#1c1836}
     </select>
   </div>
 
+  <button class="ub" id="clear-sel" onclick="clearSelection()" style="width:100%;margin:2px 0 8px;text-align:center">↺ Clear selection — start over</button>
+
   <div class="ibtns">
     <span>Impact layers:</span>
     <button class="ib noise" id="btn-noise" onclick="toggleImpact('noise')">Noise</button>
@@ -1371,6 +1373,18 @@ var cur=null;
 var compDC=DC[0];   // proposal currently used for "vs city" comparisons — set by the 🏭 selector
 
 function toggleImpact(t){if(!discOK){showDisc(t);return;}doToggle(t);}
+// Resets everything the "Overlay on" / "Compare against" / impact-layer
+// controls have built up — back to the blank first-load state — in one tap,
+// instead of having to manually re-pick "— choose a city..." and turn off
+// every impact layer one at a time.
+function clearSelection(){
+  document.getElementById('sel').value='';
+  document.getElementById('sel-dc').value='none';
+  loadCity();
+  closeImpactCard();
+  var sb=document.querySelector('.sidebar');
+  if(sb && sb.classList.contains('mob-open')) closeMobMenu();
+}
 function closeImpactCard(){
   ['noise','water','elec','jobs','econ','air'].forEach(function(k){
     IS[k]=false;
