@@ -277,12 +277,14 @@ select option{background:#1c1836}
 #map-clear-btn{top:10px}
 #map-labels-btn{top:48px}
 #map-clear-btn:hover,#map-labels-btn:hover{border-color:rgba(111,208,186,0.7);background:rgba(38,32,66,0.94)}
-/* Watch-list button — bottom-right. #icard also occupies that corner
-   down to bottom:10px when an impact layer is open; kept at the same
-   z-index:950 as the other two floating buttons (above #icard's 900) so
-   it stays visible/clickable on top of the card's corner rather than
-   getting buried under it. */
-#map-watch-btn{position:absolute;bottom:10px;right:10px;z-index:950;background:rgba(30,25,58,0.88);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(231,154,92,0.4);border-radius:20px;color:var(--text);padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.35);font-family:inherit;transition:all .18s}
+/* Watch-list button — bottom-right. Two things already live in that exact
+   corner: #icard (down to bottom:10px, when an impact layer is open) and
+   — the one that was actually hiding this button entirely — Leaflet's own
+   attribution control, which it auto-injects bottom-right at a z-index
+   (1000) higher than ours, so a plain bottom:10px landed right under it.
+   Sitting above the attribution strip (bottom:34px) and above #icard's
+   900 (kept at 950) puts it in the clear of both. */
+#map-watch-btn{position:absolute;bottom:34px;right:10px;z-index:950;background:rgba(30,25,58,0.88);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(231,154,92,0.4);border-radius:20px;color:var(--text);padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.35);font-family:inherit;transition:all .18s}
 #map-watch-btn:hover{border-color:rgba(231,154,92,0.75);background:rgba(38,32,66,0.94)}
 /* Close button on the impact card itself — on mobile this becomes a
    bottom sheet that can cover most of the screen, with the "Controls"
