@@ -244,7 +244,9 @@ select option{background:#1c1836}
    button its only other way off-screen from being reachable, and even
    then closing it meant reopening the drawer and re-finding the same
    toggle button. A close button on the card itself is the direct fix. */
-.icard-close{position:sticky;top:0;float:right;margin:-13px -14px 6px 8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--panel-solid);color:var(--text-dim);font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.icard-close{position:sticky;top:0;float:right;margin:-13px -14px 6px 8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:var(--panel-solid);color:var(--text-dim);font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;animation:pulseGlowRing 2s ease-in-out infinite}
+@keyframes pulseGlowRing{0%,100%{box-shadow:0 0 0 0 rgba(111,208,186,0.55)}50%{box-shadow:0 0 10px 4px rgba(111,208,186,0.6)}}
+@media(prefers-reduced-motion:reduce){.icard-close,#mob-menu{animation:none}}
 #icard::-webkit-scrollbar-thumb{background:rgba(155,226,209,0.28);border-radius:4px}
 #icard::-webkit-scrollbar-track{background:transparent}
 #icard h4{font-size:11.5px;font-weight:700;color:var(--text);margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--line-soft);letter-spacing:-.1px}
@@ -298,6 +300,15 @@ select option{background:#1c1836}
   }
   .sidebar.mob-open{transform:translateX(0)}
 
+  /* The header's own "✕" (.sb-close) is a DESKTOP-only affordance — it
+     collapses the sidebar to a thin reopen tab, a concept that doesn't
+     exist in the mobile drawer (which is either fully open or fully
+     closed via the floating Controls/Close button). Left visible, it's
+     a second, differently-styled "✕" sitting right next to the real
+     close control, which is genuinely confusing about which one does
+     what. Hide it on mobile so there's exactly one close affordance. */
+  .sb-close{display:none}
+
   /* Dim overlay behind sidebar */
   #mob-overlay{
     display:none;position:fixed;inset:0;
@@ -327,6 +338,11 @@ select option{background:#1c1836}
     cursor:pointer;white-space:nowrap;
     box-shadow:0 6px 20px rgba(111,208,186,0.35);
     transition:top .2s,bottom .2s,right .2s,left .2s,transform .2s;
+    animation:pulseGlowPill 2s ease-in-out infinite;
+  }
+  @keyframes pulseGlowPill{
+    0%,100%{box-shadow:0 6px 20px rgba(111,208,186,0.35),0 0 0 0 rgba(111,208,186,0.5)}
+    50%{box-shadow:0 6px 20px rgba(111,208,186,0.35),0 0 16px 6px rgba(111,208,186,0.55)}
   }
   #mob-menu.open{
     top:14px;bottom:auto;right:14px;left:auto;transform:none;
@@ -1370,6 +1386,13 @@ function doToggle(t){
   document.getElementById('btn-'+t).classList.toggle('on',IS[t]);
   if(t==='noise'&&!IS[t]) stopNoiseDemo(null);   // stop the sound demo if Noise layer is turned off
   renderImpact();
+  // These toggle buttons live inside the Controls drawer, but the card they
+  // produce (with e.g. the Noise "hear an approximation" buttons) renders
+  // on the map BEHIND that drawer — so on mobile, leaving the drawer open
+  // after a tap here just hides the very thing the tap was for. Auto-close
+  // it so the result is immediately visible and usable.
+  var sb=document.querySelector('.sidebar');
+  if(sb && sb.classList.contains('mob-open')) closeMobMenu();
 }
 
 function renderImpact(){
