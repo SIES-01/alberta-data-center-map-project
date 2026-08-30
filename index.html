@@ -265,7 +265,7 @@ select option{background:#1c1836}
 #prompt p{font-size:11px;color:var(--text-faint)}
 
 /* Impact card */
-#icard{position:absolute;top:54px;right:10px;bottom:10px;z-index:900;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid rgba(111,208,186,0.25);border-radius:var(--radius-md);padding:13px 14px;width:254px;font-size:11.5px;pointer-events:auto;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:var(--shadow-lg),0 0 0 1px rgba(231,154,92,0.06),inset 0 1px 0 rgba(255,255,255,0.06)}
+#icard{position:absolute;top:54px;right:10px;bottom:10px;z-index:900;background:var(--panel-2);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);border:1px solid rgba(111,208,186,0.25);border-radius:var(--radius-md);padding:13px 14px;width:clamp(254px,38vw,508px);font-size:11.5px;pointer-events:auto;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:var(--shadow-lg),0 0 0 1px rgba(231,154,92,0.06),inset 0 1px 0 rgba(255,255,255,0.06)}
 #icard::-webkit-scrollbar{width:4px}
 /* Floating "Clear" button, top-right of the map itself — the sidebar's own
    Clear button (in Controls) is invisible on mobile until you open the
@@ -298,6 +298,10 @@ select option{background:#1c1836}
 .notebar a{color:var(--mint-300)}
 
 .lt{display:inline-block;background:rgba(255,255,255,0.94);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,0.7);border-left:3px solid var(--coral-400);border-radius:22px;padding:6px 16px;font-family:'Poppins',-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',sans-serif;font-weight:700;font-size:20px;text-shadow:none;white-space:nowrap;pointer-events:none;color:#161a24;box-shadow:0 3px 14px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.85);letter-spacing:-.3px;overflow:visible;line-height:1.3}
+/* Permanent DC pin labels only — re-enable pointer-events (off by default on
+   .lt so temporary overlay labels never block clicks on what's underneath)
+   so tapping the label itself selects the pin, same as tapping the pin. */
+.lt.lt-pin{pointer-events:auto;cursor:pointer}
 
 .leaflet-tooltip{background:rgba(20,16,36,0.94)!important;backdrop-filter:blur(24px) saturate(180%)!important;-webkit-backdrop-filter:blur(24px) saturate(180%)!important;border:1px solid rgba(111,208,186,0.24)!important;color:rgba(241,238,250,0.92)!important;font-size:11.5px!important;border-radius:14px!important;padding:7px 11px!important;white-space:pre-line!important;max-width:290px!important;box-shadow:0 4px 24px rgba(0,0,0,0.55)!important;font-family:'Poppins',-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif!important}
 .leaflet-tooltip::before{border-top-color:rgba(111,208,186,0.24)!important}
@@ -1352,7 +1356,7 @@ function setTile(k){map.removeLayer(TL[BL]);TL[k].addTo(map);BL=k;['Sat','Str','
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function rect(a,la,lo){var s=Math.sqrt(a),dl=s/2/111,dlo=s/2/(111*Math.cos(la*Math.PI/180));return[[la-dl,lo-dlo],[la+dl,lo+dlo]];}
-function lbl(la,lo,h){return L.marker([la,lo],{icon:L.divIcon({html:'<div class="lt">'+h+'</div>',className:'',iconSize:null}),zIndexOffset:500}).addTo(map);}
+function lbl(la,lo,h,extraClass){return L.marker([la,lo],{icon:L.divIcon({html:'<div class="lt'+(extraClass?' '+extraClass:'')+'">'+h+'</div>',className:'',iconSize:null}),zIndexOffset:500}).addTo(map);}
 function fmtM(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+'K':v.toFixed(0);}
 
 // ── Synthesized "what it might sound like" demo ──────────────────────────────
@@ -1465,11 +1469,12 @@ PINS.forEach(function(p,i){
   L.circleMarker([p.la,p.lo],{radius:4,color:p.col,weight:2,fillColor:p.col,fillOpacity:1}).addTo(map)
    .bindTooltip(p.n+' — actual location\n'+p.reg+clickTip,{sticky:true})
    .on('click',function(){ selectPin(i, this); });
-  // Permanent label above the rectangle
+  // Permanent label above the rectangle — clickable, same as the pin itself
   PIN_LABELS.push(lbl(p.la+dl+.008, p.lo,
     '<span style="color:'+p.col+';font-size:11px;font-weight:700">'+p.n+'</span><br>'+
-    '<span style="color:'+p.col+';font-size:9.5px;opacity:.85">'+p.a+' km² · '+p.mw+' MW</span>'
-  ));
+    '<span style="color:'+p.col+';font-size:9.5px;opacity:.85">'+p.a+' km² · '+p.mw+' MW</span>',
+    'lt-pin'
+  ).on('click',function(){ selectPin(i, this); }));
 });
 
 // ── Active / impact layer stores ──────────────────────────────────────────────
@@ -1631,7 +1636,7 @@ function renderImpact(){
 
   // ── Always draw impact layers at each actual (pinned) DC location, ──────────
   // ── whether or not a city is currently selected ─────────────────────────────
-  PINS.forEach(function(p){
+  PINS.forEach(function(p,pinI){
     var halfDiag = Math.sqrt(p.a/2)*1000; // metres, half-diagonal of square footprint
     var mwRatio  = p.mw/7500;
 
@@ -1705,9 +1710,29 @@ function renderImpact(){
       IL.push(ao);
     }
 
-    // 👷 Jobs and 💰 Economic benefit: no map markers here by design — figures already
-    // live in this pin's hover tooltip (bound when the permanent pins were drawn) and
-    // in the floating info card, which keeps the map itself uncluttered.
+    if(IS.jobs){
+      // Radius scaled to THIS proposal's own long-term job count relative to
+      // the largest (Wonder Valley, ~1,200) — illustrative only, not a real
+      // commuting/employment-catchment radius.
+      var jRad=Math.max(2500, (p.jb.p/1200)*20000);
+      var jc=L.circle([p.la,p.lo],{radius:jRad,color:'#4ade80',weight:1.5,fillColor:'#22c55e',fillOpacity:.08,dashArray:'4 4'}).addTo(map);
+      jc.bindTooltip('👷 '+p.n+' — long-term jobs (est.)\n~'+p.jb.p.toLocaleString()+' long-term operations jobs (+~'+p.jb.c.toLocaleString()+' construction, temporary)\nRadius '+Math.round(jRad/1000)+' km · ⚠ illustrative, scaled to job count — not a real commuting radius',{sticky:true});
+      IL.push(jc);
+    }
+
+    if(IS.econ){
+      var dcI=PIN_TO_DC[pinI];
+      var inv=(dcI!==undefined) ? DC[dcI].inv : null;
+      if(inv){
+        // Radius scaled to this proposal's stated capital investment relative
+        // to the largest publicly disclosed figure (~$70B) — illustrative only.
+        var eRad=Math.max(2500, (inv.b/70)*20000);
+        var lo=(inv.b*3).toFixed(0), hi=(inv.b*6).toFixed(0);
+        var ec=L.circle([p.la,p.lo],{radius:eRad,color:'#bef264',weight:1.5,fillColor:'#a3e635',fillOpacity:.08,dashArray:'4 4'}).addTo(map);
+        ec.bindTooltip('💰 '+p.n+' — economic benefit (est.)\nStated capital investment: '+inv.amt+'\nRough est. annual tax revenue*: ~$'+lo+'M – $'+hi+'M\nRadius '+Math.round(eRad/1000)+' km · ⚠ illustrative, scaled to investment size — *order-of-magnitude only',{sticky:true});
+        IL.push(ec);
+      }
+    }
   });
 
   updateCard();
