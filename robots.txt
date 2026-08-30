@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /wonder-valley-vs-canmore.html
 
 Sitemap: https://alberta-data-centers.com/sitemap.xml
