@@ -829,6 +829,7 @@ select option{background:#1c1836}
   </div>
 
   <button class="ub" id="clear-sel" onclick="clearSelection()" style="width:100%;margin:2px 0 8px;text-align:center">↺ Clear selection — start over</button>
+  <button class="ub" id="labels-toggle" onclick="toggleAllLabels()" style="width:100%;margin:0 0 8px;text-align:center">🏷️ Clear all labels</button>
 
   <div class="ibtns">
     <span>Impact layers:</span>
@@ -1451,6 +1452,10 @@ function selectPin(i, tappedLayer){
   try{ if(tappedLayer && tappedLayer.closeTooltip) tappedLayer.closeTooltip(); }catch(e){}
   try{ if(map.closeTooltip) map.closeTooltip(); }catch(e){}
 }
+// Permanent name/size labels for every DC pin — tracked separately so they
+// can all be hidden at once (see toggleAllLabels()) for a decluttered,
+// whole-of-Alberta view; the pins/rectangles themselves stay either way.
+var PIN_LABELS=[], labelsHidden=false;
 PINS.forEach(function(p,i){
   var s=Math.sqrt(p.a), dl=s/2/111, dlo=s/2/(111*Math.cos(p.la*Math.PI/180));
   var clickTip='\n👆 Click to select this site and view its layers';
@@ -1461,10 +1466,10 @@ PINS.forEach(function(p,i){
    .bindTooltip(p.n+' — actual location\n'+p.reg+clickTip,{sticky:true})
    .on('click',function(){ selectPin(i, this); });
   // Permanent label above the rectangle
-  lbl(p.la+dl+.008, p.lo,
+  PIN_LABELS.push(lbl(p.la+dl+.008, p.lo,
     '<span style="color:'+p.col+';font-size:11px;font-weight:700">'+p.n+'</span><br>'+
     '<span style="color:'+p.col+';font-size:9.5px;opacity:.85">'+p.a+' km² · '+p.mw+' MW</span>'
-  );
+  ));
 });
 
 // ── Active / impact layer stores ──────────────────────────────────────────────
@@ -1501,6 +1506,16 @@ function clearSelection(){
   closeImpactCard();
   var sb=document.querySelector('.sidebar');
   if(sb && sb.classList.contains('mob-open')) closeMobMenu();
+}
+// Hides/shows every permanent DC name label at once — the pins/rectangles
+// themselves stay on the map either way, this just clears the text so you
+// can zoom out and see the whole-Alberta picture without 18 overlapping
+// labels, or click any pin directly without a label in the way.
+function toggleAllLabels(){
+  labelsHidden = !labelsHidden;
+  PIN_LABELS.forEach(function(m){ if(labelsHidden) map.removeLayer(m); else m.addTo(map); });
+  var btn=document.getElementById('labels-toggle');
+  if(btn) btn.textContent = labelsHidden ? '🏷️ Show all labels' : '🏷️ Clear all labels';
 }
 function closeImpactCard(){
   ['noise','water','elec','jobs','econ','air'].forEach(function(k){
