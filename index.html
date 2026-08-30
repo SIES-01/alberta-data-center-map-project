@@ -385,7 +385,7 @@ select option{background:#1c1836}
 
   <h3>Methodology</h3>
   <ul>
-    <li><strong>Noise:</strong> Zones based on typical data centre noise of 70–96 dB at source, free-field decay of ~6 dB per doubling of distance. Infrasound (below 20 Hz) reported beyond audible range. WHO residential limit: 45 dB day / 40 dB night.</li>
+    <li><strong>Noise:</strong> The 70–96 dB "at source" figure and the free-field decay of ~6 dB per doubling of distance shown here are <em>unmitigated</em> estimates — roughly what the equipment itself produces before any sound-control engineering is applied — not a prediction of what a compliant, built facility will actually be measured at. Every facility under AUC jurisdiction is legally required to meet <strong>AUC Rule 012 (Noise Control)</strong>: for a new/remote facility, the mandatory design target is <strong>40 dBA Leq (nighttime) at 1.5 km</strong> from the site, achieved through enclosures, sound walls, and equipment siting — not by distance alone. So the map's zones illustrate why mitigation is necessary (how loud the raw equipment would be if nothing were done), while Rule 012 is the actual ceiling every approved project must engineer down to well within that 1.5 km radius. Infrasound (below 20 Hz) is reported beyond the audible range. WHO general residential guideline (a separate, non-regulatory reference point): 45 dB day / 40 dB night.</li>
     <li><strong>🔊 "What it might sound like" demo:</strong> The audio you can play from each noise zone is a synthesized illustration — not a real recording, measurement, or prediction for any specific site. It's built to give a rough sense of how low-frequency hum and broadband mechanical/cooling noise can change with distance (quieter, more muffled, shifting toward infrasound as you move farther away), based on the general dB ranges and decay assumptions described above. Treat it as a feel-for-scale aid only, not as evidence of what any particular community would actually hear.</li>
     <li><strong>Water:</strong> Uses Wonder Valley's publicly stated approved permit of 6 million m³/year (Smoky River). Preliminary AUC certificate: up to 24 million m³/year. City consumption calculated at 250 L/person/day (Statistics Canada average).</li>
     <li><strong>Electricity:</strong> Based on published GW capacity × 8,760 hrs/year. City consumption estimated at 15,000 kWh/person/year (Stats Canada 2022). Alberta total: ~100 TWh/year (AESO 2024).</li>
@@ -436,7 +436,7 @@ select option{background:#1c1836}
       <li><a href="https://www.alberta.ca/contact-a-cabinet-minister" target="_blank">Alberta.ca: Contact a cabinet minister (official form/address for ministers)</a></li>
       <li><a href="https://www.auc.ab.ca/contact-us/" target="_blank">Alberta Utilities Commission: Contact us (info@auc.ab.ca)</a></li>
       <li><a href="https://www.rockyview.ca/contact" target="_blank">Rocky View County: Contact (questions@rockyview.ca)</a> · <a href="https://www.rdcounty.ca/582/Contact-Us" target="_blank">Red Deer County: Contact (info@rdcounty.ca)</a> · <a href="https://www.olds.ca/council-administration/contact-us/" target="_blank">Town of Olds: Contact (admin@olds.ca)</a></li>
-      <li><a href="https://mdgreenview.ab.ca/contact/" target="_blank">MD of Greenview: Contact</a> · <a href="https://www.foothillscountyab.ca/contact" target="_blank">Foothills County: Contact</a> · <a href="https://www.parklandcounty.com/county-government/contact-us/" target="_blank">Parkland County: Contact (hello@parklandcounty.com)</a> · <a href="https://www.strathcona.ca/council-county/administration/county-service-contacts/" target="_blank">Strathcona County: Contact (councillors@strathcona.ca)</a> · <a href="https://www.leduc-county.com/county-government/contact-us" target="_blank">Leduc County: Contact</a></li>
+      <li><a href="https://mdgreenview.ab.ca/contact/" target="_blank">MD of Greenview: Contact</a> · <a href="https://www.foothillscountyab.ca/contact" target="_blank">Foothills County: Contact</a> · <a href="https://www.parklandcounty.com/county-government/contact-us/" target="_blank">Parkland County: Contact (hello@parklandcounty.com)</a> · <a href="https://www.sturgeoncounty.ca/contact-us/" target="_blank">Sturgeon County: Contact</a> · <a href="https://www.leduc-county.com/county-government/contact-us" target="_blank">Leduc County: Contact</a></li>
       <li>Statistics Canada 2021 Census — municipal areas &amp; populations</li>
       <li>Alberta Electric System Operator (AESO) — provincial electricity data</li>
       <li>WHO Environmental Noise Guidelines (2018)</li>
@@ -704,7 +704,7 @@ select option{background:#1c1836}
         <option value="dc1">Synapse Olds DC — Town of Olds (1.2 km² · 1,000 MW)</option>
         <option value="dc2">Beacon AI Hub (Indus) — Rocky View County (3.8 km² · 400 MW)</option>
         <option value="dc3">Beacon (Harry Smith Hub) — Parkland County (3.8 km² · 400 MW)</option>
-        <option value="dc4">Beacon Heartland AI Hub — Strathcona Co. Heartland (3.8 km² · 400 MW)</option>
+        <option value="dc4">Beacon Heartland AI Hub — Sturgeon Co. Heartland (3.8 km² · 400 MW)</option>
         <option value="dc5">Saunders Lake AI DC Hub — Leduc County (1.6 km² · 425 MW · grid)</option>
         <option value="dc6">Wild Rose Power Hub — Rocky View County (1.9 km² · 1,300 MW)</option>
         <option value="dc7">AHI Hub of Innovation — Red Deer County (0.5 km² · 250 MW)</option>
@@ -870,9 +870,8 @@ var CONTACTS=[
     {n:'Lacombe County', role:'Covers the Clive Power & Data Centre proposal (4.3-acre site off Haynes Road, west of Clive).', link:'https://lacombecounty.com/contact-us/', email:'info@lacombecounty.com'},
     {n:'Foothills County', role:'Covers Beacon Foothills AI Hub (near High River).', link:'https://www.foothillscountyab.ca/contact', email:null},
     {n:'Parkland County', role:'Covers Beacon (Harry Smith Hub, between Keephills & Duffield).', link:'https://www.parklandcounty.com/county-government/contact-us/', email:'hello@parklandcounty.com'},
-    {n:'Strathcona County', role:'Covers Beacon Heartland AI Hub (Range Rd 223, Alberta Industrial Heartland).', link:'https://www.strathcona.ca/council-county/administration/county-service-contacts/', email:'councillors@strathcona.ca'},
     {n:'Leduc County', role:'Covers Saunders Lake AI Data Center Hub (Beacon), near Edmonton International Airport.', link:'https://www.leduc-county.com/county-government/contact-us', email:null},
-    {n:'Sturgeon County', role:'Covers Meta\'s Sturgeon Data Centre and the associated Greenlight Electricity Centre gas plant, near Gibbons — also home to Beacon Heartland AI Hub\'s power-plant site.', link:'https://www.sturgeoncounty.ca/contact-us/', email:null},
+    {n:'Sturgeon County', role:'Covers Meta\'s Sturgeon Data Centre and the associated Greenlight Electricity Centre gas plant, near Gibbons — also home to Beacon Heartland AI Hub (both the data centre and its power plant, ~7 km E of Gibbons).', link:'https://www.sturgeoncounty.ca/contact-us/', email:null},
     {n:'Yellowhead County', role:'Covers Malachite One (Tourmaline/Emerald Energy Technologies), Crown land near Edson.', link:'https://www.yellowheadcounty.ab.ca/contact-us', email:null},
     {n:'City of Chestermere', role:'Covers Beacon Chestermere AI Hub, on the city\'s southern edge.', link:'https://thecityofchestermere.ca/contact-us/', email:null},
     {n:'Northern Sunrise County', role:'Covers the Mihta Askiy Data Centre, ~40 km NE of Peace River (former Carmon Creek power-plant site).', link:'https://www.northernsunrisecounty.ca/contact-us', email:null}
@@ -1084,7 +1083,7 @@ var DC=[
    inv:null, air:{lvl:'Under regulatory review (AUC/EPEA)', note:'This proposal (Armada Nowlit Energy Ltd.) is paired with its own power-generation component and has applications before the AUC and Alberta Environment and Protected Areas. Update: as of August 2026, no municipal, AUC, or EPEA approval has actually been granted yet — the earlier "~Aug 2026" approval estimate has slipped. A public information meeting is set for Sept 30, 2026 (Tees Community Hall); if approved, construction could start around March 2027. No emissions estimate or capital-investment figure has been made public. Source: Red Deer Advocate, Aug 2026.'}},
   {n:'Beacon (Harry Smith Hub)',        reg:'Between Keephills & Duffield, Parkland County (west of Edmonton)', a:3.82, mw:400, col:'#5eead4',fi:'#99f6e4',fo:.45,da:'5 3', w:2, jb:{c:1500,p:300}, pwr:'unknown', waterless:false,
    inv:null, air:{lvl:'Not publicly disclosed', note:'Public reporting reviewed (news coverage, Parkland County\'s Area Structure Plan framework documents) did not specify a capital-investment figure or an on-site power-generation method for this proposal as of June 2026. Beacon\'s own materials describe an initial 4.5 GW, six-site Alberta portfolio (Indus, Harry Smith, Heartland, Saunders Lake, Foothills, and one more) on 2,500+ acres of optioned land, with energization targeted as early as late 2027 — but site-specific approvals for Harry Smith Hub were still pending as of August 2026.'}},
-  {n:'Beacon Heartland AI Hub',         reg:'Alberta Industrial Heartland — power plant site: Sturgeon County (7 km E of Gibbons) · data centre: Strathcona County (Range Rd 223)', a:3.82, mw:800, col:'#2dd4bf',fi:'#5eead4',fo:.45,da:'5 3', w:2, jb:{c:1500,p:300}, pwr:'gas', waterless:false,
+  {n:'Beacon Heartland AI Hub',         reg:'Alberta Industrial Heartland — Sturgeon County, ~7 km E of Gibbons (Hwy 643 / Range Rd 223) — both the data centre and its power plant', a:3.82, mw:800, col:'#2dd4bf',fi:'#5eead4',fo:.45,da:'5 3', w:2, jb:{c:1500,p:300}, pwr:'gas', waterless:false,
    inv:null, air:{lvl:'High concern — associated 920 MW gas power plant', note:'A co-located 920 MW natural gas power plant (200 reciprocating gas-engine generators, organized into modules with exhaust treatment and air-cooled radiators, in Sturgeon County 7 km east of Gibbons) is designed to supply approximately 800 MW to the co-located data halls; the project is expected to operate for 25 years. Federal Impact Assessment Agency completed review March 2026 (no further federal assessment required). The AUC posted a Notice of Application on Jan 19, 2026, and Sturgeon County directed administration to formally participate in the AUC review on Feb 10, 2026; the application remains under active review as of August 2026. The gas generation component represents a significant documented air quality concern. Sources: IAAC Project 90123 (Canada.ca); AUC Beacon AI Centers Heartland Thermal Power Plant Application.'}},
   {n:'Saunders Lake AI Data Center Hub', reg:'Leduc County, near Edmonton Intl Airport\n400 acres · adjacent to Saunders Lake substation (138/240 kV)', a:1.62, mw:425, col:'#14b8a6',fi:'#5eead4',fo:.45,da:'5 3', w:2, jb:{c:1500,p:300}, pwr:'grid', waterless:false,
    inv:null, air:{lvl:'Grid-connected — no on-site generation', note:'Grid supply: 425 MW via Saunders Lake substation (138/240 kV), available Q1 2030. Water: 300,000 gallons/day (1,136 m³/day) requested from Leduc County. Wastewater infrastructure extension ~0.8 km required. On-site stormwater management plan required. Fiber: diverse carrier routes via Access, ~800 km municipal dark-fiber network & Alberta SuperNet POPs (multi-terabit capacity). Sources: beacondatacenters.com/campuses (Saunders Lake campus page, June 2026).'}},
@@ -1145,7 +1144,7 @@ var DC_BASIN={
   'Beacon Foothills AI Hub':        'South Saskatchewan basin (Bow / Highwood River sub-basin), south of Calgary — part of the area closed to new water-licence applications since 2006 because it was already considered fully allocated.',
   'Clive Power & Data Centre':      'Red Deer River basin (Lacombe County sits within it, like neighbouring Red Deer County) — not under the 2006 southern-basin licence closure, but identified provincially as a basin facing periodic drought cycles and competing agricultural/municipal/industrial demand.',
   'Beacon (Harry Smith Hub)':       'North Saskatchewan basin, west of Edmonton — generally considered to face moderate water-allocation pressure from cumulative municipal/industrial demand, though not under the 2006 southern-basin closure.',
-  'Beacon Heartland AI Hub':        'North Saskatchewan basin — Alberta Industrial Heartland (Strathcona/Sturgeon Counties), northeast of Edmonton, near Gibbons and Fort Saskatchewan. The heartland industrial corridor draws heavily on the North Saskatchewan River; not under the 2006 southern-basin closure, but cumulative municipal and industrial water demand in this corridor is already significant.',
+  'Beacon Heartland AI Hub':        'North Saskatchewan basin — Alberta Industrial Heartland (Sturgeon County), ~7 km east of Gibbons. The heartland industrial corridor draws heavily on the North Saskatchewan River; not under the 2006 southern-basin closure, but cumulative municipal and industrial water demand in this corridor is already significant.',
   'Saunders Lake AI Data Center Hub': 'North Saskatchewan basin, near Edmonton Intl. Airport — Beacon has requested 300,000 gallons/day (1,136 m³/day) from Leduc County water services. Not under the 2006 southern-basin closure, but the North Saskatchewan corridor faces cumulative municipal and industrial demand pressure.',
   'Meta Sturgeon Data Centre':       'North Saskatchewan basin — Alberta Industrial Heartland (Sturgeon County), near Gibbons. Meta states the facility will use a closed-loop, dry-cooled system with no operational cooling water draw (domestic/fire-protection use only, said to be less annually than one typical Alberta golf course). Not under the 2006 southern-basin closure.',
   'Malachite One (Tourmaline)':      'Athabasca River basin, west-central Alberta (Yellowhead County). Not under the 2006 southern-basin licence closure; no water-source or water-use figures have been publicly disclosed for this proposal as of August 2026.',
@@ -1167,7 +1166,7 @@ var DTIPS=[
   'Beacon Foothills AI Hub\nRegion: Outside High River, Foothills County (~50 km south of Calgary)\n1.05 km² · 400 MW\n🔄 Public hearing held · Approvals in progress\n👷 Jobs (est.): ~1,500 construction · ~300 long-term',
   'Clive Power & Data Centre\nRegion: West of Clive, Lacombe County (4.3-acre site off Haynes Rd)\n0.017 km² · 20 MW (19.8 MW gas-fired + biofuel-capable)\n🔄 AUC/EPEA review underway · Approval expected ~Aug 2026\n👷 Jobs (est.): ~80 construction · ~20 long-term',
   'Beacon (Harry Smith Hub)\nRegion: Between Keephills & Duffield, Parkland County (west of Edmonton)\n3.82 km² · 400 MW\n🔄 Parkland County ASP framework approved Sept 2025\n👷 Jobs (company est.): ~1,500 construction · ~300 long-term',
-  'Beacon Heartland AI Hub\nRegion: Alberta Industrial Heartland, Strathcona Co. (Range Rd 223)\n3.82 km² · 800 MW to data halls (920 MW plant)\n🔄 AUC Notice of Application Jan 19, 2026 · under active review\n⚠ Associated 920 MW gas plant in Sturgeon Co. (200 gas engines)\n👷 Jobs (company est.): ~1,500 construction · ~300 long-term',
+  'Beacon Heartland AI Hub\nRegion: Alberta Industrial Heartland, Sturgeon Co. (~7 km E of Gibbons, Hwy 643 / Range Rd 223)\n3.82 km² · 800 MW to data halls (920 MW plant)\n🔄 AUC Notice of Application Jan 19, 2026 · under active review\n⚠ Associated 920 MW gas plant, same site (200 gas engines)\n👷 Jobs (company est.): ~1,500 construction · ~300 long-term',
   'Saunders Lake AI Data Center Hub\nRegion: Leduc County, near Edmonton Intl Airport · 400 acres\n1.62 km² · 425 MW · Grid (Saunders Lake substation 138/240 kV) · Q1 2030\n💧 300,000 gal/day from Leduc County\n🔄 Proposed · No approvals yet\n👷 Jobs (company est.): ~1,500 construction · ~300 long-term',
   'Meta Sturgeon Data Centre\nRegion: Sturgeon County · Alberta Industrial Heartland, near Gibbons\n7.08 km² · 1,750 ac · $13B (Meta) + $4.6B (Greenlight plant) · 1 GW\n✅ Groundbreaking July 2026 · Meta\'s first Canadian data centre\n💧 Closed-loop/dry cooling — company says less water/yr than one golf course\n👷 Jobs (company est.): ~3,000 construction · ~300 long-term',
   'Malachite One (Tourmaline)\nRegion: Yellowhead County · Crown land ~40 km SW of Edson\n0.66 km² · 7.1M sq ft · up to $20B · ~1 GW\n🔄 Proposed · No AUC/EPEA decision yet · Construction targeted 2027\n👷 Jobs (company range): several hundred construction · 340–560 long-term (data centre + power plant)',
@@ -1184,7 +1183,7 @@ var PINS=[
   {n:'Synapse Olds DC',            reg:'Town of Olds, AB (NE corner of Hwy 2A & Hwy 27, within town limits) · Developer: Synapse Real Estate Corp.',         la:51.807,lo:-114.083,a:1.21, mw:1000, col:'#fbbf24',st:'❌ AUC rejected power plant a 2nd time (Aug 17, 2026) — company says will not proceed as proposed', jb:{c:2000,p:1000}, pwr:'gas', waterless:false},
   {n:'Beacon AI Hub (Indus)',      reg:'Hamlet of Indus, Rocky View County\n~3.2 km east of Calgary',                la:50.95,lo:-113.77,a:3.82, mw:1200,  col:'#2dd4bf',st:'🔄 ASP approved · 1,494 MWe plant in active AUC review · 97+ opposition letters', jb:{c:1500,p:300}, pwr:'gas', waterless:false},
   {n:'Beacon (Harry Smith Hub)',   reg:'Between Keephills & Duffield\nParkland County, west of Edmonton',            la:53.49,lo:-114.55,a:3.82, mw:400,  col:'#5eead4',st:'🔄 Parkland County ASP framework approved Sept 2025', jb:{c:1500,p:300}, pwr:'unknown', waterless:false},
-  {n:'Beacon Heartland AI Hub',   reg:'Alberta Industrial Heartland — Sturgeon County\n(Power plant site: 7 km E of Gibbons · Data centre: Strathcona Co., Range Rd 223)',  la:53.840,lo:-113.192,a:3.82, mw:800,  col:'#5eead4',st:'🔄 AUC Notice of Application posted Jan 2026 · under active review', jb:{c:1500,p:300}, pwr:'gas', waterless:false},
+  {n:'Beacon Heartland AI Hub',   reg:'Alberta Industrial Heartland — Sturgeon County\n(~7 km E of Gibbons, Hwy 643 / Range Rd 223 — data centre and power plant both here)',  la:53.840,lo:-113.192,a:3.82, mw:800,  col:'#5eead4',st:'🔄 AUC Notice of Application posted Jan 2026 · under active review', jb:{c:1500,p:300}, pwr:'gas', waterless:false},
   {n:'Saunders Lake AI Data Center Hub', reg:'Leduc County, near Edmonton Intl Airport\n400 acres · Saunders Lake substation (138/240 kV) · Q1 2030', la:53.28,lo:-113.59,a:1.62, mw:425, col:'#5eead4',st:'🔄 Proposed · Grid-connected · Q1 2030 RFS · 300,000 gal/day water', jb:{c:1500,p:300}, pwr:'grid', waterless:false},
   {n:'Wild Rose Power Hub',        reg:'~2 km SW of Hamlet of Langdon, Rocky View Co.\n~10 km east of Calgary · Developer: Chinook Development L.P.',     la:50.985,lo:-113.775,a:1.94,  mw:1300, col:'#f43f5e',st:'⚠ Contentious · Residents opposed · Area Structure Plan underway', jb:{c:3000,p:600}, pwr:'unknown', waterless:false},
   {n:'AHI Hub of Innovation',      reg:'Blindman Industrial Park, Red Deer County\n(north of Red Deer)',             la:52.36,lo:-113.76, a:0.49,  mw:250,  col:'#84cc16',st:'✅ Approved Oct 2025 · construction underway · 1st power module on track for Q3 2026', jb:{c:600,p:150}, pwr:'cogen+solar+battery', waterless:true},
@@ -1411,15 +1410,22 @@ function renderImpact(){
     // Zones scaled from the SELECTED proposal's footprint — drawn here ONLY to show
     // "what would this look like sitting on top of the city," same as the size overlay.
     var nHalfDiag = Math.sqrt(compDC.a/2); // km, half-diagonal of the footprint
-    [[(nHalfDiag+8)*1000,'#fecaca',.08,'~45–55 dB · Infrasound may extend further','infra'],
-     [(nHalfDiag+3)*1000,'#fca5a5',.12,'~55–65 dB · Moderate impact','mod'],
-     [(nHalfDiag+1)*1000,'#ef4444',.16,'>65 dB · High impact · >\xa0WHO residential limit','high']
+    [[(nHalfDiag+8)*1000,'#fecaca',.08,'~45–55 dB · Infrasound may extend further (unmitigated est.)','infra'],
+     [(nHalfDiag+3)*1000,'#fca5a5',.12,'~55–65 dB · Moderate impact (unmitigated est.)','mod'],
+     [(nHalfDiag+1)*1000,'#ef4444',.16,'>65 dB · High impact (unmitigated est.)','high']
     ].forEach(function(z){
       var cl=L.circle([la,lo],{radius:z[0],color:'#ef4444',weight:1,fillColor:z[1],fillOpacity:z[2],dashArray:'5 3'}).addTo(map);
-      cl.bindTooltip('🔊 Noise zone — '+compDC.n+' (overlay)\n'+z[3]+'\nRadius '+Math.round(z[0]/1000)+' km from footprint centre\n⚠ Illustrative overlay — shows scale "as if" sited here, not a claim this proposal is located at '+cur.n,{sticky:true});
+      cl.bindTooltip('🔊 Noise zone — '+compDC.n+' (overlay)\n'+z[3]+'\nRadius '+Math.round(z[0]/1000)+' km from footprint centre\n⚠ Illustrative overlay of UNMITIGATED equipment noise — shows scale "as if" sited here, not a claim this proposal is located at '+cur.n,{sticky:true});
       IL.push(cl);
       NOISE_RINGS.push({layer:cl, zone:z[4]});
     });
+    // The actual legal ceiling — every AUC-regulated facility must be engineered
+    // (enclosures, sound walls, siting) to meet this, unlike the unmitigated
+    // zones above. Drawn separately (not pushed to NOISE_RINGS) so it always
+    // stays visible regardless of which "hear it" demo zone is playing.
+    var aucRing=L.circle([la,lo],{radius:1500,color:'#6fd0ba',weight:2,fillColor:'#6fd0ba',fillOpacity:.04,dashArray:'2 6'}).addTo(map);
+    aucRing.bindTooltip('⚖️ AUC Rule 012 limit (overlay)\nMandatory design target: 40 dBA Leq (nighttime) at 1.5 km — every AUC-regulated facility must be engineered to meet this, not just left to distance\nRadius 1.5 km from footprint centre\n⚠ Illustrative overlay — shows scale "as if" sited here, not a claim this proposal is located at '+cur.n,{sticky:true});
+    IL.push(aucRing);
   }
 
   if(IS.water){
@@ -1484,15 +1490,20 @@ function renderImpact(){
     var mwRatio  = p.mw/7500;
 
     if(IS.noise){
-      [[halfDiag+8000,'#fecaca',.06,'~45–55 dB / infrasound zone','infra'],
-       [halfDiag+3000,'#fca5a5',.10,'~55–65 dB moderate impact','mod'],
-       [halfDiag+1000,'#ef4444',.15,'>65 dB high impact','high']
+      [[halfDiag+8000,'#fecaca',.06,'~45–55 dB / infrasound zone (unmitigated est.)','infra'],
+       [halfDiag+3000,'#fca5a5',.10,'~55–65 dB moderate impact (unmitigated est.)','mod'],
+       [halfDiag+1000,'#ef4444',.15,'>65 dB high impact (unmitigated est.)','high']
       ].forEach(function(z){
         var cl=L.circle([p.la,p.lo],{radius:z[0],color:'#ef4444',weight:1,fillColor:z[1],fillOpacity:z[2],dashArray:'5 3'}).addTo(map);
-        cl.bindTooltip('🔊 '+p.n+' — noise est.\n'+z[3]+'\nRadius '+Math.round(z[0]/1000)+' km · ⚠ estimate only',{sticky:true});
+        cl.bindTooltip('🔊 '+p.n+' — noise est.\n'+z[3]+'\nRadius '+Math.round(z[0]/1000)+' km · ⚠ unmitigated equipment-noise estimate only, not a compliance prediction',{sticky:true});
         IL.push(cl);
         NOISE_RINGS.push({layer:cl, zone:z[4]});
       });
+      // Actual legal ceiling under AUC Rule 012 — see note above; drawn at the
+      // real project site too, and always visible (not tied to the demo zones).
+      var aucRingPin=L.circle([p.la,p.lo],{radius:1500,color:'#6fd0ba',weight:2,fillColor:'#6fd0ba',fillOpacity:.04,dashArray:'2 6'}).addTo(map);
+      aucRingPin.bindTooltip('⚖️ '+p.n+' — AUC Rule 012 limit\nMandatory design target: 40 dBA Leq (nighttime) at 1.5 km — every AUC-regulated facility must be engineered to meet this, not just left to distance\nRadius 1.5 km from footprint centre',{sticky:true});
+      IL.push(aucRingPin);
     }
 
     if(IS.water){
@@ -1581,11 +1592,14 @@ function updateCard(){
 
   if(IS.noise){
     h+='<h4 style="color:#fca5a5">🔊 Noise — '+compDC.n+' (est.)</h4>';
-    h+='<div class="ir"><span class="il">At source (DC fence)</span><span class="iv">70–96 dB</span></div>';
-    h+='<div class="ir"><span class="il">High impact (&lt;7 km)</span><span class="iv" style="color:#fca5a5">&gt;65 dB</span></div>';
-    h+='<div class="ir"><span class="il">Moderate (7–14 km)</span><span class="iv">55–65 dB</span></div>';
+    h+='<div style="font-size:9.5px;color:#9d8aad;margin-bottom:6px">Zones below are <em>unmitigated</em> estimates — roughly what the raw equipment produces before sound control is applied, not a prediction of the compliant, as-built facility.</div>';
+    h+='<div class="ir"><span class="il">At source (DC fence, unmitigated)</span><span class="iv">70–96 dB</span></div>';
+    h+='<div class="ir"><span class="il">High impact (&lt;7 km, unmitigated)</span><span class="iv" style="color:#fca5a5">&gt;65 dB</span></div>';
+    h+='<div class="ir"><span class="il">Moderate (7–14 km, unmitigated)</span><span class="iv">55–65 dB</span></div>';
     h+='<div class="ir"><span class="il">Infrasound zone</span><span class="iv">&gt;14 km</span></div>';
-    h+='<div class="ir"><span class="il">WHO night limit</span><span class="iv">40 dB residential</span></div>';
+    h+='<div class="ir" style="border-top:1px solid rgba(255,255,255,0.12);margin-top:4px;padding-top:6px"><span class="il" style="color:#6fd0ba">⚖️ AUC Rule 012 limit (mandatory)</span><span class="iv" style="color:#6fd0ba">40 dBA @ 1.5 km</span></div>';
+    h+='<div class="ir"><span class="il">WHO night guideline (non-regulatory)</span><span class="iv">40 dB residential</span></div>';
+    h+='<div style="font-size:9px;color:#9d8aad;margin-top:2px;margin-bottom:6px">Every AUC-regulated facility must be <em>engineered</em> (enclosures, sound walls, siting) to meet 40 dBA Leq nighttime at 1.5 km from the site — that\'s the actual legal ceiling, well inside where the unmitigated zones above would otherwise reach.</div>';
     h+='<div style="font-size:9.5px;color:#9d8aad;margin-top:7px;margin-bottom:3px">🔊 <strong>Hear an approximation at each distance</strong> — pick a zone (each is mixed quieter &amp; more muffled than the last, mimicking how sound fades and loses high frequencies over distance):</div>';
     h+='<button class="snd-btn snd-zone-btn" data-zone="high"  onclick="toggleNoiseDemo(this,\'high\')">🔊 Near · roughly &gt;65 dB · within ~1–7 km</button>';
     h+='<button class="snd-btn snd-zone-btn" data-zone="mod"   onclick="toggleNoiseDemo(this,\'mod\')">🔊 Moderate · roughly 55–65 dB · ~7–14 km</button>';
