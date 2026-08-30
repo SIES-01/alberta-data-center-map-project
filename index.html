@@ -454,7 +454,7 @@ select option{background:#1c1836}
   <ul>
     <li><strong>Noise:</strong> The 70–96 dB "at source" figure and the free-field decay of ~6 dB per doubling of distance shown here are <em>unmitigated</em> estimates — roughly what the equipment itself produces before any sound-control engineering is applied — not a prediction of what a compliant, built facility will actually be measured at. Every facility under AUC jurisdiction is legally required to meet <strong>AUC Rule 012 (Noise Control)</strong>: for a new/remote facility, the mandatory design target is <strong>40 dBA Leq (nighttime) at 1.5 km</strong> from the site, achieved through enclosures, sound walls, and equipment siting — not by distance alone. So the map's zones illustrate why mitigation is necessary (how loud the raw equipment would be if nothing were done), while Rule 012 is the actual ceiling every approved project must engineer down to well within that 1.5 km radius. Infrasound (below 20 Hz) is reported beyond the audible range. WHO general residential guideline (a separate, non-regulatory reference point): 45 dB day / 40 dB night.</li>
     <li><strong>🔊 "What it might sound like" demo:</strong> The audio you can play from each noise zone is a synthesized illustration — not a real recording, measurement, or prediction for any specific site. It's built to give a rough sense of how low-frequency hum and broadband mechanical/cooling noise can change with distance (quieter, more muffled, shifting toward infrasound as you move farther away), based on the general dB ranges and decay assumptions described above. Treat it as a feel-for-scale aid only, not as evidence of what any particular community would actually hear.</li>
-    <li><strong>Water:</strong> Uses Wonder Valley's publicly stated approved permit of 6 million m³/year (Smoky River). Preliminary AUC certificate: up to 24 million m³/year. City consumption calculated at 250 L/person/day (Statistics Canada average).</li>
+    <li><strong>Water:</strong> Shown as one of three distinct kinds, visually distinguished on the map (solid blue ring = disclosed, grey dashed ring = estimate, green ring = waterless) and labeled as such in every tooltip/card: (1) <em>Waterless/closed-loop</em> — company has stated the design doesn't require an evaporative cooling water supply (currently AHI Hub of Innovation, Meta Sturgeon Data Centre). (2) <em>Disclosed</em> — a real, company/government-stated figure exists (currently Wonder Valley's approved 6 million m³/year permit from the Smoky River, with a preliminary AUC certificate for up to 24 million m³/year; and Saunders Lake AI Data Center Hub's requested 300,000 gallons/day from Leduc County water services). (3) <em>Not publicly disclosed</em> — everything else, shown only as an illustrative estimate scaled from Wonder Valley's disclosed permit by relative MW, explicitly labeled as NOT that project's own figure. City consumption calculated at 250 L/person/day (Statistics Canada average).</li>
     <li><strong>Electricity:</strong> Figures shown as "GWh/yr" for each proposal are published GW capacity × 8,760 hrs/year — a nameplate-year upper bound (100% load factor), i.e. what the facility could draw running flat-out continuously, not a claim about its actual metered consumption. City consumption estimated at 15,000 kWh/person/year (Stats Canada 2022). Alberta's actual grid demand (Alberta Internal Load): ~88.8 TWh in 2024, ~90.4 TWh in 2025, record peak 12,785 MW on Dec 11, 2025 (AESO 2025 Annual Market Statistics) — that's demand, not the province's total installed generating capacity, which is meaningfully higher.</li>
     <li><strong>Jobs (long-term):</strong> Permanent/operational job figures are company- and government-stated estimates from project filings, news coverage, and municipal releases (figures vary by source and project phase — treated here as rough order-of-magnitude only). Construction-phase jobs are temporary and shown for context. City workforce estimated at ~50% of population (Stats Canada labour force participation average). For the 5 sites added June 2026 (Wild Rose Power Hub, AHI Hub of Innovation, eStruxture CAL-3, Beacon Foothills AI Hub, Clive Power &amp; Data Centre), published job figures were not available for all — figures shown are rough estimates scaled from comparable proposals of similar MW/footprint, for illustrative comparison only. For Malachite One (added August 2026), the company has given ranges rather than single figures (construction: "several hundred" short-term; operations: 300–500 data-centre jobs plus 40–60 power-plant jobs) — this map shows the midpoint of those ranges for chart purposes only; see the proposal's own note for the actual disclosed range.</li>
     <li><strong>💰 Economic benefit:</strong> Capital-investment figures ($70B, $24B est., $12B, $4B, $10B, $13B, up to $20B est.) are company- and government-stated amounts from public project announcements and news coverage — see sources below. The "rough est. annual tax revenue" figure is NOT an official projection for any project; it applies a generic, commonly cited industry rule of thumb (roughly $3–6M in annual local/property tax revenue per $1B invested) to each proposal's stated investment, purely to illustrate order of magnitude — except where a project has published its own municipal tax estimate (e.g. Malachite One's own $52.4M/yr-by-2032 property-tax estimate to Yellowhead County), which is shown instead and noted as company-stated. Actual revenue depends on assessment methods, incentive agreements, and revenue-sharing arrangements not modelled here.</li>
@@ -1290,6 +1290,27 @@ var WATERLESS_SRC={
   'AHI Hub of Innovation': 'AHI company documentation (ahicampus.com, havenz.ai)',
   'Meta Sturgeon Data Centre': 'Meta company announcement — closed-loop, dry-cooled design, no operational cooling water draw'
 };
+// Real, company/government-disclosed water figures, by proposal name — as
+// opposed to the fallback estimate (scaled from Wonder Valley's own permit
+// by relative MW) used for every proposal that hasn't published its own
+// number. Previously every non-waterless proposal showed a same-looking,
+// same-precision "M m³/yr" figure regardless of whether it was real or a
+// guess — this is what lets the water layer visually and textually tell
+// the two apart instead of letting Wonder Valley's number set the feel
+// for proposals it has nothing to do with.
+var WATER_DISCLOSED={
+  // 'Wonder Valley' (the PINS[] name, used by the always-on real-site ring)
+  // and 'Wonder Valley — Full build-out' (the matching DC[] comparison-
+  // dropdown entry, used by the icard/compDC-driven code) both need a key
+  // here since the two arrays name the same project differently. The
+  // smaller Phase 1 / Phase 1+2 DC[] variants deliberately do NOT get an
+  // entry — a permit doesn't necessarily scale linearly with a partial
+  // build stage, so those stay in the "not disclosed, scaled estimate"
+  // bucket, which is the more honest framing for them anyway.
+  'Wonder Valley': {amt:6, note:'Publicly stated approved permit (Smoky River). A preliminary AUC certificate covers up to 24M m³/yr.', src:'AUC filings; company disclosures'},
+  'Wonder Valley — Full build-out': {amt:6, note:'Publicly stated approved permit (Smoky River). A preliminary AUC certificate covers up to 24M m³/yr.', src:'AUC filings; company disclosures'},
+  'Saunders Lake AI Data Center Hub': {amt:0.41, note:'Beacon has requested 300,000 gallons/day (1,136 m³/day ≈ 0.41M m³/yr) from Leduc County water services.', src:'Leduc County water services request'}
+};
 // NOTE: this must run AFTER the DC array above is defined (it reads DC.length),
 // otherwise DC is still undefined and the whole script throws here, which is what
 // was silently breaking map rendering.
@@ -1661,10 +1682,19 @@ function renderImpact(){
   }
 
   if(IS.water){
-    var wMwRatio = compDC.mw/7500;
-    var wRad = Math.max(8000, wMwRatio*25000);
-    var wc=L.circle([la,lo],{radius:wRad,color:'#3b82f6',weight:1.5,fillColor:'#1d4ed8',fillOpacity:.07,dashArray:'6 3'}).addTo(map);
-    wc.bindTooltip('💧 Water draw zone (overlay, est. '+Math.round(wRad/1000)+' km radius)\n'+compDC.n+' — est. '+Math.round(wMwRatio*6).toLocaleString()+'M m³/yr (scaled from WV\'s approved 6M m³/yr permit)\n⚠ Illustrative overlay — shows scale "as if" sited here, not a claim this proposal draws water from '+cur.n+'\'s watershed',{sticky:true});
+    var wMwRatio = compDC.mw/7500, wDisO=WATER_DISCLOSED[compDC.n], wc;
+    if(compDC.waterless){
+      wc=L.circle([la,lo],{radius:3500,color:'#22c55e',weight:2,fillColor:'#16a34a',fillOpacity:.15,dashArray:'4 4'}).addTo(map);
+      wc.bindTooltip('✅ Waterless/closed-loop design (overlay)\n'+compDC.n+' uses air-cooled or closed-loop dry cooling — negligible ongoing water draw\nSrc: '+(WATERLESS_SRC[compDC.n]||'company documentation')+'\n⚠ Illustrative overlay — shows scale "as if" sited here, not a claim this proposal is located at '+cur.n,{sticky:true});
+    } else if(wDisO){
+      var wRadD2=Math.max(8000, (wDisO.amt/6)*25000);
+      wc=L.circle([la,lo],{radius:wRadD2,color:'#3b82f6',weight:2,fillColor:'#1d4ed8',fillOpacity:.14}).addTo(map);
+      wc.bindTooltip('💧 Water draw (disclosed, overlay)\n'+compDC.n+' — '+wDisO.amt+'M m³/yr — '+wDisO.note+'\nSrc: '+wDisO.src+'\n⚠ Illustrative overlay — shows scale "as if" sited here, not a claim this proposal draws water from '+cur.n+'\'s watershed',{sticky:true});
+    } else {
+      var wRad = Math.max(8000, wMwRatio*25000);
+      wc=L.circle([la,lo],{radius:wRad,color:'#64748b',weight:1.5,fillColor:'#475569',fillOpacity:.07,dashArray:'6 3'}).addTo(map);
+      wc.bindTooltip('💧 Water draw zone (not publicly disclosed — overlay, illustrative)\n'+compDC.n+' — est. '+Math.round(wMwRatio*6).toLocaleString()+'M m³/yr (scaled from WV\'s approved 6M m³/yr permit, since this proposal hasn\'t published its own figure)\n⚠ Illustrative overlay — shows scale "as if" sited here, not a claim this proposal draws water from '+cur.n+'\'s watershed',{sticky:true});
+    }
     IL.push(wc);
   }
 
@@ -1739,14 +1769,20 @@ function renderImpact(){
     }
 
     if(IS.water){
-      var wc;
+      var wc, wDis=WATER_DISCLOSED[p.n];
       if(p.waterless){
         wc=L.circle([p.la,p.lo],{radius:3500,color:'#22c55e',weight:2,fillColor:'#16a34a',fillOpacity:.15,dashArray:'4 4'}).addTo(map);
         wc.bindTooltip('✅ '+p.n+' — Waterless/closed-loop design\nAir-cooled or closed-loop dry cooling (no evaporative cooling) · Negligible ongoing water draw\nSrc: '+(WATERLESS_SRC[p.n]||'company documentation'),{sticky:true});
+      } else if(wDis){
+        // Real, disclosed figure — solid ring (no dash), distinct from the
+        // illustrative/estimated style below so the two never look the same.
+        var wRadD=Math.max(3000, (wDis.amt/6)*25000);
+        wc=L.circle([p.la,p.lo],{radius:wRadD,color:'#3b82f6',weight:2,fillColor:'#1d4ed8',fillOpacity:.14}).addTo(map);
+        wc.bindTooltip('💧 '+p.n+' — water draw (disclosed)\n'+wDis.amt+'M m³/yr — '+wDis.note+'\nSrc: '+wDis.src+'\nRadius '+Math.round(wRadD/1000)+' km',{sticky:true});
       } else {
         var wRad=Math.max(3000, mwRatio*25000);
-        wc=L.circle([p.la,p.lo],{radius:wRad,color:'#3b82f6',weight:1.5,fillColor:'#1d4ed8',fillOpacity:.07,dashArray:'6 3'}).addTo(map);
-        wc.bindTooltip('💧 '+p.n+' — water draw zone (illustrative)\nEst. '+Math.round(mwRatio*6)+'M m³/yr · ⚠ NOT this project\'s own disclosed figure — scaled from Wonder Valley\'s disclosed 6M m³/yr permit by relative MW, since most proposals haven\'t published their own water figure\nRadius '+Math.round(wRad/1000)+' km',{sticky:true});
+        wc=L.circle([p.la,p.lo],{radius:wRad,color:'#64748b',weight:1.5,fillColor:'#475569',fillOpacity:.07,dashArray:'6 3'}).addTo(map);
+        wc.bindTooltip('💧 '+p.n+' — water draw zone (not publicly disclosed — illustrative only)\nEst. '+Math.round(mwRatio*6)+'M m³/yr · ⚠ NOT this project\'s own disclosed figure — scaled from Wonder Valley\'s disclosed 6M m³/yr permit by relative MW, since this proposal hasn\'t published its own water figure\nRadius '+Math.round(wRad/1000)+' km',{sticky:true});
       }
       IL.push(wc);
     }
@@ -1836,7 +1872,8 @@ function updateCard(){
 
   // Comparison-proposal calcs — driven by the 🏭 "Compare against" selector (compDC),
   // never combined/summed across proposals (each is a separate, competing project).
-  var dWat = 6e6 * (compDC.mw/7500);          // m³/yr, scaled from WV's stated 6M permit
+  var compWaterDisclosed = WATER_DISCLOSED[compDC.n];
+  var dWat = compWaterDisclosed ? compWaterDisclosed.amt*1e6 : 6e6 * (compDC.mw/7500);  // m³/yr — real disclosed figure where one exists, else scaled from WV's stated 6M permit
   var dElec = compDC.mw*8760/1000;             // GWh/yr
   var wPct = (hasPop && cWat>0) ? (dWat/cWat*100).toFixed(1) : '—';
   var ePct = (hasPop && cElec>0) ? (dElec/cElec).toFixed(1) : '—';
@@ -1864,16 +1901,19 @@ function updateCard(){
   if(IS.water){
     h+='<div class="is"><h5 style="color:#93c5fd">💧 Water — '+compDC.n+(hasPop?' vs '+c.n:'')+'</h5>';
     if(compDC.waterless){
-      h+='<div style="background:#052e16;border:1px solid #22c55e;border-radius:6px;padding:6px 9px;margin-bottom:7px;font-size:10.5px;color:#86efac"><strong style="color:#4ade80">✅ Waterless design</strong> — this facility uses air-cooled (dry) cooling, so it does not require an evaporative cooling water supply. The water comparison figures below do NOT apply to this proposal. <span style="color:#16a34a;font-size:9.5px">Source: AHI company documentation (ahicampus.com, havenz.ai).</span></div>';
+      h+='<div style="background:#052e16;border:1px solid #22c55e;border-radius:6px;padding:6px 9px;margin-bottom:7px;font-size:10.5px;color:#86efac"><strong style="color:#4ade80">✅ Waterless design</strong> — this facility uses air-cooled or closed-loop dry cooling, so it does not require an evaporative cooling water supply. The water comparison figures below do NOT apply to this proposal. <span style="color:#16a34a;font-size:9.5px">Source: '+(WATERLESS_SRC[compDC.n]||'company documentation')+'.</span></div>';
+    } else if(compWaterDisclosed){
+      h+='<div style="background:#0c2340;border:1px solid #3b82f6;border-radius:6px;padding:6px 9px;margin-bottom:7px;font-size:10.5px;color:#bfdbfe"><strong style="color:#60a5fa">💧 Disclosed figure</strong> — '+compWaterDisclosed.note+' <span style="color:#3b82f6;font-size:9.5px">Source: '+compWaterDisclosed.src+'.</span></div>';
+    } else {
+      h+='<div style="background:#1e293b;border:1px solid #475569;border-radius:6px;padding:6px 9px;margin-bottom:7px;font-size:10.5px;color:#cbd5e1"><strong style="color:#94a3b8">⚠ Not publicly disclosed</strong> — '+compDC.n+' hasn\'t published its own water figure. The number below is an illustrative estimate only, scaled from Wonder Valley\'s disclosed 6M m³/yr permit by relative MW — it is NOT this project\'s own disclosed figure and should not be read as one.</div>';
     }
-    h+='<div class="ir"><span class="il">'+compDC.n+' (est., scaled from WV permit)</span><span class="iv" style="color:#93c5fd">'+fmtM(dWat)+' m³/yr</span></div>';
+    h+='<div class="ir"><span class="il">'+compDC.n+(compWaterDisclosed?' (disclosed)':' (est., scaled from WV permit)')+'</span><span class="iv" style="color:#93c5fd">'+fmtM(dWat)+' m³/yr</span></div>';
     if(hasPop){
       h+='<div class="ir"><span class="il">'+c.n+' residents (est.)</span><span class="iv">'+fmtM(cWat)+' m³/yr</span></div>';
       h+='<div class="ir" style="border-top:1px solid #0a1f33;margin-top:4px;padding-top:4px"><span class="il">'+compDC.n+' vs '+c.n+"'s residents</span><span class=\"iv\" style=\"color:#93c5fd;font-weight:700\">"+wPct+'%</span></div>';
     } else {
       h+='<div style="font-size:9.5px;color:#1e3a5f;margin-top:3px">No "vs local residents" comparison is shown for a data-centre site (no city population here) — pick a city or town in "📍 Overlay on" above to see that comparison.</div>';
     }
-    h+='<div style="font-size:9.5px;color:#1e3a5f;margin-top:3px">Only Wonder Valley has a stated water permit (6M m³/yr from the Smoky River); other proposals\' figures are scaled estimates by relative MW for illustrative comparison only.</div>';
     h+='<div style="font-size:10.5px;color:#9aa;line-height:1.55;margin-top:8px;padding-top:7px;border-top:1px solid #0a1f33">';
     h+='<p style="margin:0 0 5px"><strong style="color:#93c5fd">💧 Which river basin is '+compDC.n+' in?</strong> '+escA(DC_BASIN[compDC.n] || 'Not yet mapped to a basin.')+'</p>';
     h+='<p style="margin:0;color:#789;font-style:italic">Why this matters: in the U.S., reporter/activist Erin Brockovich\'s public "AI Data Center Reporting Map" (launched Apr. 2026) has drawn attention to a pattern of new data centres clustering in already drought-prone regions, where their water use adds to existing strain. Alberta has its own version of this concern: since 2006, the province has stopped issuing <em>new</em> water licences in the Bow, Oldman, and South Saskatchewan sub-basins (closed under the South Saskatchewan River Basin Water Management Plan) because those basins were already considered fully allocated. Several proposals on this map sit in or near that closed basin — worth asking, for any specific project, where exactly its water would come from and whether that source is already under allocation pressure.</p>';
