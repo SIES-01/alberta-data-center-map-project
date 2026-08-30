@@ -233,9 +233,10 @@ header p{font-size:10px;color:var(--text-faint);margin-top:3px;line-height:1.4}
 .cg{display:flex;flex-direction:column;align-items:stretch;gap:4px}
 .cg label{font-size:10.5px;color:var(--mint-300);font-weight:700;white-space:nowrap;letter-spacing:.4px;text-transform:uppercase}
 select{width:100%}
-select{background:rgba(255,255,255,0.055);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;cursor:pointer;min-width:0;font-family:inherit;-webkit-appearance:none;transition:border-color .18s,background .18s}
-select:hover{border-color:rgba(111,208,186,0.45)}
-select:focus{outline:none;border-color:var(--coral-400);box-shadow:0 0 0 3px rgba(231,154,92,0.16)}
+select,.gmodal-box input[type=text],.gmodal-box input[type=email],.gmodal-box textarea{background:rgba(255,255,255,0.055);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px;cursor:pointer;min-width:0;font-family:inherit;-webkit-appearance:none;transition:border-color .18s,background .18s}
+.gmodal-box input[type=text],.gmodal-box input[type=email],.gmodal-box textarea{width:100%;cursor:text;box-sizing:border-box;resize:vertical}
+select:hover,.gmodal-box input:hover,.gmodal-box textarea:hover{border-color:rgba(111,208,186,0.45)}
+select:focus,.gmodal-box input:focus,.gmodal-box textarea:focus{outline:none;border-color:var(--coral-400);box-shadow:0 0 0 3px rgba(231,154,92,0.16)}
 select option{background:#1c1836}
 
 .ibtns{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
@@ -618,6 +619,28 @@ select option{background:#1c1836}
 </div>
 </div>
 
+<div class="gmodal" id="feedback" onclick="closeOnBackdrop(event, function(){ closeModal('feedback'); })">
+<div class="gmodal-box">
+  <h2>Feedback / corrections</h2>
+  <p>Spotted an inaccurate figure, a mis-located pin, a bug, or have a proposal to suggest adding? Send a note below — it goes straight to whoever maintains this map. This form doesn't publish or store your email anywhere on the page itself; it's relayed privately through <a href="https://formspree.io" target="_blank" rel="noopener">Formspree</a>.</p>
+  <form id="fb-form">
+    <input type="hidden" name="_subject" value="Alberta AI Data Centres map — feedback"/>
+    <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off"/>
+    <div class="cg" style="margin-bottom:10px">
+      <label for="fb-email">Your email (optional — only if you want a reply)</label>
+      <input type="email" id="fb-email" name="email" placeholder="you@example.com"/>
+    </div>
+    <div class="cg" style="margin-bottom:12px">
+      <label for="fb-message">Message</label>
+      <textarea id="fb-message" name="message" rows="5" required placeholder="What's inaccurate, broken, or missing?"></textarea>
+    </div>
+    <button type="submit" id="fb-submit" class="contact-open" style="width:100%">Send</button>
+    <div id="fb-status" style="font-size:11px;margin-top:8px;display:none"></div>
+  </form>
+  <button class="gmodal-close" onclick="closeModal('feedback')">Close</button>
+</div>
+</div>
+
 <section class="site-hero">
   <div class="hero-topbar">
     <span>📍 20 of 40+ Alberta AI data centre proposals mapped in detail</span>
@@ -709,6 +732,7 @@ select option{background:#1c1836}
   <button class="ub" onclick="toggleTableView()" id="tv-toggle">View as table</button>
   <button class="ub" onclick="openModal('gloss')">Glossary</button>
   <button class="ub" onclick="openModal('faq')">❔ FAQ</button>
+  <button class="ub" onclick="openModal('feedback')">✉️ Feedback / corrections</button>
   <button class="ub" onclick="copyShareLink(this)">Copy link to this view</button>
   <span class="ub-meta">Last updated: Aug 29, 2026 · <a onclick="openModal('changelog')">what's changed?</a></span>
 </div>
@@ -972,9 +996,47 @@ function showContact(){
 }
 function closeContact(){ document.getElementById('contact').style.display='none'; unlockScrollIfNoneOpen(); }
 
-// ── Generic modal (Walkthrough / Glossary / FAQ / Changelog) ─────────────────
+// ── Generic modal (Walkthrough / Glossary / FAQ / Changelog / Feedback) ──────
 function openModal(id){ var m=document.getElementById(id); if(m){ m.style.display='flex'; lockScroll(); } }
 function closeModal(id){ var m=document.getElementById(id); if(m){ m.style.display='none'; unlockScrollIfNoneOpen(); } }
+
+// ── Feedback form — relayed via Formspree; nothing here stores or displays ──
+// ── an email address in the page itself ──────────────────────────────────────
+(function(){
+  var form = document.getElementById('fb-form');
+  if(!form) return;
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var btn = document.getElementById('fb-submit');
+    var status = document.getElementById('fb-status');
+    var origText = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Sending…';
+    status.style.display = 'none';
+    fetch('https://formspree.io/f/myeykkzj', {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    }).then(function(res){
+      if(res.ok){
+        status.style.color = '#6fd0ba';
+        status.textContent = '✅ Sent — thank you!';
+        status.style.display = 'block';
+        form.reset();
+        btn.textContent = origText;
+        btn.disabled = false;
+        setTimeout(function(){ closeModal('feedback'); status.style.display='none'; }, 1600);
+      } else {
+        return res.json().then(function(data){ throw new Error((data && data.errors && data.errors.map(function(e){return e.message;}).join(', ')) || 'Something went wrong'); });
+      }
+    }).catch(function(err){
+      status.style.color = '#fca5a5';
+      status.textContent = '⚠ '+(err.message || 'Could not send — please try again, or reach out another way.');
+      status.style.display = 'block';
+      btn.textContent = origText;
+      btn.disabled = false;
+    });
+  });
+})();
 
 // ── Shareable permalink ───────────────────────────────────────────────────────
 function copyShareLink(btn){
