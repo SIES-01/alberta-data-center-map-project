@@ -1362,8 +1362,8 @@ function fmtM(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3).toFixed(0)+
 // AND with a lower/narrower filter sweep — approximating how sound both quiets down
 // and loses its higher frequencies (becomes more "muffled") with distance.
 var SND_ZONES={
-  high:  {label:'Near · roughly >65 dB · within ~1–7 km',      gain:.80, hum1:.22, hum2:.14, noise:.30, bp:700, q:.7},
-  mod:   {label:'Moderate · roughly 55–65 dB · ~7–14 km',       gain:.45, hum1:.12, hum2:.07, noise:.14, bp:380, q:.9},
+  high:  {label:'Near (unmitigated) · roughly >65 dB · within ~1–7 km',      gain:.80, hum1:.22, hum2:.14, noise:.30, bp:700, q:.7},
+  mod:   {label:'Moderate (unmitigated) · roughly 55–65 dB · ~7–14 km',       gain:.45, hum1:.12, hum2:.07, noise:.14, bp:380, q:.9},
   infra: {label:'Infrasound zone · roughly <40 dB · beyond ~14 km', gain:.18, hum1:.07, hum2:.03, noise:.06, bp:200, q:1.3}
 };
 var sndCtx=null, sndNodes=null, sndZone=null;
@@ -1731,9 +1731,9 @@ function updateCard(){
     h+='<div class="ir" style="border-top:1px solid rgba(255,255,255,0.12);margin-top:4px;padding-top:6px"><span class="il" style="color:#6fd0ba">⚖️ AUC Rule 012 limit (mandatory)</span><span class="iv" style="color:#6fd0ba">40 dBA @ 1.5 km</span></div>';
     h+='<div class="ir"><span class="il">WHO night guideline (non-regulatory)</span><span class="iv">40 dB residential</span></div>';
     h+='<div style="font-size:9px;color:#9d8aad;margin-top:2px;margin-bottom:6px">Every AUC-regulated facility must be <em>engineered</em> (enclosures, sound walls, siting) to meet 40 dBA Leq nighttime at 1.5 km from the site — that\'s the actual legal ceiling, well inside where the unmitigated zones above would otherwise reach.</div>';
-    h+='<div style="font-size:9.5px;color:#9d8aad;margin-top:7px;margin-bottom:3px">🔊 <strong>Hear an approximation at each distance</strong> — pick a zone (each is mixed quieter &amp; more muffled than the last, mimicking how sound fades and loses high frequencies over distance):</div>';
-    h+='<button class="snd-btn snd-zone-btn" data-zone="high"  onclick="toggleNoiseDemo(this,\'high\')">🔊 Near · roughly &gt;65 dB · within ~1–7 km</button>';
-    h+='<button class="snd-btn snd-zone-btn" data-zone="mod"   onclick="toggleNoiseDemo(this,\'mod\')">🔊 Moderate · roughly 55–65 dB · ~7–14 km</button>';
+    h+='<div style="font-size:9.5px;color:#9d8aad;margin-top:7px;margin-bottom:3px">🔊 <strong>Hear an unmitigated-equipment approximation at each distance</strong> — pick a zone (each is mixed quieter &amp; more muffled than the last, mimicking how sound fades and loses high frequencies over distance). <strong style="color:#6fd0ba">A Rule-012-compliant facility should NOT actually sound like the "Near" or "Moderate" zones beyond ~1.5 km</strong> — that\'s the whole reason the 40 dBA @ 1.5 km limit above exists.</div>';
+    h+='<button class="snd-btn snd-zone-btn" data-zone="high"  onclick="toggleNoiseDemo(this,\'high\')">🔊 Near (unmitigated) · roughly &gt;65 dB · within ~1–7 km</button>';
+    h+='<button class="snd-btn snd-zone-btn" data-zone="mod"   onclick="toggleNoiseDemo(this,\'mod\')">🔊 Moderate (unmitigated) · roughly 55–65 dB · ~7–14 km</button>';
     h+='<button class="snd-btn snd-zone-btn" data-zone="infra" onclick="toggleNoiseDemo(this,\'infra\')">🔊 Infrasound zone · roughly &lt;40 dB · beyond ~14 km</button>';
     h+='<div style="font-size:9px;color:#fff;margin-top:4px">⚠ All three are computer-generated approximations of a data centre\'s low-frequency hum &amp; cooling-fan drone — NOT real recordings from any project, and not calibrated to a measured dB level (your device volume ≠ actual loudness). The distance ranges are a rough order-of-magnitude guide only, derived from industry-reported source levels (~70–96 dB at the equipment) and the standard ~6 dB drop each time distance from the source doubles — real-world results vary with terrain, weather, walls/windows, and the specific equipment used.</div>';
   }
