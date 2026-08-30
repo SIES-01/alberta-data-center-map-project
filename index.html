@@ -291,9 +291,14 @@ select option{background:#1c1836}
   .mainarea{width:100%;height:100vh;min-height:0;overflow:hidden}
   #map{flex:1;min-height:0}
 
-  /* Floating Controls button — z-index above the sidebar (1001) so it stays a
-     crisp, clickable button instead of ghosting through the sidebar's frosted
-     glass background when the drawer is open */
+  /* Floating Controls button — sits bottom-center over the map when closed
+     (nothing else is there to block). While the drawer is open, though,
+     that same spot sits on top of the sidebar's own scrollable content —
+     wherever the user happened to scroll to, this fixed-position button
+     was permanently parked over it, physically blocking taps on whatever
+     control was underneath (the city dropdown, impact-layer buttons,
+     etc). Move it up into the strip of dimmed backdrop to the right of the
+     drawer instead, where it can never sit on top of anything tappable. */
   #mob-menu{
     display:block;
     position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
@@ -303,6 +308,11 @@ select option{background:#1c1836}
     padding:10px 24px;font-size:14px;font-weight:700;
     cursor:pointer;white-space:nowrap;
     box-shadow:0 6px 20px rgba(111,208,186,0.35);
+    transition:top .2s,bottom .2s,right .2s,left .2s,transform .2s;
+  }
+  #mob-menu.open{
+    top:14px;bottom:auto;right:14px;left:auto;transform:none;
+    padding:8px 14px;font-size:15px;
   }
 
   /* Impact card — full width sheet at bottom */
@@ -1734,7 +1744,8 @@ function toggleMobMenu(){
   var btn=document.getElementById('mob-menu');
   var isOpen=s.classList.toggle('mob-open');
   o.classList.toggle('visible',isOpen);
-  btn.textContent=isOpen?'✕ Close':'☰ Controls';
+  btn.classList.toggle('open',isOpen);
+  btn.textContent=isOpen?'✕':'☰ Controls';
   if(isOpen) lockScroll(); else unlockScrollIfNoneOpen();
 }
 function closeMobMenu(){
@@ -1743,6 +1754,7 @@ function closeMobMenu(){
   var btn=document.getElementById('mob-menu');
   s.classList.remove('mob-open');
   o.classList.remove('visible');
+  btn.classList.remove('open');
   unlockScrollIfNoneOpen();
   btn.textContent='☰ Controls';
 }
