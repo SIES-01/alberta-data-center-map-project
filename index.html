@@ -266,6 +266,18 @@ select option{background:#1c1836}
   body{overflow:auto}
   .appwrap{flex-direction:column;overflow:visible;height:auto}
 
+  /* .app-shell only ranks as z-index:2 against its own body-level siblings
+     (it establishes its own stacking context, via position:relative), so
+     without this, #mob-overlay (z-index:1000, a body-level sibling of
+     .app-shell) stacks above the ENTIRE app-shell subtree — sidebar
+     included — no matter what z-index the sidebar declares internally.
+     That silently made the dim backdrop the actual topmost element over
+     every control in the open drawer, eating every tap before it ever
+     reached the dropdown/buttons underneath. Bumping app-shell itself
+     above the overlay (but still below #mob-menu's 1002, so the Close
+     button stays on top of the drawer it controls) fixes that for real. */
+  .app-shell{z-index:1001}
+
   /* Sidebar slides in from left as an overlay */
   .sidebar{
     position:fixed;top:0;left:0;bottom:0;
