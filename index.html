@@ -1316,6 +1316,28 @@ var WATER_DISCLOSED={
   'Wonder Valley — Full build-out': {amt:6, note:'Publicly stated approved permit (Smoky River). A preliminary AUC certificate covers up to 24M m³/yr.', src:'AUC filings; company disclosures'},
   'Saunders Lake AI Data Center Hub': {amt:0.41, note:'Beacon has requested 300,000 gallons/day (1,136 m³/day ≈ 0.41M m³/yr) from Leduc County water services.', src:'Leduc County water services request'}
 };
+// How much of a "grid+gas" (mixed/transitional) proposal's demand is
+// ACTUALLY drawn from the shared AESO grid right now, vs. its full
+// nameplate capacity — distinct because a project can hold a firm grid
+// allocation today while its own dedicated generation is still under
+// construction. Only Meta currently has this cleanly disclosed (both its
+// PINS[] and DC[] names need an entry, same reason as WATER_DISCLOSED).
+var GRID_DRAW_NOTE='Currently draws via AESO\'s Phase 1 firm grid allocation (GLDC, 970 MW) while its dedicated 932 MW "Greenlight Electricity Centre" gas plant is under construction — expected online ~2030, after which draw would shift toward self-generation. Until then, this is a real, temporary grid draw, not BYOP self-generation.';
+var GRID_DRAW={
+  'Meta Sturgeon Data Centre': {mw:970, note:GRID_DRAW_NOTE, src:'AESO Large Load Projects list (Phase 1 allocation)'}
+};
+// Resolves how many MW a proposal is actually pulling from the shared grid
+// right now, vs. its full nameplate capacity — used by the Electricity
+// layer's Full/Grid-draw toggle. Falls back sensibly per power-source type
+// when no specific disclosed split exists (see comments inline).
+var elecMode='full'; // 'full' | 'grid'
+function elecGridMW(name, pwr, mw){
+  if(GRID_DRAW[name]) return GRID_DRAW[name].mw;
+  if(pwr==='gas'||pwr==='gas+geo') return 0; // BYOP, fully self-powered — not drawing from the shared grid
+  return mw; // grid-connected, partial-renewable, or unknown split — no disclosed reason to assume less than full
+}
+function elecMW(name, pwr, mw){ return elecMode==='grid' ? elecGridMW(name, pwr, mw) : mw; }
+function toggleElecMode(){ elecMode = (elecMode==='full') ? 'grid' : 'full'; renderImpact(); }
 // NOTE: this must run AFTER the DC array above is defined (it reads DC.length),
 // otherwise DC is still undefined and the whole script throws here, which is what
 // was silently breaking map rendering.
@@ -1709,13 +1731,14 @@ function renderImpact(){
     // sized as if it were sitting on top of the city I'm looking at." This is the
     // single-proposal comparison the city dropdown is for; it is NOT a claim that
     // this proposal is physically located at, or draws power locally from, this city.
-    var eMwRatio = compDC.mw/7500;
+    var eMW = elecMW(compDC.n, compDC.pwr, compDC.mw), eMwRatio = eMW/7500;
+    var eGridNote = (compDC.pwr==='grid+gas' && elecMode==='grid') ? ('\n'+(GRID_DRAW[compDC.n]?GRID_DRAW[compDC.n].note:'Transitional — no specific disclosed grid-only split; showing full nameplate.')) : '';
     [[Math.max(8000,eMwRatio*55000),'#fbbf24',.05,'Outer grid-demand scale ring (illustrative)'],
      [Math.max(5000,eMwRatio*35000),'#f59e0b',.08,'Mid grid-demand scale ring (illustrative)'],
      [Math.max(3000,eMwRatio*18000),'#d97706',.13,'Inner grid-demand scale ring (illustrative)']
     ].forEach(function(z){
       var el=L.circle([la,lo],{radius:z[0],color:'#f59e0b',weight:1,fillColor:z[1],fillOpacity:z[2],dashArray:'8 4'}).addTo(map);
-      el.bindTooltip('⚡ Electricity demand — '+compDC.n+' (overlay on '+cur.n+')\n'+z[3]+'\n'+compDC.mw.toLocaleString()+' MW · '+Math.round(compDC.mw*8760/1000).toLocaleString()+' GWh/yr\n⚠ Illustrative SCALE overlay for this ONE proposal only — shows how large its grid demand is, sized "as if" centred here. Not a claim it is located at, or draws power locally from, '+cur.n+'; Alberta\'s grid is province-wide.',{sticky:true});
+      el.bindTooltip('⚡ Electricity demand — '+compDC.n+' (overlay on '+cur.n+', '+(elecMode==='grid'?'current grid draw':'full capacity')+')\n'+z[3]+'\n'+eMW.toLocaleString()+' MW · '+Math.round(eMW*8760/1000).toLocaleString()+' GWh/yr'+eGridNote+'\n⚠ Illustrative SCALE overlay for this ONE proposal only — shows how large its grid demand is, sized "as if" centred here. Not a claim it is located at, or draws power locally from, '+cur.n+'; Alberta\'s grid is province-wide.',{sticky:true});
       IL.push(el);
     });
   }
@@ -1813,12 +1836,14 @@ function renderImpact(){
           IL.push(el);
         });
       } else {
-        [[Math.max(8000,mwRatio*55000),'#fbbf24',.05,'Outer grid pressure zone'],
-         [Math.max(5000,mwRatio*35000),'#f59e0b',.08,'Regional grid saturation zone'],
-         [Math.max(3000,mwRatio*18000),'#d97706',.13,'Local grid demand zone']
+        var pMW=elecMW(p.n, p.pwr, p.mw), pMwRatio=pMW/7500;
+        var gridNote = (p.pwr==='grid+gas' && elecMode==='grid') ? ('\n'+(GRID_DRAW[p.n]?GRID_DRAW[p.n].note:'Transitional — no specific disclosed grid-only split; showing full nameplate.')) : '';
+        [[Math.max(8000,pMwRatio*55000),'#fbbf24',.05,'Outer grid pressure zone'],
+         [Math.max(5000,pMwRatio*35000),'#f59e0b',.08,'Regional grid saturation zone'],
+         [Math.max(3000,pMwRatio*18000),'#d97706',.13,'Local grid demand zone']
         ].forEach(function(z){
           var el=L.circle([p.la,p.lo],{radius:z[0],color:'#f59e0b',weight:1,fillColor:z[1],fillOpacity:z[2],dashArray:'8 4'}).addTo(map);
-          el.bindTooltip('⚡ '+p.n+' — electricity impact\n'+z[3]+'\n'+p.mw+' MW · '+Math.round(p.mw*8760/1000)+' GWh/yr\n⚠ Zones are illustrative',{sticky:true});
+          el.bindTooltip('⚡ '+p.n+' — electricity impact ('+(elecMode==='grid'?'current grid draw':'full capacity')+')\n'+z[3]+'\n'+pMW.toLocaleString()+' MW · '+Math.round(pMW*8760/1000).toLocaleString()+' GWh/yr'+gridNote+'\n⚠ Zones are illustrative',{sticky:true});
           IL.push(el);
         });
       }
@@ -1873,13 +1898,14 @@ function updateCard(){
   var hasPop = (c.p!=null);
   var cWat = hasPop ? c.p*250*365/1000 : null;   // m³/yr
   var cElec = hasPop ? c.p*15000/1e6 : null;      // GWh/yr
-  var abElec=100000;                               // GWh/yr total AB
+  var abElec=90400;                                // GWh/yr total AB — actual 2025 Alberta Internal Load (~90.4 TWh, AESO), not installed capacity
 
   // Comparison-proposal calcs — driven by the 🏭 "Compare against" selector (compDC),
   // never combined/summed across proposals (each is a separate, competing project).
   var compWaterDisclosed = WATER_DISCLOSED[compDC.n];
   var dWat = compWaterDisclosed ? compWaterDisclosed.amt*1e6 : 6e6 * (compDC.mw/7500);  // m³/yr — real disclosed figure where one exists, else scaled from WV's stated 6M permit
-  var dElec = compDC.mw*8760/1000;             // GWh/yr
+  var compElecMW = elecMW(compDC.n, compDC.pwr, compDC.mw); // full nameplate, or actual current grid draw if elecMode==='grid'
+  var dElec = compElecMW*8760/1000;             // GWh/yr
   var wPct = (hasPop && cWat>0) ? (dWat/cWat*100).toFixed(1) : '—';
   var ePct = (hasPop && cElec>0) ? (dElec/cElec).toFixed(1) : '—';
   var abPct=(dElec/abElec*100).toFixed(1);
@@ -1934,6 +1960,10 @@ function updateCard(){
         badgeStyle='background:#431407;border:1px solid #f97316;color:#fb923c';
         badgeIcon='🔌';
         badgeText='BYOP — self-powered · on-site gas generation · NOT drawing from AESO grid'+(pw==='gas+geo'?' (+ geothermal component)':'');
+      } else if(pw==='grid+gas'){
+        badgeStyle='background:#422006;border:1px solid #eab308;color:#fde047';
+        badgeIcon='🔀';
+        badgeText=(GRID_DRAW[compDC.n] ? GRID_DRAW[compDC.n].note : 'Transitional — currently mixes grid draw and on-site generation; no specific disclosed split.');
       } else if(pw==='cogen+solar+battery'){
         badgeStyle='background:#052e16;border:1px solid #84cc16;color:#86efac';
         badgeIcon='♻️';
@@ -1949,15 +1979,22 @@ function updateCard(){
       }
       h+='<div style="'+badgeStyle+';border-radius:6px;padding:5px 9px;margin-bottom:7px;font-size:10.5px"><strong>'+badgeIcon+' Power source:</strong> '+badgeText+'</div>';
     })();
+    h+='<div style="display:flex;gap:6px;margin-bottom:7px">';
+    h+='<button class="ub" style="flex:1;justify-content:center;'+(elecMode==='full'?'background:rgba(251,191,36,0.18);border-color:#fbbf24;color:#fde68a':'')+'" onclick="toggleElecMode()">⚡ Full capacity</button>';
+    h+='<button class="ub" style="flex:1;justify-content:center;'+(elecMode==='grid'?'background:rgba(251,191,36,0.18);border-color:#fbbf24;color:#fde68a':'')+'" onclick="toggleElecMode()">🔌 Grid draw (now)</button>';
+    h+='</div>';
+    if(elecMode==='grid' && !GRID_DRAW[compDC.n] && compDC.pwr!=='gas' && compDC.pwr!=='gas+geo' && compDC.pwr!=='grid'){
+      h+='<div style="font-size:9px;color:#78450a;margin-bottom:6px">⚠ No specific "currently drawn from grid" figure has been disclosed for this proposal\'s power mix — showing its full nameplate figure as the closest available estimate.</div>';
+    }
     if(hasPop){
       h+='<div style="text-align:center;padding:8px 0 4px">';
       h+='<div style="font-size:26px;font-weight:700;color:#fde68a;line-height:1"><span style="color:#fb923c">'+ePct+'×</span></div>';
-      h+='<div style="font-size:10px;color:#9aa;margin-top:2px"><span style="color:#fb923c">⚡ '+compDC.n+'</span> demand ÷ <span style="color:#7ccfff">🏘 '+c.n+"</span>'s entire city demand</div>";
+      h+='<div style="font-size:10px;color:#9aa;margin-top:2px"><span style="color:#fb923c">⚡ '+compDC.n+'</span> '+(elecMode==='grid'?'grid draw':'demand')+' ÷ <span style="color:#7ccfff">🏘 '+c.n+"</span>'s entire city demand</div>";
       h+='</div>';
     } else {
       h+='<div style="font-size:9.5px;color:#78450a;margin:6px 0">No "vs local city demand" comparison is shown for a data-centre site (no city population here) — pick a city or town in "📍 Overlay on" above to see that comparison.</div>';
     }
-    h+='<div class="ir"><span class="il">⚡ '+compDC.n+' demand ('+compDC.mw.toLocaleString()+' MW)</span><span class="iv" style="color:#fb923c">'+Math.round(dElec).toLocaleString()+' GWh/yr</span></div>';
+    h+='<div class="ir"><span class="il">⚡ '+compDC.n+(elecMode==='grid'?' grid draw':' full capacity')+' ('+compElecMW.toLocaleString()+' MW)</span><span class="iv" style="color:#fb923c">'+Math.round(dElec).toLocaleString()+' GWh/yr</span></div>';
     if(hasPop){
       h+='<div class="ir"><span class="il">🏘 '+c.n+' total (est.)</span><span class="iv" style="color:#7ccfff">'+Math.round(cElec).toLocaleString()+' GWh/yr</span></div>';
     }
