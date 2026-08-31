@@ -9,10 +9,18 @@
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://alberta-data-centers.com/"/>
 <meta property="og:site_name" content="Alberta AI Data Centres Map"/>
+<meta property="og:image" content="https://alberta-data-centers.com/brand/icon-512.png"/>
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Alberta AI Data Centres — Interactive Size &amp; Impact Map"/>
 <meta name="twitter:description" content="Explore 20 AI data centre proposals across Alberta at real scale — footprint, electricity, water, noise, and air-quality impact, overlaid on Alberta cities and towns."/>
+<meta name="twitter:image" content="https://alberta-data-centers.com/brand/icon-512.png"/>
 <link rel="canonical" href="https://alberta-data-centers.com/"/>
+<link rel="icon" type="image/svg+xml" href="brand/mark-square.svg"/>
+<link rel="icon" type="image/png" sizes="512x512" href="brand/icon-512.png"/>
+<link rel="icon" type="image/png" sizes="48x48" href="brand/icon-48.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="brand/icon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="brand/icon-16.png"/>
+<link rel="apple-touch-icon" href="brand/icon-180.png"/>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -171,7 +179,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .hero-banner::after{content:'';position:absolute;left:-5%;right:-5%;bottom:0;height:150px;background:var(--ink);
   clip-path:polygon(0% 100%,0% 58%,7% 65%,15% 42%,23% 60%,32% 32%,41% 62%,51% 22%,59% 54%,67% 36%,77% 60%,85% 46%,93% 64%,100% 52%,100% 100%)}
 .hero-nav{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-top:12px}
-.hero-logo{display:flex;align-items:baseline;gap:2px;font-weight:800;font-size:20px;letter-spacing:-.01em;color:#fff}
+.hero-logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px;letter-spacing:-.01em;color:#fff}
+.hero-logo-mark{flex-shrink:0;border-radius:7px;box-shadow:0 2px 8px rgba(0,0,0,0.35)}
 .hero-logo .dot{width:8px;height:8px;border-radius:50%;background:var(--mint-400);margin-left:6px;box-shadow:0 0 0 4px rgba(111,208,186,.22)}
 .hero-logo .sub{font-weight:400;font-size:12px;color:rgba(255,255,255,.72);margin-left:8px;letter-spacing:.08em;text-transform:uppercase}
 .hero-navlinks{display:flex;align-items:center;gap:26px;font-size:13px;font-weight:500}
@@ -222,7 +231,7 @@ header h1{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.3px;
 header p{font-size:10px;color:var(--text-faint);margin-top:3px;line-height:1.4}
 
 .brand-row{display:flex;align-items:flex-start;gap:10px}
-.brand-badge{flex-shrink:0;width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--mint-400),var(--coral-400));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12.5px;letter-spacing:.5px;color:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.35);margin-top:1px}
+.brand-badge{flex-shrink:0;width:34px;height:34px;border-radius:9px;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.35);margin-top:1px}
 .kicker{font-size:9px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--coral-400);margin-bottom:3px}
 .app-title{font-size:15px;font-weight:800;letter-spacing:-.2px;color:var(--text);line-height:1.32;margin-bottom:7px}
 .app-title-accent{color:var(--mint-300);font-weight:700}
@@ -675,7 +684,21 @@ select option{background:#1c1836}
   </div>
   <div class="hero-banner">
     <div class="hero-nav">
-      <div class="hero-logo">ALBERTA<span class="dot"></span><span class="sub">DC Watch</span></div>
+      <div class="hero-logo">
+        <svg class="hero-logo-mark" viewBox="0 0 48 48" width="28" height="28" role="img" aria-label="Alberta Data Centers">
+          <defs><linearGradient id="brandDusk2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A3F62"/><stop offset="1" stop-color="#E08A3C"/></linearGradient><mask id="brandMoon2"><rect width="48" height="48" fill="#000"/><circle cx="32" cy="11.5" r="6" fill="#fff"/><circle cx="29" cy="9.1" r="5.4" fill="#000"/></mask><clipPath id="brandClip2"><rect width="48" height="48" rx="11"/></clipPath></defs>
+          <g clip-path="url(#brandClip2)">
+            <rect width="48" height="48" fill="url(#brandDusk2)"/>
+            <rect width="48" height="48" fill="#F7DFB2" mask="url(#brandMoon2)"/>
+            <circle cx="13" cy="13" r="1.15" fill="#F7EDE2"/>
+            <circle cx="20" cy="17" r="0.85" fill="#F7EDE2" opacity="0.85"/>
+            <circle cx="8" cy="20" r="0.7" fill="#F7EDE2" opacity="0.7"/>
+            <path d="M0 36c6-1 8-12 13-12s7 8 11 8 6-11 13-11c4 0 8 5 11 7v12H0z" fill="#2A2138"/>
+            <path d="M0 39c7 0 10-4 15-4s7 4 12 4 10-3 21-3v14H0z" fill="#6FE0BC"/>
+          </g>
+        </svg>
+        ALBERTA<span class="dot"></span><span class="sub">DC Watch</span>
+      </div>
       <div class="hero-navlinks">
         <button onclick="openModal('walk')">How it works</button>
         <button onclick="openModal('faq')">FAQ</button>
@@ -739,7 +762,20 @@ select option{background:#1c1836}
 
 <header>
   <div class="brand-row">
-    <div class="brand-badge">AB</div>
+    <div class="brand-badge">
+      <svg viewBox="0 0 48 48" width="100%" height="100%" role="img" aria-label="Alberta Data Centers">
+        <defs><linearGradient id="brandDusk1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A3F62"/><stop offset="1" stop-color="#E08A3C"/></linearGradient><mask id="brandMoon1"><rect width="48" height="48" fill="#000"/><circle cx="32" cy="11.5" r="6" fill="#fff"/><circle cx="29" cy="9.1" r="5.4" fill="#000"/></mask><clipPath id="brandClip1"><rect width="48" height="48" rx="11"/></clipPath></defs>
+        <g clip-path="url(#brandClip1)">
+          <rect width="48" height="48" fill="url(#brandDusk1)"/>
+          <rect width="48" height="48" fill="#F7DFB2" mask="url(#brandMoon1)"/>
+          <circle cx="13" cy="13" r="1.15" fill="#F7EDE2"/>
+          <circle cx="20" cy="17" r="0.85" fill="#F7EDE2" opacity="0.85"/>
+          <circle cx="8" cy="20" r="0.7" fill="#F7EDE2" opacity="0.7"/>
+          <path d="M0 36c6-1 8-12 13-12s7 8 11 8 6-11 13-11c4 0 8 5 11 7v12H0z" fill="#2A2138"/>
+          <path d="M0 39c7 0 10-4 15-4s7 4 12 4 10-3 21-3v14H0z" fill="#6FE0BC"/>
+        </g>
+      </svg>
+    </div>
     <div style="flex:1;min-width:0">
       <div class="kicker">Alberta · AI Infrastructure Watch</div>
       <h1 class="app-title">Data Centres<br><span class="app-title-accent">Size &amp; Impact Map</span></h1>
